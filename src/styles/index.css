@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: "Knewave";
+	src: url("../assets/fonts/Knewave-Regular.ttf") format("truetype");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* 中文：基础布局样式；English: base layout styles */
+:root {
+	color-scheme: light dark;
+}
+html,
+body,
+#root {
+	height: 100%;
+}
+.font-knewave {
+	font-family: "Knewave", cursive;
+}
+
+.hs-user-selector {
+	height: 32px !important;
+	.css-9bjbj3-control {
+		height: 100% !important;
+		> div {
+			height: 100% !important;
+		}
+	}
+}
+
+.hs-custom-select {
+	height: 32px !important;
+}
+
+.hs-custom-select .css-5wvq3f, .css-1jul3cw{
+	height: 32px !important;
+}
+.hs-custom-select div:nth-child(3) {
+	height: 100% !important;
+	font-size: 12px;
+}
+
+
+.hs-custom-select > div:nth-child(1) > div:nth-child(1) div{
+	height: 100% !important;
+}
