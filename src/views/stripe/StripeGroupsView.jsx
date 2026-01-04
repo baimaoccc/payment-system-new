@@ -10,6 +10,121 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faPen, faTrash, faTimes, faLayerGroup, faAlignLeft, faSearch, faSpinner, faCreditCard, faUser } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 
+const MobileGroupCard = ({ item, onEdit, onDelete, t }) => {
+	const [expanded, setExpanded] = useState(false);
+
+	return (
+		<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-all duration-200 cursor-pointer ${expanded ? "ring-1 ring-blue-100" : "hover:shadow-md"}`} onClick={() => setExpanded(!expanded)}>
+			<div className="flex justify-between items-start mb-3">
+				<div className="flex-1 min-w-0 mr-3">
+					<div className="flex items-center gap-2 mb-1">
+						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.name}</h3>
+					</div>
+					<div className="flex items-center gap-1.5 text-xs text-gray-500">
+						<FontAwesomeIcon icon={faUser} className="text-gray-400" />
+						<span className="font-medium text-brand truncate">{item.username || item.user_id || "-"}</span>
+					</div>
+				</div>
+				<div className="flex gap-2 shrink-0">
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							onEdit(item);
+						}}
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+						title={t("edit")}>
+						<FontAwesomeIcon icon={faPen} size="sm" />
+					</button>
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							onDelete(item.id);
+						}}
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+						title={t("delete")}>
+						<FontAwesomeIcon icon={faTrash} size="sm" />
+					</button>
+				</div>
+			</div>
+
+			{item.remark && (
+				<div className="bg-gray-50 rounded-lg p-2.5 mb-3 text-xs text-gray-600 leading-relaxed break-words">
+					<span className="font-medium text-gray-500 mr-1">{t("remark")}:</span>
+					{item.remark}
+				</div>
+			)}
+
+			<div className="space-y-2">
+				<div>
+					<span className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 block">{t("stripeAccounts")}</span>
+					<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[92px] overflow-hidden"}`}>
+						{item.stripe_list && item.stripe_list.length > 0 ? (
+							item.stripe_list.map((s, idx) => (
+								<span key={idx} className="inline-flex items-center px-2 py-1 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+									<FontAwesomeIcon icon={faCreditCard} className="mr-1.5 opacity-60 text-[10px]" />
+									{s.name || s.id}
+								</span>
+							))
+						) : (
+							<span className="text-xs text-gray-400 italic">{t("noData")}</span>
+						)}
+					</div>
+					{!expanded && item.stripe_list && item.stripe_list.length > 0 && (
+						<div className="flex justify-center mt-1">
+							<span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{t("clickToExpand") || "..."}</span>
+						</div>
+					)}
+				</div>
+
+				<div className="pt-3 mt-3 border-t border-gray-50 flex items-center justify-between text-xs text-gray-400">
+					<span>{t("createTime")}</span>
+					<span className="font-mono">{item.createtime ? new Date(item.createtime * 1000).toLocaleString() : "-"}</span>
+				</div>
+			</div>
+		</div>
+	);
+};
+
+const DesktopGroupRow = ({ item, onEdit, onDelete, t }) => {
+	const [expanded, setExpanded] = useState(false);
+
+	return (
+		<tr className="hover:bg-gray-50/50 transition-colors cursor-pointer" onClick={() => setExpanded(!expanded)}>
+			<td className="py-2 px-6 text-xs text-gray-500">#{item.id}</td>
+			<td className="py-2 px-6 text-xs font-medium text-gray-900">{item.name}</td>
+			<td className="py-2 px-6 text-xs text-brand italic font-bold">{item.username || item.user_id || "-"}</td>
+			<td className="py-2 px-6 text-xs text-gray-500 max-w-xs" title={item.remark}>
+				<div className={`line-clamp-3 ${expanded ? "line-clamp-none" : ""}`}>
+					{item.remark || "-"}
+				</div>
+			</td>
+			<td className="py-2 px-6 text-xs text-gray-500">
+				<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[76px] overflow-hidden"}`} title={!expanded ? item.stripe_list?.map((s) => s.name || s.id).join(", ") : ""}>
+					{item.stripe_list && item.stripe_list.length > 0
+						? item.stripe_list.map((s, idx) => (
+								<span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+									{s.name || s.id}
+								</span>
+						  ))
+						: "-"}
+				</div>
+			</td>
+			<td className="py-2 px-6 text-xs text-gray-500">{item.createtime ? new Date(item.createtime * 1000).toLocaleString() : "-"}</td>
+			<td className="py-2 px-6 text-right">
+				<div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+					<button onClick={() => onEdit(item)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("edit")}>
+						<FontAwesomeIcon icon={faPen} />
+					</button>
+					<button onClick={() => onDelete(item.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors" title={t("delete")}>
+						<FontAwesomeIcon icon={faTrash} />
+					</button>
+				</div>
+			</td>
+		</tr>
+	);
+};
+
 const InputRow = ({ icon, label, children, className = "", noBorder = false }) => (
 	<div className={`flex items-start gap-4 ${className}`}>
 		<div className="text-gray-400 w-6 pt-4 flex justify-center">
@@ -292,8 +407,8 @@ export default function StripeGroupsView() {
 	};
 
 	return (
-		<div className="p-6 max-w-[1600px] mx-auto">
-			<div className="flex items-center justify-between mb-6">
+		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
 				<div>
 					<h1 className="text-2xl font-bold text-gray-900">{t("accountGrouping")}</h1>
 					<p className="text-sm text-gray-500 mt-1">{t("accountGroupingDesc")}</p>
@@ -303,13 +418,39 @@ export default function StripeGroupsView() {
 						setEditingGroup(null);
 						setModalOpen(true);
 					}}
-					className="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2">
+					className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
 					<FontAwesomeIcon icon={faPlus} />
 					{t("addGroup")}
 				</button>
 			</div>
 
-			<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			{/* Mobile/Tablet View (Cards) */}
+			<div className="lg:hidden space-y-4">
+				{loading ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+						{t("loading")}
+					</div>
+				) : list.length === 0 ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">{t("noData")}</div>
+				) : (
+					list.map((item) => (
+						<MobileGroupCard
+							key={item.id}
+							item={item}
+							onEdit={(item) => {
+								setEditingGroup(item);
+								setModalOpen(true);
+							}}
+							onDelete={handleDelete}
+							t={t}
+						/>
+					))
+				)}
+			</div>
+
+			{/* Desktop View (Table) */}
+			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="w-full">
 						<thead>
@@ -339,42 +480,16 @@ export default function StripeGroupsView() {
 								</tr>
 							) : (
 								list.map((item) => (
-									<tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
-										<td className="py-2 px-6 text-xs text-gray-500">#{item.id}</td>
-										<td className="py-2 px-6 text-xs font-medium text-gray-900">{item.name}</td>
-										<td className="py-2 px-6 text-xs text-brand italic font-bold">{item.username || item.user_id || "-"}</td>
-										<td className="py-2 px-6 text-xs text-gray-500 max-w-xs truncate" title={item.remark}>
-											{item.remark || "-"}
-										</td>
-										<td className="py-2 px-6 text-xs text-gray-500">
-											<div className="flex flex-wrap gap-1.5 max-h-[88px] overflow-hidden" title={item.stripe_list?.map((s) => s.name || s.id).join(", ")}>
-												{item.stripe_list && item.stripe_list.length > 0
-													? item.stripe_list.map((s, idx) => (
-															<span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
-																{s.name || s.id}
-															</span>
-													  ))
-													: "-"}
-											</div>
-										</td>
-										<td className="py-2 px-6 text-xs text-gray-500">{item.createtime ? new Date(item.createtime * 1000).toLocaleString() : "-"}</td>
-										<td className="py-2 px-6 text-right">
-											<div className="flex items-center justify-end gap-2">
-												<button
-													onClick={() => {
-														setEditingGroup(item);
-														setModalOpen(true);
-													}}
-													className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-													title={t("edit")}>
-													<FontAwesomeIcon icon={faPen} />
-												</button>
-												<button onClick={() => handleDelete(item.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors" title={t("delete")}>
-													<FontAwesomeIcon icon={faTrash} />
-												</button>
-											</div>
-										</td>
-									</tr>
+									<DesktopGroupRow
+										key={item.id}
+										item={item}
+										onEdit={(item) => {
+											setEditingGroup(item);
+											setModalOpen(true);
+										}}
+										onDelete={handleDelete}
+										t={t}
+									/>
 								))
 							)}
 						</tbody>

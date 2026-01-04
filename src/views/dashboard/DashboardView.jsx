@@ -355,7 +355,7 @@ export function DashboardView() {
 	);
 
 	return (
-		<div className="space-y-6">
+		<div className="p-6">
 			{/* Grid container: Auto height on mobile, fixed 200px on desktop */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:h-[200px]">
 				{/* Card 1: Total Sales (Redesigned) */}
@@ -586,7 +586,7 @@ export function DashboardView() {
 												</div>
 												<div className="text-xs text-gray-500 truncate">{o.comment || t("untitledChannel")}</div>
 											</div>
-											<div className="flex-shrink-0">{renderOrderStatus(o, t)}</div>
+											<div className="flex-shrink-0">{renderOrderStatus(o, t, false)}</div>
 										</div>
 
 										{/* Amount & Customer */}
@@ -730,11 +730,11 @@ export function DashboardView() {
 												</td>
 
 												{/* Status */}
-												<td className="p-3 align-top">{renderOrderStatus(o, t)}</td>
+												<td className="p-3 align-middle">{renderOrderStatus(o, t, false)}</td>
 
 												{/* Timeline - Hidden on Tablet */}
 												{!isTablet && (
-													<td className="p-3 align-top">
+													<td className="p-3 align-middle">
 														<div className="flex flex-col gap-1 text-gray-500">
 															<div title={`Updated: ${updateDate}`}>
 																<span className="text-gray-400 text-[10px]">{t("upd")}:</span> {updateDate.split(" ")[0]}

@@ -45,7 +45,7 @@ export function StripeLogsView() {
     };
 
 	return (
-		<div className="space-y-6">
+		<div className="p-6">
 			<div className="bg-white rounded-2xl shadow p-4">
 				<div className="flex items-center justify-between mb-3">
 					<h3 className="text-sm font-semibold text-gray-900">{t("stripeLogs")}</h3>

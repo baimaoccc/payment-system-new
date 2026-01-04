@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { addToast } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { createStripeAccount, updateStripeAccount } from "../../controllers/stripeController.js";
 import { fetchCountryGroups } from "../../controllers/countryController.js";
@@ -73,7 +74,7 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled }) => {
 					return (
 						<span key={code} className="bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded text-xs flex items-center gap-1">
 							<span className="font-medium">{code}</span>
-							{country && <span className="text-blue-400 max-w-[60px] truncate hidden sm:inline">{country.name}</span>}
+							{country && <span className="text-blue-400 max-w-[60px] truncate">{country.name}</span>}
 							{!disabled && (
 								<button type="button" onClick={(e) => removeTag(e, code)} className="ml-0.5 hover:text-blue-900 focus:outline-none">
 									<FontAwesomeIcon icon={faTimes} className="text-[10px]" />
@@ -166,7 +167,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		country_group: "",
 		level: "",
 		type: 1,
-		user_id: "",
+		user_id: null,
 		paymentType: 0,
 	});
 
@@ -226,7 +227,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					country_group: initialData.country_group ? String(initialData.country_group) : "",
 					level: initialData.level !== undefined ? initialData.level : "",
 					type: initialData.type !== undefined ? initialData.type : 1,
-					user_id: initialData.user_id || "",
+					user_id: initialData.user_id || null,
 					paymentType: initialData.paymentType || 0,
 				});
 			} else {
@@ -247,7 +248,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					country_group: "",
 					level: "",
 					type: 1,
-					user_id: "",
+					user_id: null,
 					paymentType: 0,
 				});
 			}
@@ -288,7 +289,6 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 
 		// Basic validation for all fields except group_id and white_list
 		const requiredFields = [
-			{ key: "user_id", label: t("accountOwnership") || "User" },
 			{ key: "comment", label: t("st_comment") || "Comment" },
 			{ key: "c_site_url", label: t("st_c_site_url") || "Site URL" },
 			{ key: "level", label: t("st_level") || "Level" },
@@ -302,11 +302,17 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 			{ key: "paymentType", label: t("paymentType") || "Payment Type" },
 		];
 
+		if (isSuperAdmin) {
+			requiredFields.push({ key: "user_id", label: t("accountOwnership") || "User" });
+		}
+
 		for (const field of requiredFields) {
 			const value = formData[field.key];
 			if (value === "" || value === null || value === undefined) {
 				setLoading(false);
-				setError(`${field.label} ${t("isRequired")}`);
+				const errorMsg = `${field.label} ${t("isRequired")}`;
+				setError(errorMsg);
+				dispatch(addToast({ id: Date.now(), type: "error", message: errorMsg }));
 				return;
 			}
 		}
@@ -348,10 +354,13 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		setLoading(false);
 
 		if (res.ok) {
+			dispatch(addToast({ id: Date.now(), type: "success", message: t("saveSuccess") }));
 			onSuccess();
 			onClose();
 		} else {
-			setError(res.error?.message || "Operation failed");
+			const errorMsg = res.error?.message || t("saveFailed");
+			dispatch(addToast({ id: Date.now(), type: "error", message: errorMsg }));
+			setError(errorMsg);
 		}
 	};
 
@@ -383,14 +392,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 						<SectionHeader title={t("st_info_title")} subtitle={t("st_info_subtitle")} />
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
 							<InputRow icon={faToggleOn} label={t("st_status")} className="md:col-span-1" noBorder>
-								<Select
-									value={formData.status}
-									onChange={(val) => handleChange({ target: { name: "status", value: val } })}
-									options={statusOptions}
-									placeholder={t("selectStatus") || "Select Status"}
-									isDisabled={readOnly}
-									className="w-full"
-								/>
+								<Select value={formData.status} onChange={(val) => handleChange({ target: { name: "status", value: val } })} options={statusOptions} placeholder={t("selectStatus") || "Select Status"} isDisabled={readOnly} className="w-full" />
 							</InputRow>
 
 							{isSuperAdmin && (
@@ -443,17 +445,17 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					{/* Section 2: API Keys */}
 					<div className="mb-10">
 						<SectionHeader title={t("st_api_title")} subtitle={t("st_api_subtitle")} />
-						<div className="space-y-6">
+						<div className="p-6">
 							<InputRow icon={faKey} label={t("st_pk")}>
 								<input type="text" name="api_publishable_key" value={formData.api_publishable_key} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 font-mono text-sm" placeholder="pk_test_..." disabled={readOnly} />
 							</InputRow>
 
 							<InputRow icon={faShieldAlt} label={t("st_sk")}>
-								<input type="text" name="endpoint_secret" value={formData.endpoint_secret} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 font-mono text-sm" placeholder="whsec_..." disabled={readOnly} />
+								<input type="text" name="endpoint_secret" value={formData.endpoint_secret} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 font-mono text-sm" placeholder="sk_test_..." disabled={readOnly} />
 							</InputRow>
 
 							<InputRow icon={faKey} label={t("st_endpoint_secret")}>
-								<input type="text" name="api_key" value={formData.api_key} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 font-mono text-sm" placeholder="sk_test_..." disabled={readOnly} />
+								<input type="text" name="api_key" value={formData.api_key} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 font-mono text-sm" placeholder="whsec_..." disabled={readOnly} />
 							</InputRow>
 						</div>
 					</div>
@@ -483,7 +485,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					{/* Section 4: Description */}
 					<div className="mt-8">
 						<InputRow icon={faAlignLeft} label={t("st_desc")}>
-							<textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 resize-none" placeholder="Additional details..." disabled={readOnly} />
+							<textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 resize-none" placeholder={t("additionalDetails")} disabled={readOnly} />
 						</InputRow>
 					</div>
 				</form>

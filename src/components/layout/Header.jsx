@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../controllers/authController.js";
 import { NavLink } from "react-router-dom";
 import { setTheme, toggleSidebar } from "../../store/slices/ui.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch, faMoon, faCommentDots, faCreditCard, faBell, faUser, faEnvelope, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSearch, faMoon, faCommentDots, faCreditCard, faBell, faUser, faEnvelope, faUserCircle, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "../ui/IconButton.jsx";
 import { MobileSidebar } from "./MobileSidebar.jsx";
 import { useResponsive } from "../../hooks/useResponsive.js";
+import { Logo } from "../common/Logo.jsx";
 import { ROLE_MAP, MENU_CONFIG } from "./menuConfig";
+import BrandTextImg from "../../assets/brand-text.png";
 
 /**
  * 顶部栏：语言切换、用户信息、登出
@@ -25,6 +27,18 @@ export function Header() {
 	const { isMobile, isTablet } = useResponsive();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [isProfileOpen, setIsProfileOpen] = useState(false);
+	const profileRef = useRef(null);
+
+	useEffect(() => {
+		function handleClickOutside(event) {
+			if (profileRef.current && !profileRef.current.contains(event.target)) {
+				setIsProfileOpen(false);
+			}
+		}
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, [profileRef]);
 
 	// Derive effective role
 	const currentRole = user?.juese_id ? ROLE_MAP[user.juese_id] : authRole || "guest";
@@ -82,7 +96,9 @@ export function Header() {
 			<div className="flex items-center justify-between w-full">
 				<div className="flex items-center gap-2 text-sm">
 					<IconButton icon={faBars} label="menu" onClick={handleMenuClick} />
-					<IconButton icon={faSearch} label={t("search")} />
+
+					
+					{/* <IconButton icon={faSearch} label={t("search")} /> */}
 					{/* <div className="relative">
 						<button onClick={() => setAppsOpen((v) => !v)} className="px-2 md:px-3 py-1 rounded hover:bg-gray-100 flex items-center gap-1">
 							<FontAwesomeIcon icon={faThLarge} />
@@ -123,19 +139,41 @@ export function Header() {
 					<div className="hidden sm:block">
 						<IconButton onClick={toggleTheme} icon={faMoon} label={t("theme")} />
 					</div>
-					<div className="relative">
+					{/* <div className="relative">
 						<IconButton icon={faCommentDots} label={t("messages")} />
 						<span className="absolute -top-1 -right-1 bg-peach text-white text-xs px-1 rounded">{messages}</span>
 					</div>
 					<div className="relative">
 						<IconButton icon={faBell} label={t("notifications")} />
 						<span className="absolute -top-1 -right-1 bg-action-yellow text-white text-xs px-1 rounded">{notifications}</span>
+					</div> */}
+
+					{/* User Profile Dropdown */}
+					<div className="relative" ref={profileRef}>
+						<button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center gap-2 hover:bg-gray-100 p-1.5 rounded-lg transition-colors focus:outline-none">
+							{user?.avatar ? <img src={user.avatar} alt="avatar" className="w-7 h-7 rounded-full object-cover border border-gray-200" /> : <FontAwesomeIcon icon={faUserCircle} className="text-2xl text-gray-600" />}
+							<span className="text-sm font-medium text-gray-700 hidden lg:block">{user?.username || t("guest")}</span>
+						</button>
+
+						{isProfileOpen && (
+							<div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50 animate-in fade-in zoom-in-95 duration-200">
+								<div className="px-4 py-3 border-b border-gray-100">
+									<p className="text-sm font-medium text-gray-900 truncate">{user?.username || t("guest")}</p>
+									{user?.role && <p className="text-xs text-gray-500 mt-0.5">{user.role}</p>}
+								</div>
+								<button
+									onClick={() => {
+										setIsProfileOpen(false);
+										onLogout();
+									}}
+									disabled={loading}
+									className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors disabled:opacity-50">
+									{loading ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faSignOutAlt} />}
+									{t("logout")}
+								</button>
+							</div>
+						)}
 					</div>
-					<span className="text-gray-600 hidden lg:inline">{user?.username || t("guest")}</span>
-					<button onClick={onLogout} disabled={loading} className="border px-2 py-1 md:px-3 rounded text-xs md:text-sm whitespace-nowrap flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-						{loading && <FontAwesomeIcon icon={faSpinner} spin />}
-						{t("logout")}
-					</button>
 				</div>
 			</div>
 		</header>

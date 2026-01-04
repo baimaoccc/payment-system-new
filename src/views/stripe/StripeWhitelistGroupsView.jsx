@@ -4,6 +4,7 @@ import { setModal } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { fetchCountryGroups, deleteCountryGroup, fetchCountryGroup, createCountryGroup, fetchCountryList } from "../../controllers/countryController.js";
 import { Pagination } from "../../components/common/Pagination.jsx";
+import { useResponsive } from "../../hooks/useResponsive.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLayerGroup, faPlus, faTrash, faEye, faSearch, faSpinner, faTimes, faCheck, faAlignLeft, faGlobeAmericas, faExclamationTriangle, faEdit } from "@fortawesome/free-solid-svg-icons";
 
@@ -117,9 +118,76 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled, t }) => 
 	);
 };
 
+const MobileWhitelistGroupCard = ({ group, onEdit, onDelete, onView, t, lang }) => {
+	const [expanded, setExpanded] = useState(false);
+	const hasManyItems = group.fz_json && Array.isArray(group.fz_json) && group.fz_json.length > 12;
+
+	return (
+		<div className={`bg-white rounded-xl p-4 shadow-sm border transition-all duration-200 cursor-pointer ${expanded ? "border-blue-500 ring-1 ring-blue-500" : "border-gray-100 hover:shadow-md"}`} onClick={() => setExpanded(!expanded)}>
+			<div className="flex justify-between items-start mb-3">
+				<div className="flex-1 min-w-0 mr-3">
+					<div className="flex items-center gap-2 mb-1">
+						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{group.id}</span>
+						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{group.name}</h3>
+					</div>
+				</div>
+				<div className="flex gap-2 shrink-0">
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							onEdit(group);
+						}}
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+						title={t("edit")}>
+						<FontAwesomeIcon icon={faEdit} size="sm" />
+					</button>
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							onDelete(group);
+						}}
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+						title={t("delete")}>
+						<FontAwesomeIcon icon={faTrash} size="sm" />
+					</button>
+				</div>
+			</div>
+
+			<div className="space-y-2">
+				<div>
+					<span className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 block">{t("st_whitelist")}</span>
+					<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[60px] overflow-hidden"}`}>
+						{group.fz_json && Array.isArray(group.fz_json) && group.fz_json.length > 0 ? (
+							group.fz_json.map((country) => (
+								<span key={country.id} className="inline-flex items-center px-2 py-1 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100" title={lang === "zh" ? country.name_cn : country.name_en}>
+									<span className="mr-1">{country.flag}</span>
+									{country.alpha2}
+								</span>
+							))
+						) : (
+							<span className="text-xs text-gray-400 italic">{t("noData")}</span>
+						)}
+					</div>
+					{!expanded && hasManyItems && (
+						<div className="flex justify-center mt-1">
+							<span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{t("clickToExpand") || "..."}</span>
+						</div>
+					)}
+				</div>
+
+				<div className="pt-3 mt-3 border-t border-gray-50 flex items-center justify-between text-xs text-gray-400">
+					<span>{t("createTime")}</span>
+					<span className="font-mono">{group.createtime ? new Date(group.createtime * 1000).toLocaleString() : "-"}</span>
+				</div>
+			</div>
+		</div>
+	);
+};
+
 export default function StripeWhitelistGroupsView() {
 	const { t, lang } = useI18n();
 	const dispatch = useDispatch();
+	const { isMobile } = useResponsive();
 
 	const [loading, setLoading] = useState(true);
 	const [groups, setGroups] = useState([]);
@@ -325,20 +393,29 @@ export default function StripeWhitelistGroupsView() {
 			</div>
 
 			{/* Table */}
-			<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-				{loading ? (
-					<div className="p-12 text-center text-gray-500 flex flex-col items-center gap-3">
-						<FontAwesomeIcon icon={faSpinner} spin className="text-2xl" />
-						<p>{t("loading")}</p>
+			{loading ? (
+				<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4 p-12 text-center text-gray-500 flex flex-col items-center gap-3">
+					<FontAwesomeIcon icon={faSpinner} spin className="text-2xl" />
+					<p>{t("loading")}</p>
+				</div>
+			) : groups.length === 0 ? (
+				<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4 p-12 text-center text-gray-500 flex flex-col items-center gap-3">
+					<div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-2">
+						<FontAwesomeIcon icon={faLayerGroup} className="text-gray-400 text-2xl" />
 					</div>
-				) : groups.length === 0 ? (
-					<div className="p-12 text-center text-gray-500 flex flex-col items-center gap-3">
-						<div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-2">
-							<FontAwesomeIcon icon={faLayerGroup} className="text-gray-400 text-2xl" />
-						</div>
-						<p>{t("noData")}</p>
+					<p>{t("noData")}</p>
+				</div>
+			) : isMobile ? (
+				<div className="mt-4 space-y-3">
+					{groups.map((group) => (
+						<MobileWhitelistGroupCard key={group.id} group={group} onEdit={handleEdit} onDelete={handleDelete} onView={handleView} t={t} lang={lang} />
+					))}
+					<div className="pt-2">
+						<Pagination page={pagination.page} pageSize={pagination.per_page} total={pagination.total} onPageChange={(page) => setPagination((prev) => ({ ...prev, page }))} onPageSizeChange={(size) => setPagination((prev) => ({ ...prev, per_page: size, page: 1 }))} />
 					</div>
-				) : (
+				</div>
+			) : (
+				<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4">
 					<div className="overflow-x-auto">
 						<table className="w-full text-sm text-left">
 							<thead className="bg-gray-50 text-gray-500 font-medium">
@@ -392,17 +469,11 @@ export default function StripeWhitelistGroupsView() {
 							</tbody>
 						</table>
 					</div>
-				)}
 
-				{/* Pagination */}
-				<Pagination
-					page={pagination.page}
-					pageSize={pagination.per_page}
-					total={pagination.total}
-					onPageChange={(page) => setPagination((prev) => ({ ...prev, page }))}
-					onPageSizeChange={(size) => setPagination((prev) => ({ ...prev, per_page: size, page: 1 }))}
-				/>
-			</div>
+					{/* Pagination */}
+					<Pagination page={pagination.page} pageSize={pagination.per_page} total={pagination.total} onPageChange={(page) => setPagination((prev) => ({ ...prev, page }))} onPageSizeChange={(size) => setPagination((prev) => ({ ...prev, per_page: size, page: 1 }))} />
+				</div>
+			)}
 
 			{/* View Modal */}
 			{viewModalOpen && (
@@ -494,21 +565,14 @@ export default function StripeWhitelistGroupsView() {
 						</div>
 
 						{/* Body */}
-						<div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-							<div className="space-y-6">
+						<div className="flex-1 overflow-y-auto custom-scrollbar">
+							<div className="p-6">
 								<InputRow icon={faLayerGroup} label={t("name")}>
 									<input type="text" value={createData.name} onChange={(e) => setCreateData((prev) => ({ ...prev, name: e.target.value }))} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder={t("enterGroupName")} />
 								</InputRow>
 
-								<InputRow icon={faGlobeAmericas} label={t("selectCountries")} className="min-h-[200px]">
-									<MultiSelect
-										options={mappedCountries}
-										value={createData.selectedCountries}
-										onChange={(val) => setCreateData((prev) => ({ ...prev, selectedCountries: val }))}
-										placeholder={t("searchCountries")}
-										disabled={countriesLoading}
-										t={t}
-									/>
+								<InputRow icon={faGlobeAmericas} label={t("selectCountries")} className="min-h-[200px] mt-4">
+									<MultiSelect options={mappedCountries} value={createData.selectedCountries} onChange={(val) => setCreateData((prev) => ({ ...prev, selectedCountries: val }))} placeholder={t("searchCountries")} disabled={countriesLoading} t={t} />
 									{countriesLoading && (
 										<div className="text-xs text-blue-500 mt-1">
 											<FontAwesomeIcon icon={faSpinner} spin /> {t("loading")}

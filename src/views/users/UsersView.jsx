@@ -10,7 +10,7 @@ import { getRoleInfo } from "../../utils/roleRender.js";
 import { Select } from "../../components/ui/Select.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrash, faTimes, faUser, faKey, faEnvelope, faPhone, faPaperPlane, faUsers, faShieldAlt, faCamera, faSpinner, faEye, faEyeSlash, faSitemap } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPen, faTrash, faTimes, faUser, faKey, faEnvelope, faPhone, faPaperPlane, faUsers, faShieldAlt, faCamera, faSpinner, faEye, faEyeSlash, faSitemap } from "@fortawesome/free-solid-svg-icons";
 
 const InputRow = ({ icon, label, children, className = "", noBorder = false }) => (
 	<div className={`flex items-start gap-4 ${className}`}>
@@ -364,6 +364,59 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 	);
 }
 
+const MobileUserCard = ({ user, onEdit, onDelete, onAssignGroup, t }) => {
+	const roleInfo = getRoleInfo(user.juese_id, t);
+
+	return (
+		<div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+			<div className="flex justify-between items-start mb-3">
+				<div className="flex items-center gap-3">
+					<div style={{ backgroundImage: `url(${user.avatar || ""})`, backgroundSize: "100%", backgroundRepeat: "no-repeat" }} className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm shrink-0 border border-gray-100">
+						{user.avatar ? "" : (user.username || "?").charAt(0).toUpperCase()}
+					</div>
+					<div>
+						<div className="flex items-center gap-2">
+							<h3 className="font-bold text-gray-900">{user.username}</h3>
+							<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono">#{user.id}</span>
+						</div>
+						<p className="text-xs text-gray-500">{user.email}</p>
+					</div>
+				</div>
+				<span className={`inline-block px-2 py-1 rounded text-xs font-medium ${roleInfo.className}`}>{roleInfo.label}</span>
+			</div>
+
+			<div className="grid grid-cols-2 gap-y-2 gap-x-4 text-xs text-gray-500 mb-4">
+				<div className="flex flex-col">
+					<span className="text-gray-400 mb-0.5">{t("mobile")}</span>
+					<span className="font-medium text-gray-700">{user.mobile || "-"}</span>
+				</div>
+				<div className="flex flex-col">
+					<span className="text-gray-400 mb-0.5">{t("tgid")}</span>
+					<span className="font-medium text-gray-700">{user.tgid || "-"}</span>
+				</div>
+				<div className="flex flex-col col-span-2">
+					<span className="text-gray-400 mb-0.5">{t("qunid")}</span>
+					<span className="font-medium text-gray-700 break-all">{user.qunid || "-"}</span>
+				</div>
+			</div>
+
+			<div className="flex justify-end gap-2 pt-3 border-t border-gray-50">
+				{[1, 4, 6].includes(Number(user.juese_id)) && (
+					<button onClick={() => onAssignGroup(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors" title={t("assignGroup")}>
+						<FontAwesomeIcon icon={faSitemap} size="sm" />
+					</button>
+				)}
+				<button onClick={() => onEdit(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
+					<FontAwesomeIcon icon={faPen} size="sm" />
+				</button>
+				<button onClick={() => onDelete(user.id)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
+					<FontAwesomeIcon icon={faTrash} size="sm" />
+				</button>
+			</div>
+		</div>
+	);
+};
+
 export function UsersView() {
 	const dispatch = useDispatch();
 	const { t } = useI18n();
@@ -509,41 +562,63 @@ export function UsersView() {
 	const safeList = Array.isArray(list) ? list : [];
 
 	return (
-		<div className="space-y-6">
+		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
 			<UserFormModal open={modalOpen} initial={form} onClose={() => setModalOpen(false)} onSave={onSave} t={t} roles={roles} currentUser={currentUser} allUsers={allUsers} saving={saving} />
 			<AssignGroupModal open={assignGroupModalOpen} user={assignTarget} currentUser={currentUser} onClose={() => setAssignGroupModalOpen(false)} onSave={onSave} t={t} />
 
-			<div className="bg-white rounded-2xl shadow p-4">
-				<div className="flex items-center justify-between mb-3">
-					<h3 className="text-sm font-semibold text-gray-900">{t("users")}</h3>
-					<button onClick={onAdd} className="px-3 py-1.5 rounded bg-brand text-white hover:bg-brand-dark text-xs font-medium transition-colors">
-						{t("addUser")}
-					</button>
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+				<div>
+					<h1 className="text-2xl font-bold text-gray-900">{t("users")}</h1>
 				</div>
+				<button
+					onClick={onAdd}
+					className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+					<FontAwesomeIcon icon={faPlus} />
+					{t("addUser")}
+				</button>
+			</div>
 
+			{/* Mobile/Tablet View (Cards) */}
+			<div className="lg:hidden space-y-4">
+				{loading ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+						{t("loading")}
+					</div>
+				) : safeList.length === 0 ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						{t("noData")}
+					</div>
+				) : (
+					safeList.map((u) => <MobileUserCard key={u.id} user={u} onEdit={onEdit} onDelete={onDelete} onAssignGroup={onAssignGroup} t={t} />)
+				)}
+			</div>
+
+			{/* Desktop View (Table) */}
+			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 				{loading ? (
 					<div className="p-8 text-center text-gray-500">{t("loading")}</div>
 				) : (
-					<div className="overflow-x-auto mt-3">
-						<table className="min-w-full text-xs">
-							<thead className="bg-gray-100">
+					<div className="overflow-x-auto">
+						<table className="w-full">
+							<thead className="bg-gray-50/50 border-b border-gray-100 text-left">
 								<tr>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">ID</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("username")}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("role")}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("mobile")}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("tgid")}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("qunid")}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("actions")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("username")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("role")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("mobile")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("tgid")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("qunid")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">{t("actions")}</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody className="divide-y divide-gray-100 text-[12px]">
 								{safeList.map((u) => (
-									<tr key={u.id} className="border-t hover:bg-gray-50 transition-colors">
-										<td className="p-2 text-gray-600">{u.id}</td>
-										<td className="p-2">
+									<tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
+										<td className="py-2 px-6 text-xs text-gray-500">{u.id}</td>
+										<td className="py-2 px-6">
 											<div className="flex items-center gap-2">
-												<div style={{ backgroundImage: `url(${u.avatar || ""})`, backgroundSize: "100%", backgroudRepeat: "no-repeat" }} className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs shrink-0">
+												<div style={{ backgroundImage: `url(${u.avatar || ""})`, backgroundSize: "100%", backgroudRepeat: "no-repeat" }} className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs shrink-0 border border-gray-100">
 													{u.avatar ? "" : (u.username || "?").charAt(0).toUpperCase()}
 												</div>
 												<div className="flex flex-col">
@@ -552,33 +627,32 @@ export function UsersView() {
 												</div>
 											</div>
 										</td>
-										<td className="p-0">
-											<span className={`inline-block py-1.5 rounded w-22 text-center px-2 ${getRoleInfo(u.juese_id, t).className}`}>{getRoleInfo(u.juese_id, t).label}</span>
+										<td className="py-2 px-6">
+											<span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${getRoleInfo(u.juese_id, t).className}`}>{getRoleInfo(u.juese_id, t).label}</span>
 										</td>
-										<td className="p-2 text-gray-500">{u.mobile || "-"}</td>
-										<td className="p-2 text-gray-500">{u.tgid || "-"}</td>
-										<td className="p-2 text-gray-500">{u.qunid || "-"}</td>
-										<td className="p-2">
-											<div className="flex items-center gap-3 text-gray-400">
-												<button onClick={() => onEdit(u)} className="hover:text-blue-600 transition-colors" title={t("edit")}>
-													<FontAwesomeIcon icon={faPen} className="w-3 h-3" />
-												</button>
-												<button onClick={() => onDelete(u.id)} className="hover:text-red-600 transition-colors" title={t("delete")}>
-													<FontAwesomeIcon icon={faTrash} className="w-3 h-3" />
-												</button>
-												{/* Assign Group Button - Only for Super Admin (1), Admin (4), Pitcher (6) */}
+										<td className="py-2 px-6 text-xs text-gray-500">{u.mobile || "-"}</td>
+										<td className="py-2 px-6 text-xs text-gray-500">{u.tgid || "-"}</td>
+										<td className="py-2 px-6 text-xs text-gray-500 max-w-xs truncate" title={u.qunid}>{u.qunid || "-"}</td>
+										<td className="py-2 px-6 text-right">
+											<div className="flex items-center justify-end gap-2">
 												{[1, 4, 6].includes(Number(u.juese_id)) && (
-													<button onClick={() => onAssignGroup(u)} className="hover:text-purple-600 transition-colors" title={t("assignGroup") || "Assign Group"}>
-														<FontAwesomeIcon icon={faSitemap} className="w-3 h-3" />
+													<button onClick={() => onAssignGroup(u)} className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title={t("assignGroup") || "Assign Group"}>
+														<FontAwesomeIcon icon={faSitemap} />
 													</button>
 												)}
+												<button onClick={() => onEdit(u)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("edit")}>
+													<FontAwesomeIcon icon={faPen} />
+												</button>
+												<button onClick={() => onDelete(u.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors" title={t("delete")}>
+													<FontAwesomeIcon icon={faTrash} />
+												</button>
 											</div>
 										</td>
 									</tr>
 								))}
 								{safeList.length === 0 && (
 									<tr>
-										<td colSpan="7" className="px-4 py-8 text-center text-gray-400">
+										<td colSpan="7" className="py-8 text-center text-gray-400">
 											{t("noData")}
 										</td>
 									</tr>
@@ -588,9 +662,14 @@ export function UsersView() {
 					</div>
 				)}
 
-				<div className="mt-3">
+				<div className="p-4 border-t border-gray-100">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={onPageChange} onPageSizeChange={onPageSizeChange} />
 				</div>
+			</div>
+
+			{/* Pagination for Mobile (outside table container) */}
+			<div className="lg:hidden mt-4">
+				<Pagination page={page} pageSize={pageSize} total={total} onPageChange={onPageChange} onPageSizeChange={onPageSizeChange} />
 			</div>
 		</div>
 	);

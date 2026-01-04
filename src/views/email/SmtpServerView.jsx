@@ -5,7 +5,87 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faPlus, faTimes, faSpinner, faTrash, faPen, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { fetchSmtpList, createOrUpdateSmtp, deleteSmtp, fetchSmtpDetail } from "../../controllers/smtpController.js";
 import { Pagination } from "../../components/common/Pagination.jsx";
-import { addToast } from "../../store/slices/ui.js";
+import { addToast, setModal } from "../../store/slices/ui.js";
+
+const MobileSmtpServerCard = ({ item, onView, onEdit, onDelete, t, formatDate, actionLoading }) => {
+	const [expanded, setExpanded] = useState(false);
+
+	return (
+		<div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+			<div className="flex justify-between items-start mb-3">
+				<div className="flex items-center gap-3">
+					<div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-sm">#{item.id}</div>
+					<div>
+						<div className="font-bold text-gray-900">{item.host}</div>
+						<div className="text-xs text-gray-500 mt-0.5">{item.username}</div>
+					</div>
+				</div>
+				<div className={`px-2 py-1 rounded text-xs font-medium ${item.secure ? "bg-green-50 text-green-600" : "bg-gray-100 text-gray-600"}`}>{item.secure || "None"}</div>
+			</div>
+
+			<div className="grid grid-cols-2 gap-y-2 text-sm text-gray-600 mb-4">
+				<div className="flex flex-col">
+					<span className="text-xs text-gray-400 mb-0.5">{t("smtpPort")}</span>
+					<span className="font-medium">{item.port}</span>
+				</div>
+				<div className="flex flex-col">
+					<span className="text-xs text-gray-400 mb-0.5">{t("smtpFromEmail")}</span>
+					<span className="font-medium break-all">{item.from_email}</span>
+				</div>
+			</div>
+
+			{expanded && (
+				<div className="border-t border-gray-50 pt-3 mb-4 space-y-3 animate-fade-in">
+					<div>
+						<div className="text-xs text-gray-400 mb-1">{t("smtpFromName")}</div>
+						<div className="text-sm text-gray-700">{item.from_name || "-"}</div>
+					</div>
+					<div className="grid grid-cols-2 gap-4">
+						<div>
+							<div className="text-xs text-gray-400 mb-1">{t("crt")}</div>
+							<div className="text-xs text-gray-500">{formatDate(item.createtime)}</div>
+						</div>
+						<div>
+							<div className="text-xs text-gray-400 mb-1">{t("upd")}</div>
+							<div className="text-xs text-gray-500">{formatDate(item.updatetime)}</div>
+						</div>
+					</div>
+				</div>
+			)}
+
+			<div className="flex items-center justify-between pt-3 border-t border-gray-100">
+				<button onClick={() => setExpanded(!expanded)} className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">
+					{expanded ? (
+						<>
+							<span>{t("clickToCollapse")}</span>
+						</>
+					) : (
+						<>
+							<span>{t("clickToExpand")}</span>
+						</>
+					)}
+				</button>
+				<div className="flex items-center gap-2">
+					<button
+						onClick={() => onView(item)}
+						disabled={actionLoading === `view-${item.id}`}
+						className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+						{actionLoading === `view-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin className="text-sm" /> : <FontAwesomeIcon icon={faEye} className="text-sm" />}
+					</button>
+					<button
+						onClick={() => onEdit(item)}
+						disabled={actionLoading === `edit-${item.id}`}
+						className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+						{actionLoading === `edit-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin className="text-sm" /> : <FontAwesomeIcon icon={faPen} className="text-sm" />}
+					</button>
+					<button onClick={() => onDelete(item.id)} className="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-100 transition-colors">
+						<FontAwesomeIcon icon={faTrash} className="text-sm" />
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 const InputRow = ({ label, children }) => (
 	<div className="mb-4">
@@ -233,30 +313,61 @@ export function SmtpServerView() {
 	};
 
 	return (
-		<div className="max-w-[1600px] mx-auto">
-			<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-				<div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-					<div className="flex items-center gap-4">
-						<div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-							<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
-						</div>
-						<div>
-							<h1 className="text-2xl font-bold text-gray-900">{t("smtpServerManagement")}</h1>
-							<p className="text-sm text-gray-500">{t("smtpServerManagementDesc")}</p>
-						</div>
+		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+				<div className="flex items-center gap-4">
+					<div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 hidden sm:flex">
+						<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
 					</div>
-					<button
-						onClick={() => {
-							setEditing(null);
-							setViewMode(false);
-							setModalOpen(true);
-						}}
-						className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 flex items-center gap-2">
-						<FontAwesomeIcon icon={faPlus} />
-						{t("addSmtpServer")}
-					</button>
+					<div>
+						<h1 className="text-2xl font-bold text-gray-900">{t("smtpServerManagement")}</h1>
+						<p className="text-sm text-gray-500 mt-1">{t("smtpServerManagementDesc")}</p>
+					</div>
 				</div>
+				<button
+					onClick={() => {
+						setEditing(null);
+						setViewMode(false);
+						setModalOpen(true);
+					}}
+					className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2">
+					<FontAwesomeIcon icon={faPlus} />
+					{t("addSmtpServer")}
+				</button>
+			</div>
 
+			{/* Mobile/Tablet View (Cards) */}
+			<div className="lg:hidden space-y-4 mb-4">
+				{loading ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+						{t("loading")}
+					</div>
+				) : (list || []).length === 0 ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						{t("noData")}
+					</div>
+				) : (
+					(list || []).map((item) => (
+						<MobileSmtpServerCard 
+							key={item.id} 
+							item={item} 
+							onView={handleView}
+							onEdit={handleEdit} 
+							onDelete={handleDelete} 
+							t={t} 
+							formatDate={formatDateTime}
+							actionLoading={actionLoading}
+						/>
+					))
+				)}
+				<div className="mt-4">
+					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+				</div>
+			</div>
+
+			{/* Desktop View (Table) */}
+			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 				{loading ? (
 					<div className="p-12 text-center text-gray-400">
 						<FontAwesomeIcon icon={faSpinner} spin className="text-3xl mb-3" />

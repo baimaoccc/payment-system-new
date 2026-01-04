@@ -21,7 +21,7 @@ export const getOrderStatusOptions = (t) => [
  * @param {Function} t - The translation function.
  * @returns {React.ReactNode}
  */
-export function renderOrderStatus(order, t) {
+export function renderOrderStatus(order, t, showDetails = true) {
     const status = String(order.status);
     let label = t("noPay");
     let badgeCls = "bg-grey-4 text-gray-700";
@@ -60,30 +60,32 @@ export function renderOrderStatus(order, t) {
                 {label}
             </span>
             
-            <div className="text-gray-500 text-[10px] space-y-1">
-                {/* Risk Score - Shown for both success and failure if present */}
-                {(isPaid || isFailed) && order.risk_score !== undefined && order.risk_score !== null && (
-                     <div title={t("riskScore")}>
-                        <span className="text-gray-400">{t("riskScore")}:</span> {order.risk_score}
-                     </div>
-                )}
+            {showDetails && (
+                <div className="text-gray-500 text-[10px] space-y-1">
+                    {/* Risk Score - Shown for both success and failure if present */}
+                    {(isPaid || isFailed) && order.risk_score !== undefined && order.risk_score !== null && (
+                        <div title={t("riskScore")}>
+                            <span className="text-gray-400">{t("riskScore")}:</span> {order.risk_score}
+                        </div>
+                    )}
 
-                {/* Failure Details - Only for failed */}
-                {isFailed && (
-                    <>
-                        {order.failure_code && (
-                            <div className="text-red-400 truncate max-w-[150px]" title={order.failure_code}>
-                                <span className="text-gray-400">{t("failureCode")}:</span> {order.failure_code}
-                            </div>
-                        )}
-                        {order.failure_message && (
-                            <div className="text-red-400 truncate max-w-[150px]" title={order.failure_message}>
-                                <span className="text-gray-400">{t("failureMsg")}:</span> {order.failure_message}
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
+                    {/* Failure Details - Only for failed */}
+                    {isFailed && (
+                        <>
+                            {order.failure_code && (
+                                <div className="text-red-400 truncate max-w-[150px]" title={order.failure_code}>
+                                    <span className="text-gray-400">{t("failureCode")}:</span> {order.failure_code}
+                                </div>
+                            )}
+                            {order.failure_message && (
+                                <div className="text-red-400 truncate max-w-[150px]" title={order.failure_message}>
+                                    <span className="text-gray-400">{t("failureMsg")}:</span> {order.failure_message}
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

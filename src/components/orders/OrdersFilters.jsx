@@ -413,7 +413,7 @@ export function OrdersFilters() {
 				</div>
 
 				{/* Filter Toggle */}
-				<div className="flex items-center gap-2 shrink-0">
+				<div className="flex flex-wrap items-center gap-2 shrink-0">
 					{activeFiltersList.map((filter) => (
 						<div key={filter.key} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md border border-blue-100 animate-fade-in">
 							<span className="font-medium">{filter.label}:</span>
@@ -425,7 +425,7 @@ export function OrdersFilters() {
 							</button>
 						</div>
 					))}
-					<button onClick={() => setIsExpanded(!isExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border ${isExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
+					<button onClick={() => setIsExpanded(!isExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border whitespace-nowrap ${isExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
 						<FontAwesomeIcon icon={faFilter} />
 						{t("moreFilters")}
 						<FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} className="ml-1" />

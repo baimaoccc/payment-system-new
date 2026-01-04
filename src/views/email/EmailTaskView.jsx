@@ -94,6 +94,91 @@ function EmailTaskFormModal({ open, initial, onClose, onSave, t, readOnly, templ
 	);
 }
 
+const MobileEmailTaskCard = ({ item, onView, onEdit, onDelete, t, templates, formatDate }) => {
+	const getTemplateName = (templateId) => {
+		const tpl = templates.find((t) => String(t.id) === String(templateId));
+		return tpl ? tpl.name || tpl.title || `#${tpl.id}` : templateId;
+	};
+
+	const renderStatus = (status) => {
+		const value = String(status);
+		if (value === "1")
+			return {
+				txt: t("taskStatus_sent"),
+				bg: "bg-green-50 text-green-700 border-green-100",
+			};
+		if (value === "2" || value === "待发")
+			return {
+				txt: t("taskStatus_pending"),
+				bg: "bg-yellow-50 text-yellow-700 border-yellow-100",
+			};
+		if (value === "3")
+			return {
+				txt: t("taskStatus_cancelled"),
+				bg: "bg-gray-100 text-gray-600 border-gray-200",
+			};
+		if (value === "4" || value === "失败")
+			return {
+				txt: t("taskStatus_failed"),
+				bg: "bg-red-50 text-red-700 border-red-100",
+			};
+		return { txt: status, bg: "bg-gray-50 text-gray-600 border-gray-100" };
+	};
+
+	const { txt, bg } = renderStatus(item.status);
+
+	return (
+		<div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+			<div className="flex justify-between items-start mb-3">
+				<div className="flex-1 min-w-0 mr-3">
+					<div className="flex items-center gap-2 mb-1">
+						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.orderNo || item.order_no}</h3>
+					</div>
+					<div className="flex flex-wrap gap-2 mt-2">
+						<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${bg}`}>
+							{txt}
+						</span>
+						<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100 max-w-[150px] truncate">
+							{getTemplateName(item.template_id)}
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div className="flex items-center justify-between pt-3 border-t border-gray-50">
+				<div className="flex flex-col gap-0.5 text-[10px] text-gray-400">
+					{item.createtime && <span>{t("crt")}: {formatDate(item.createtime)}</span>}
+					{item.updatetime && <span>{t("upd")}: {formatDate(item.updatetime)}</span>}
+				</div>
+				<div className="flex items-center gap-2">
+					<button 
+						onClick={() => onView(item)} 
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+						title={t("view")}
+					>
+						<FontAwesomeIcon icon={faEye} size="sm" />
+					</button>
+					<button 
+						onClick={() => onEdit(item)} 
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+						title={t("edit")}
+					>
+						<FontAwesomeIcon icon={faPen} size="sm" />
+					</button>
+					<button 
+						onClick={() => onDelete(item.id)} 
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+						title={t("delete")}
+					>
+						<FontAwesomeIcon icon={faTrash} size="sm" />
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+};
+
 export function EmailTaskView() {
 	const { t } = useI18n();
 	const dispatch = useDispatch();
@@ -189,31 +274,67 @@ export function EmailTaskView() {
 	};
 
 
-	return (
-		<div className="max-w-[1600px] mx-auto">
-			<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-				<div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-					<div className="flex items-center gap-4">
-						<div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-							<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
-						</div>
-						<div>
-							<h1 className="text-2xl font-bold text-gray-900">{t("emailTaskManagement")}</h1>
-							<p className="text-sm text-gray-500">{t("emailTaskManagementDesc")}</p>
-						</div>
-					</div>
-					<button
-						onClick={() => {
-							setEditing(null);
-							setViewMode(false);
-							setModalOpen(true);
-						}}
-						className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 flex items-center gap-2">
-						<FontAwesomeIcon icon={faPlus} />
-						{t("addEmailTask")}
-					</button>
-				</div>
+	const formatDate = (ts) => {
+		if (!ts) return "-";
+		return new Date(ts * 1000).toLocaleString();
+	};
 
+	return (
+		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+				<div className="flex items-center gap-4">
+					<div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 hidden sm:flex">
+						<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
+					</div>
+					<div>
+						<h1 className="text-2xl font-bold text-gray-900">{t("emailTaskManagement")}</h1>
+						<p className="text-sm text-gray-500 mt-1">{t("emailTaskManagementDesc")}</p>
+					</div>
+				</div>
+				<button
+					onClick={() => {
+						setEditing(null);
+						setViewMode(false);
+						setModalOpen(true);
+					}}
+					className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2">
+					<FontAwesomeIcon icon={faPlus} />
+					{t("addEmailTask")}
+				</button>
+			</div>
+
+			{/* Mobile/Tablet View (Cards) */}
+			<div className="lg:hidden space-y-4 mb-4">
+				{loading ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+						{t("loading")}
+					</div>
+				) : (list || []).length === 0 ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						{t("noData")}
+					</div>
+				) : (
+					(list || []).map((item) => (
+						<MobileEmailTaskCard 
+							key={item.id} 
+							item={item} 
+							onView={handleView}
+							onEdit={handleEdit} 
+							onDelete={handleDelete} 
+							t={t} 
+							templates={templates}
+							formatDate={formatDate}
+						/>
+					))
+				)}
+				<div className="mt-4">
+					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+				</div>
+			</div>
+
+			{/* Desktop View (Table) */}
+			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 				{loading ? (
 					<div className="p-12 text-center text-gray-400">
 						<FontAwesomeIcon icon={faSpinner} spin className="text-3xl mb-3" />

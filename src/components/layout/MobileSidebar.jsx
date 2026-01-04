@@ -8,6 +8,7 @@ import { NavMenu } from "./NavMenu";
 import { Logo } from "../common/Logo.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import BrandTextImg from "../../assets/brand-text.png";
 
 export function MobileSidebar({ isOpen, onClose }) {
 	const user = useSelector((s) => s.auth.user);
@@ -37,7 +38,8 @@ export function MobileSidebar({ isOpen, onClose }) {
 			{/* Drawer */}
 			<div className="relative flex flex-col w-64 h-full bg-white shadow-xl animate-page">
 				<div className="flex items-center justify-between h-16 px-4 border-b">
-					<Logo />
+					<Logo size={36}/>
+					<img src={BrandTextImg} alt="text" className="w-auto h-[28px]" />
 					<button onClick={onClose} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>

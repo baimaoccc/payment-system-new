@@ -149,6 +149,7 @@ const messages = {
 		missingCaptcha: "缺少验证码",
 		// New additions
 		clickToEdit: "点击编辑",
+		clickToExpand: "点击展开",
 		remark: "备注",
 		loading: "加载中...",
 		orderDetailsAndChannel: "订单详情与渠道",
@@ -170,6 +171,7 @@ const messages = {
 		prevPage: "上一页",
 		nextPage: "下一页",
 		confirmDelete: "确认删除吗？",
+		deleteAccountWarning: "注意：删除该账号时，这个账号所属的账号分组中的账号数据会一并被删除！",
 		deleteSuccess: "删除成功",
 		deleteFailed: "删除失败",
 		saveSuccess: "保存成功",
@@ -464,6 +466,8 @@ const messages = {
 		noGroupsFound: "未找到支付分组",
 		roleRequired: "请选择角色",
 		parentRequired: "请选择上级",
+		additionalDetails: "额外的信息补充...",
+		orderCallback: "订单回调",
 	},
 	en: {
 		appTitle: "Payment System",
@@ -612,6 +616,7 @@ const messages = {
 		illustrationPlaceholder: "Illustration Placeholder",
 		missingCaptcha: "Missing captcha",
 		// New additions
+		clickToExpand: "Click to expand",
 		loading: "Loading...",
 		orderDetailsAndChannel: "Details & Channel",
 		customer: "Customer",
@@ -632,6 +637,7 @@ const messages = {
 		prevPage: "Previous Page",
 		nextPage: "Next Page",
 		confirmDelete: "Are you sure to delete?",
+		deleteAccountWarning: "Note: When deleting this account, the associated account data in its group will also be deleted!",
 		deleteSuccess: "Deleted successfully",
 		deleteFailed: "Delete failed",
 		saveSuccess: "Saved successfully",
@@ -895,6 +901,8 @@ const messages = {
 		noGroupsFound: "No payment groups found",
 		roleRequired: "Role is required",
 		parentRequired: "Belong To is required",
+		additionalDetails: "Additional details...",
+		orderCallback: "Order Callback",
 	},
 };
 

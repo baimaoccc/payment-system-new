@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchOrder, fetchOrderCharges } from "../../controllers/ordersController.js";
+import { addToast } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,23 +42,35 @@ export default function OrderDetailsView() {
 		setLoadingCharges(false);
 	};
 
+	const handleCopy = (text) => {
+		if (!text || text === "-") return;
+		navigator.clipboard
+			.writeText(text)
+			.then(() => {
+				dispatch(addToast({ id: Date.now(), type: "success", message: t("copied") || "Copied" }));
+			})
+			.catch(() => {
+				dispatch(addToast({ id: Date.now(), type: "error", message: t("copyFailed") || "Copy Failed" }));
+			});
+	};
+
 	if (loading) return <div className="p-8 text-center text-gray-500">{t("loading")}</div>;
 	if (!order) return <div className="p-8 text-center text-gray-500">{t("noData")}</div>;
 
 	return (
-		<div className="p-4 md:py-6 w-full mx-auto p-6 animate-in fade-in duration-300">
+		<div className="p-4 md:py-6 w-full mx-auto animate-in fade-in duration-300">
 			{/* Header */}
 			<div className="flex items-center gap-4 mb-6">
-				<button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
-					<FontAwesomeIcon icon={faArrowLeft} className="text-xl" />
-				</button>
-				<div>
+				<div className="flex items-center">
+					<button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
+						<FontAwesomeIcon icon={faArrowLeft} className="text-xl" />
+					</button>
 					<h1 className="text-2xl font-bold text-gray-900">{t("orderDetails")}</h1>
-					<p className="text-sm text-gray-500">
-						{t("idLabel")}: {order.orderNo || order.id}
-					</p>
 				</div>
-				<div className="ml-auto">{renderOrderStatus(order, t)}</div>
+
+				<p className="text-sm text-gray-500">
+					{t("idLabel")}: {order.orderNo || order.id}
+				</p>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -78,11 +91,15 @@ export default function OrderDetailsView() {
 					<div className="grid grid-cols-2 gap-y-6 gap-x-4">
 						<div>
 							<label className="block text-xs font-medium text-gray-500 mb-1">{t("mobile")}</label>
-							<div className="text-sm font-medium text-gray-900 break-all">{order.phone || "-"}</div>
+							<div className={`text-sm font-medium text-gray-900 break-all ${order.phone ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.phone)} title={order.phone ? t("clickToCopy") : ""}>
+								{order.phone || "-"}
+							</div>
 						</div>
 						<div>
 							<label className="block text-xs font-medium text-gray-500 mb-1">{t("email")}</label>
-							<div className="text-sm font-medium text-gray-900 break-all">{order.email || "-"}</div>
+							<div className={`text-sm font-medium text-gray-900 break-all ${order.email ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.email)} title={order.email ? t("clickToCopy") : ""}>
+								{order.email || "-"}
+							</div>
 						</div>
 						<div className="col-span-2">
 							<label className="block text-xs font-medium text-gray-500 mb-1">{t("billingAddress")}</label>
@@ -120,6 +137,7 @@ export default function OrderDetailsView() {
 								{t("amount")}: {order.amount} {order.currency}
 							</p>
 						</div>
+						<div className="ml-auto">{renderOrderStatus(order, t, false)}</div>
 					</div>
 
 					<div className="grid grid-cols-2 gap-y-6 gap-x-4">
@@ -131,7 +149,9 @@ export default function OrderDetailsView() {
 						</div>
 						<div>
 							<label className="block text-xs font-medium text-gray-500 mb-1">{t("ref")}</label>
-							<div className="text-sm font-medium text-gray-900 break-all">{order.client_orderNo || "-"}</div>
+							<div className={`text-sm font-medium text-gray-900 break-all ${order.client_orderNo ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.client_orderNo)} title={order.client_orderNo ? t("clickToCopy") : ""}>
+								{order.client_orderNo || "-"}
+							</div>
 						</div>
 						<div>
 							<label className="block text-xs font-medium text-gray-500 mb-1">{t("crt")}</label>
@@ -225,14 +245,12 @@ export default function OrderDetailsView() {
 												{(charge.amount / 100).toFixed(2)} <span className="text-gray-500 font-normal">{charge.currency?.toUpperCase()}</span>
 											</td>
 											<td className="px-4 py-3">
-												{charge.refunded ? (
-													<span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">{t("refunded")}</span>
-												) : charge.paid ? (
-													<span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span>
-												) : (
-													<span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>
+												{charge.refunded ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}
+												{charge.failure_message && (
+													<div className="text-xs text-red-600 mt-1 max-w-[200px] truncate" title={charge.failure_message}>
+														{charge.failure_message}
+													</div>
 												)}
-												{charge.failure_message && <div className="text-xs text-red-600 mt-1 max-w-[200px] truncate" title={charge.failure_message}>{charge.failure_message}</div>}
 											</td>
 											<td className="px-4 py-3">
 												<div className="flex items-center gap-2">
@@ -240,30 +258,18 @@ export default function OrderDetailsView() {
 													<span className="text-gray-400">•••• {charge.payment_method_details?.card?.last4}</span>
 												</div>
 											</td>
-											<td className="px-4 py-3 text-gray-500">
-												{new Date(charge.created * 1000).toLocaleString()}
-											</td>
-											<td className="px-4 py-3">
-												{charge.outcome?.risk_score !== undefined ? (
-													<span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-														charge.outcome.risk_score < 65 ? "bg-green-100 text-green-800" :
-														charge.outcome.risk_score < 75 ? "bg-yellow-100 text-yellow-800" :
-														"bg-red-100 text-red-800"
-													}`}>
-														{charge.outcome.risk_score}
-													</span>
-												) : "-"}
-											</td>
+											<td className="px-4 py-3 text-gray-500">{new Date(charge.created * 1000).toLocaleString()}</td>
+											<td className="px-4 py-3">{charge.outcome?.risk_score !== undefined ? <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${charge.outcome.risk_score < 65 ? "bg-green-100 text-green-800" : charge.outcome.risk_score < 75 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>{charge.outcome.risk_score}</span> : "-"}</td>
 											<td className="px-4 py-3">
 												{charge.receipt_url ? (
 													<a href={charge.receipt_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs">
 														{t("view") || "View"}
 													</a>
-												) : "-"}
+												) : (
+													"-"
+												)}
 											</td>
-											<td className="px-4 py-3 text-gray-400 font-mono text-xs">
-												{charge.id}
-											</td>
+											<td className="px-4 py-3 text-gray-400 font-mono text-xs">{charge.id}</td>
 										</tr>
 									))}
 								</tbody>

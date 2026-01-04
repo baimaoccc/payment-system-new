@@ -40,7 +40,7 @@ function BlacklistFormModal({ open, initial, onClose, onSave, t, saving }) {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-			<div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
+			<div className="mx-4 relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
 				{/* Header */}
 				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 bg-white z-10">
 					<div>
@@ -51,9 +51,9 @@ function BlacklistFormModal({ open, initial, onClose, onSave, t, saving }) {
 					</button>
 				</div>
 
-				<div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+				<div className="flex-1 overflow-y-auto py-8 px-6 custom-scrollbar">
 					<SectionHeader title={t("basicInfo") || "Basic Information"} />
-					<div className="space-y-6">
+					<div className="p-6">
 						<InputRow icon={faUser} label={t("name") || "Name"}>
 							<input value={form.name} onChange={(e) => setForm((v) => ({ ...v, name: e.target.value }))} placeholder={t("enterName") || "Enter Name"} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
 						</InputRow>

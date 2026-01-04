@@ -297,7 +297,7 @@ export function OrdersTable({ rows = [] }) {
 	};
 
 	return (
-		<div className="overflow-x-auto mt-3">
+		<div className="mt-3">
 			{isMobile ? (
 				<div className="space-y-3">
 					{safeRows.map((o) => {
@@ -323,7 +323,7 @@ export function OrdersTable({ rows = [] }) {
 									</div>
 
 									<div className="flex items-center gap-2 flex-none">
-										<div className="scale-90 origin-right">{renderOrderStatus(o, t)}</div>
+										<div className="scale-90 origin-right">{renderOrderStatus(o, t, false)}</div>
 										<div onClick={(e) => e.stopPropagation()}>
 											<ActionDropdown actions={getActions(o)} />
 										</div>
@@ -428,8 +428,8 @@ export function OrdersTable({ rows = [] }) {
 					<thead className="bg-gray-100">
 						<tr>
 							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("orderBelong")}</th>}
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[25%]" : "w-[23%]"}`}>{t("orderDetailsAndChannel")}</th>
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[30%]" : "w-[20%]"}`}>{t("customer")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[25%]" : "w-[18%]"}`}>{t("orderDetailsAndChannel")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[30%]" : "w-[18%]"}`}>{t("customer")}</th>
 							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("amount")}</th>
 							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("status")}</th>
 							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("timeline")}</th>}
@@ -567,7 +567,7 @@ export function OrdersTable({ rows = [] }) {
 
 									{/* Operations */}
 									<td className="p-3 align-top">
-										<div className="flex items-center gap-1">
+										<div className="flex items-center flex-wrap gap-1">
 											{getActions(o).map((action, idx) => (
 												<button
 													key={idx}

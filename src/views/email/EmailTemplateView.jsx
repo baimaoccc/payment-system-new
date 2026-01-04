@@ -155,7 +155,7 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 						if (!orderVars.length && !logisticsVars.length && !clientVars.length) return null;
 						return (
 							<InputRow label={t("variables")}>
-								<div className="space-y-6 text-xs">
+								<div className="p-6 text-xs">
 									{orderVars.length > 0 && (
 										<div>
 											<div className="mb-2 text-gray-500">{t("orderVariable")}</div>
@@ -213,6 +213,82 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 		</div>
 	);
 }
+
+const MobileEmailTemplateCard = ({ item, onView, onEdit, onDelete, t, getTypeName, formatDate, actionLoading }) => {
+	const [expanded, setExpanded] = useState(false);
+
+	return (
+		<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-all duration-200 ${expanded ? "ring-1 ring-blue-100" : ""}`}>
+			<div className="flex justify-between items-start mb-3">
+				<div className="flex-1 min-w-0 mr-3">
+					<div className="flex items-center gap-2 mb-1">
+						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.name}</h3>
+					</div>
+					<div className="flex flex-wrap gap-2 mt-2">
+						<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+							{getTypeName(item.type_id)}
+						</span>
+						{item.status == 1 ? (
+							<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-100">{t("active") || "Active"}</span>
+						) : (
+							<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 text-gray-700 border border-gray-100">{t("inactive") || "Inactive"}</span>
+						)}
+					</div>
+				</div>
+			</div>
+
+			{item.description && (
+				<div className="bg-gray-50 rounded-lg p-2.5 mb-3 text-xs text-gray-600 leading-relaxed break-words">
+					<span className="font-medium text-gray-500 mr-1">{t("description")}:</span>
+					<div className={`break-words ${expanded ? "" : "line-clamp-2"}`} onClick={() => setExpanded(!expanded)}>
+						{item.description}
+					</div>
+					{item.description.length > 50 && (
+						<div className="text-center mt-1">
+							<button onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }} className="text-[10px] text-blue-500 hover:text-blue-700">
+								{expanded ? t("clickToCollapse") || "Collapse" : t("clickToExpand") || "Expand"}
+							</button>
+						</div>
+					)}
+				</div>
+			)}
+
+			<div className="flex items-center justify-between pt-3 border-t border-gray-50">
+				<div className="flex flex-col gap-0.5 text-[10px] text-gray-400">
+					{item.createtime && <span>{t("crt")}: {formatDate(item.createtime).split(" ")[0]}</span>}
+					{item.updatetime && <span>{t("upd")}: {formatDate(item.updatetime).split(" ")[0]}</span>}
+				</div>
+				<div className="flex items-center gap-2">
+					<button 
+						onClick={() => onView(item)} 
+						disabled={!!actionLoading} 
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+						title={t("view")}
+					>
+						{actionLoading === `view-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faEye} size="sm" />}
+					</button>
+					<button 
+						onClick={() => onEdit(item)} 
+						disabled={!!actionLoading} 
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+						title={t("edit")}
+					>
+						{actionLoading === `edit-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faPen} size="sm" />}
+					</button>
+					<button 
+						onClick={() => onDelete(item.id)} 
+						disabled={!!actionLoading} 
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+						title={t("delete")}
+					>
+						<FontAwesomeIcon icon={faTrash} size="sm" />
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 export function EmailTemplateView() {
 	const { t } = useI18n();
@@ -345,30 +421,62 @@ export function EmailTemplateView() {
 	};
 
 	return (
-		<div className="max-w-[1600px] mx-auto">
-			<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-				<div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-					<div className="flex items-center gap-4">
-						<div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-							<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
-						</div>
-						<div>
-							<h1 className="text-2xl font-bold text-gray-900">{t("emailTemplateManagement")}</h1>
-							<p className="text-sm text-gray-500">{t("emailTemplateManagementDesc")}</p>
-						</div>
+		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+				<div className="flex items-center gap-4">
+					<div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 hidden sm:flex">
+						<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
 					</div>
-					<button
-						onClick={() => {
-							setEditing(null);
-							setViewMode(false);
-							setModalOpen(true);
-						}}
-						className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30 flex items-center gap-2">
-						<FontAwesomeIcon icon={faPlus} />
-						{t("addEmailTemplate")}
-					</button>
+					<div>
+						<h1 className="text-2xl font-bold text-gray-900">{t("emailTemplateManagement")}</h1>
+						<p className="text-sm text-gray-500 mt-1">{t("emailTemplateManagementDesc")}</p>
+					</div>
 				</div>
+				<button
+					onClick={() => {
+						setEditing(null);
+						setViewMode(false);
+						setModalOpen(true);
+					}}
+					className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2">
+					<FontAwesomeIcon icon={faPlus} />
+					{t("addEmailTemplate")}
+				</button>
+			</div>
 
+			{/* Mobile/Tablet View (Cards) */}
+			<div className="lg:hidden space-y-4 mb-4">
+				{loading ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+						{t("loading")}
+					</div>
+				) : (list || []).length === 0 ? (
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+						{t("noData")}
+					</div>
+				) : (
+					(list || []).map((item) => (
+						<MobileEmailTemplateCard 
+							key={item.id} 
+							item={item} 
+							onView={handleView}
+							onEdit={handleEdit} 
+							onDelete={() => handleDelete(item.id)} 
+							t={t} 
+							getTypeName={getTypeName}
+							formatDate={formatDate}
+							actionLoading={actionLoading}
+						/>
+					))
+				)}
+				<div className="mt-4">
+					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+				</div>
+			</div>
+
+			{/* Desktop View (Table) */}
+			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 				{loading ? (
 					<div className="p-12 text-center text-gray-400">
 						<FontAwesomeIcon icon={faSpinner} spin className="text-3xl mb-3" />
@@ -441,9 +549,9 @@ export function EmailTemplateView() {
 										</td>
 									</tr>
 								))}
-								{list.length === 0 && (
+								{(list || []).length === 0 && (
 									<tr>
-										<td colSpan="6" className="px-4 py-8 text-center text-gray-400">
+										<td colSpan="7" className="px-4 py-8 text-center text-gray-400">
 											{t("noData")}
 										</td>
 									</tr>

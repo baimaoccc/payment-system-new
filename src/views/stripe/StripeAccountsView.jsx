@@ -30,6 +30,27 @@ const InputField = ({ label, value, onChange, placeholder, type = "text" }) => (
 	</div>
 );
 
+const MobileWhitelist = ({ list }) => {
+	const [expanded, setExpanded] = useState(false);
+	return (
+		<div
+			onClick={(e) => {
+				e.stopPropagation();
+				setExpanded(!expanded);
+			}}
+			className="cursor-pointer">
+			<div className={`flex gap-1 flex-wrap transition-all ${expanded ? "" : "max-h-[60px] overflow-hidden"}`}>
+				{list.map((w, idx) => (
+					<span key={idx} className="bg-yellow-50 text-yellow-700 border border-yellow-200 px-1 rounded text-[10px] uppercase">
+						{w.country_code}
+					</span>
+				))}
+			</div>
+			{!expanded && list.length > 15 && <div className="text-center text-[10px] text-gray-400 mt-1">...</div>}
+		</div>
+	);
+};
+
 export function StripeAccountsView() {
 	const { t } = useI18n();
 	const dispatch = useDispatch();
@@ -229,7 +250,7 @@ export function StripeAccountsView() {
 		dispatch(
 			setModal({
 				title: t("delete"),
-				message: t("confirmDelete"),
+				message: `${t("confirmDelete")} ${t("deleteAccountWarning")}`,
 				variant: "danger",
 				showCancel: true,
 				confirmText: t("delete"),
@@ -302,26 +323,7 @@ export function StripeAccountsView() {
 		}
 
 		// Construct safe payload with allowed fields
-		const safeFields = [
-			"id",
-			"status",
-			"group_id",
-			"comment",
-			"api_key",
-			"api_publishable_key",
-			"endpoint_secret",
-			"c_site_url",
-			"max_money",
-			"max_order",
-			"description",
-			"maximum_purchase_amount",
-			"white_list",
-			"country_group",
-			"level",
-			"type",
-			"user_id",
-			"paymentType",
-		];
+		const safeFields = ["id", "status", "group_id", "comment", "api_key", "api_publishable_key", "endpoint_secret", "c_site_url", "max_money", "max_order", "description", "maximum_purchase_amount", "white_list", "country_group", "level", "type", "user_id", "paymentType"];
 		const payload = {};
 		safeFields.forEach((f) => {
 			if (item[f] !== undefined) payload[f] = item[f];
@@ -359,7 +361,12 @@ export function StripeAccountsView() {
 					<span className="font-mono bg-gray-50 px-1 rounded truncate flex-1" title={item.api_publishable_key}>
 						{item.api_publishable_key.substring(0, 8)}...{item.api_publishable_key.slice(-4)}
 					</span>
-					<button onClick={(e) => { e.stopPropagation(); handleCopy(item.api_publishable_key); }} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-opacity flex-shrink-0">
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							handleCopy(item.api_publishable_key);
+						}}
+						className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-opacity flex-shrink-0">
 						<FontAwesomeIcon icon={faCopy} />
 					</button>
 				</div>
@@ -370,7 +377,12 @@ export function StripeAccountsView() {
 					<span className="font-mono bg-gray-50 px-1 rounded truncate flex-1" title={item.endpoint_secret}>
 						{item.endpoint_secret.substring(0, 8)}...{item.endpoint_secret.slice(-4)}
 					</span>
-					<button onClick={(e) => { e.stopPropagation(); handleCopy(item.endpoint_secret); }} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-opacity flex-shrink-0">
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							handleCopy(item.endpoint_secret);
+						}}
+						className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-opacity flex-shrink-0">
 						<FontAwesomeIcon icon={faCopy} />
 					</button>
 				</div>
@@ -381,7 +393,12 @@ export function StripeAccountsView() {
 					<span className="font-mono bg-gray-50 px-1 rounded truncate flex-1" title={item.api_key}>
 						{item.api_key.substring(0, 8)}...{item.api_key.slice(-4)}
 					</span>
-					<button onClick={(e) => { e.stopPropagation(); handleCopy(item.api_key); }} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-opacity flex-shrink-0">
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							handleCopy(item.api_key);
+						}}
+						className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-opacity flex-shrink-0">
 						<FontAwesomeIcon icon={faCopy} />
 					</button>
 				</div>
@@ -474,21 +491,24 @@ export function StripeAccountsView() {
 															{item.type === 0 ? t("stTypePhishing") : t("stTypeNormal")}
 														</span>
 													</div>
-													<div className="font-medium text-gray-900 truncate text-sm" title={item.comment}>{item.comment || "-"}</div>
+													<div className="font-medium text-gray-900 truncate text-sm" title={item.comment}>
+														{item.comment || "-"}
+													</div>
 													<div className="flex items-center gap-2 mt-1">
 														{(() => {
 															const statusInfo = getStripeAccountStatusInfo(item.status, t);
-															const colorClass = {
-																gray: "bg-gray-100 text-gray-800",
-																green: "bg-green-100 text-green-800",
-																blue: "bg-blue-100 text-blue-800",
-																red: "bg-red-100 text-red-800",
-															}[statusInfo.color] || "bg-gray-100 text-gray-800";
+															const colorClass =
+																{
+																	gray: "bg-gray-100 text-gray-800",
+																	green: "bg-green-100 text-green-800",
+																	blue: "bg-blue-100 text-blue-800",
+																	red: "bg-red-100 text-red-800",
+																}[statusInfo.color] || "bg-gray-100 text-gray-800";
 															return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
 														})()}
 														<div className="flex items-center gap-1 text-[10px]">
 															<span className="text-gray-500">{t("st_money_sum")}:</span>
-															<span className="font-medium text-blue-600">${item.money_sum}</span>
+															<span className="font-medium text-blue-600">${item.money_sum || 0}</span>
 														</div>
 													</div>
 												</div>
@@ -531,15 +551,23 @@ export function StripeAccountsView() {
 															<div>
 																<span className="text-gray-400 block mb-0.5">{t("st_limits")}</span>
 																<div className="flex flex-col gap-0.5 text-[10px]">
-																	<div className="flex justify-between"><span>{t("st_max_money")}:</span> <span className="font-medium">${item.max_money}</span></div>
-																	<div className="flex justify-between"><span>{t("st_max_order")}:</span> <span className="font-medium">{item.max_order}</span></div>
+																	<div className="flex justify-between">
+																		<span>{t("st_max_money")}:</span> <span className="font-medium">${item.max_money}</span>
+																	</div>
+																	<div className="flex justify-between">
+																		<span>{t("st_max_order")}:</span> <span className="font-medium">{item.max_order}</span>
+																	</div>
 																</div>
 															</div>
 															<div>
 																<span className="text-gray-400 block mb-0.5">{t("st_stats")}</span>
 																<div className="flex flex-col gap-0.5 text-[10px]">
-																	<div className="flex justify-between"><span>{t("st_today_order_amount_sum")}:</span> <span className="font-medium text-red-600">${item.today_order_amount}</span></div>
-																	<div className="flex justify-between"><span>{t("st_money_sum")}:</span> <span className="font-medium text-blue-600">${item.money_sum}</span></div>
+																	<div className="flex justify-between">
+																		<span>{t("st_today_order_amount_sum")}:</span> <span className="font-medium text-red-600">${item.today_order_amount}</span>
+																	</div>
+																	<div className="flex justify-between">
+																		<span>{t("st_money_sum")}:</span> <span className="font-medium text-blue-600">${item.money_sum}</span>
+																	</div>
 																</div>
 															</div>
 														</div>
@@ -548,29 +576,39 @@ export function StripeAccountsView() {
 														{item.white_list && item.white_list.length > 0 && (
 															<div>
 																<span className="text-gray-400 block mb-0.5">{t("st_whitelist")}</span>
-																<div className="flex gap-1 flex-wrap">
-																	{item.white_list.map((w, idx) => (
-																		<span key={idx} className="bg-yellow-50 text-yellow-700 border border-yellow-200 px-1 rounded text-[10px] uppercase">
-																			{w.country_code}
-																		</span>
-																	))}
-																</div>
+																<MobileWhitelist list={item.white_list} />
 															</div>
 														)}
 
 														{/* Dates */}
 														<div className="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
-															<div>{t("createTime")}: {createDate}</div>
-															<div>{t("upd")}: {updateDate}</div>
+															<div>
+																{t("createTime")}: {createDate}
+															</div>
+															<div>
+																{t("upd")}: {updateDate}
+															</div>
 														</div>
 
 														{/* Extra Actions */}
 														<div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
-															<button onClick={(e) => { e.stopPropagation(); setWarningModalOpen(true); setSelectedAccountId(item.id); }} className="px-2 py-1 text-xs bg-yellow-50 text-yellow-600 rounded hover:bg-yellow-100">
+															<button
+																onClick={(e) => {
+																	e.stopPropagation();
+																	setWarningModalOpen(true);
+																	setSelectedAccountId(item.id);
+																}}
+																className="px-2 py-1 text-xs bg-yellow-50 text-yellow-600 rounded hover:bg-yellow-100">
 																<FontAwesomeIcon icon={faExclamationTriangle} className="mr-1" />
 																{t("warning")}
 															</button>
-															<button onClick={(e) => { e.stopPropagation(); setDisputeModalOpen(true); setSelectedAccountId(item.id); }} className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded hover:bg-red-100">
+															<button
+																onClick={(e) => {
+																	e.stopPropagation();
+																	setDisputeModalOpen(true);
+																	setSelectedAccountId(item.id);
+																}}
+																className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded hover:bg-red-100">
 																<FontAwesomeIcon icon={faGavel} className="mr-1" />
 																{t("dispute")}
 															</button>
@@ -589,21 +627,15 @@ export function StripeAccountsView() {
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>
 											{t("st_group")} / {t("st_comment")}
 										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>
-											{t("st_site")}
-										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[8%]"}`}>
-											{t("st_status")}
-										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>
-											{t("remark") || "Remark"}
-										</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>{t("st_site")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[8%]"}`}>{t("st_status")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>{t("remark") || "Remark"}</th>
 										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_whitelist")}</th>}
 										{/* {!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_keys")}</th>} */}
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[20%]" : "w-[14%]"}`}>{t("st_limits")}</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[14%]"}`}>{t("st_stats")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[20%]" : "w-[10%]"}`}>{t("st_limits")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[8%]"}`}>{t("st_stats")}</th>
 										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_dates")}</th>}
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[8%]"}`}>{t("actions")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[10%]"}`}>{t("actions")}</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-gray-100">
@@ -624,7 +656,9 @@ export function StripeAccountsView() {
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5">
 															<div className="flex items-center gap-2 flex-wrap">
-																<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-mono">{t("owner") || "Owner"}: <span className="text-[12px] text-peach font-bold italic">{item.username}</span> </span>
+																<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-mono">
+																	{t("owner") || "Owner"}: <span className="text-[12px] text-peach font-bold italic">{item.username}</span>{" "}
+																</span>
 																{item.level !== undefined && (
 																	<span className="bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded text-[10px] font-medium" title={t("st_level") || "Level"}>
 																		Lv.{item.level}
@@ -660,35 +694,32 @@ export function StripeAccountsView() {
 														<div className="flex items-center gap-2 flex-wrap">
 															{(() => {
 																const statusInfo = getStripeAccountStatusInfo(item.status, t);
-																const colorClass = {
-																	gray: "bg-gray-100 text-gray-800",
-																	green: "bg-green-100 text-green-800",
-																	blue: "bg-blue-100 text-blue-800",
-																	red: "bg-red-100 text-red-800",
-																}[statusInfo.color] || "bg-gray-100 text-gray-800";
+																const colorClass =
+																	{
+																		gray: "bg-gray-100 text-gray-800",
+																		green: "bg-green-100 text-green-800",
+																		blue: "bg-blue-100 text-blue-800",
+																		red: "bg-red-100 text-red-800",
+																	}[statusInfo.color] || "bg-gray-100 text-gray-800";
 																return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
 															})()}
 														</div>
 													</td>
 
 													{/* Remark */}
-													<td className="p-3" onClick={(e) => { e.stopPropagation(); handleRemarkEdit(item); }}>
+													<td
+														className="p-3"
+														onClick={(e) => {
+															e.stopPropagation();
+															handleRemarkEdit(item);
+														}}>
 														{editingRemarkId === item.id ? (
-															<input
-																type="text"
-																value={editingRemarkValue}
-																onChange={(e) => setEditingRemarkValue(e.target.value)}
-																onBlur={() => handleRemarkSave(item)}
-																onKeyDown={(e) => handleRemarkKeyDown(e, item)}
-																className="w-full px-2 py-1 text-xs border border-blue-500 rounded focus:outline-none bg-white text-gray-900"
-																autoFocus
-																onClick={(e) => e.stopPropagation()}
-															/>
-															) : (
-																<div className="text-gray-600 text-xs break-all cursor-pointer hover:bg-gray-50 p-1 rounded min-h-[20px] transition-colors" title={t("clickToEdit") || "Click to edit"}>
-																	{item.description || "-"}
-																</div>
-															)}
+															<input type="text" value={editingRemarkValue} onChange={(e) => setEditingRemarkValue(e.target.value)} onBlur={() => handleRemarkSave(item)} onKeyDown={(e) => handleRemarkKeyDown(e, item)} className="w-full px-2 py-1 text-xs border border-blue-500 rounded focus:outline-none bg-white text-gray-900" autoFocus onClick={(e) => e.stopPropagation()} />
+														) : (
+															<div className="text-gray-600 text-xs break-all cursor-pointer hover:bg-gray-50 p-1 rounded min-h-[20px] transition-colors" title={t("clickToEdit") || "Click to edit"}>
+																{item.description || "-"}
+															</div>
+														)}
 													</td>
 
 													{/* Whitelist (Hidden on Tablet) */}
@@ -734,16 +765,16 @@ export function StripeAccountsView() {
 														<div className="pr-2 flex flex-col gap-1.5 text-[10px]">
 															<div className="flex justify-between items-center gap-2">
 																<span className="text-gray-500 truncate">{t("st_max_money")}:</span>
-																<span className="font-medium text-gray-900 truncate">${item.max_money}</span>
+																<span className="font-medium text-gray-900 truncate">${item.max_money || 0}</span>
 															</div>
 															<div className="flex justify-between items-center gap-2">
 																<span className="text-gray-500 truncate">{t("st_max_order")}:</span>
-																<span className="font-medium text-gray-900 truncate">{item.max_order}</span>
+																<span className="font-medium text-gray-900 truncate">{item.max_order || 0}</span>
 															</div>
 															{item.maximum_purchase_amount && (
 																<div className="flex justify-between items-center gap-2">
 																	<span className="text-gray-500 truncate">{t("st_max_purchase")}:</span>
-																	<span className="font-medium text-gray-900 truncate">${item.maximum_purchase_amount}</span>
+																	<span className="font-medium text-gray-900 truncate">${item.maximum_purchase_amount || 0}</span>
 																</div>
 															)}
 														</div>
@@ -754,11 +785,11 @@ export function StripeAccountsView() {
 														<div className="flex flex-col gap-1.5 text-[10px]">
 															<div className="flex justify-between items-center gap-2">
 																<span className="text-gray-500 truncate">{t("st_today_order_amount_sum")}:</span>
-																<span className="font-medium text-red-600 truncate">${item.today_order_amount}</span>
+																<span className="font-medium text-red-600 truncate">${item.today_order_amount || 0}</span>
 															</div>
 															<div className="flex justify-between items-center gap-2">
 																<span className="text-gray-500 truncate">{t("st_money_sum")}:</span>
-																<span className="font-medium text-blue-600 truncate">${item.money_sum}</span>
+																<span className="font-medium text-blue-600 truncate">${item.money_sum || 0}</span>
 															</div>
 														</div>
 													</td>
@@ -782,7 +813,7 @@ export function StripeAccountsView() {
 													{/* Actions */}
 													<td className="p-3">
 														<div className="flex flex-col gap-2">
-															<div className="flex gap-1">
+															<div className="flex flex-wrap gap-1">
 																<button onClick={() => handleEdit(item)} className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors" title={t("edit")}>
 																	<FontAwesomeIcon icon={faPen} />
 																</button>
@@ -793,10 +824,22 @@ export function StripeAccountsView() {
 																	<FontAwesomeIcon icon={faEye} />
 																</button>
 
-																<button onClick={() => { setWarningModalOpen(true); setSelectedAccountId(item.id); }} className="p-1 text-yellow-600 hover:bg-yellow-50 rounded transition-colors" title={t("warning")}>
+																<button
+																	onClick={() => {
+																		setWarningModalOpen(true);
+																		setSelectedAccountId(item.id);
+																	}}
+																	className="p-1 text-yellow-600 hover:bg-yellow-50 rounded transition-colors"
+																	title={t("warning")}>
 																	<FontAwesomeIcon icon={faExclamationTriangle} />
 																</button>
-																<button onClick={() => { setDisputeModalOpen(true); setSelectedAccountId(item.id); }} className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors" title={t("dispute")}>
+																<button
+																	onClick={() => {
+																		setDisputeModalOpen(true);
+																		setSelectedAccountId(item.id);
+																	}}
+																	className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+																	title={t("dispute")}>
 																	<FontAwesomeIcon icon={faGavel} />
 																</button>
 															</div>

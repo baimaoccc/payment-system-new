@@ -15,7 +15,7 @@ export function AppLayout() {
 				<Sidebar />
 				<div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
 					<Header />
-					<div className="flex-1 space-y-6 overflow-y-auto flex flex-col">
+					<div className="flex-1 p-0 overflow-y-auto flex flex-col">
 						<div key={location.pathname} className="animate-page flex-1">
 							<Outlet />
 						</div>
