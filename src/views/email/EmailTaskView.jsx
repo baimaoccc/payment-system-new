@@ -3,7 +3,7 @@ import { useI18n } from "../../plugins/i18n/index.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { Select } from "../../components/ui/Select.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faPlus, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faPlus, faTimes, faSpinner, faEye, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { fetchEmailTasks, createOrUpdateEmailTask, deleteEmailTask, fetchEmailTemplates } from "../../controllers/emailController.js";
 import { useDispatch } from "react-redux";
 import { addToast, setModal } from "../../store/slices/ui.js";

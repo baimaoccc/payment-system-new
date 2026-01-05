@@ -355,11 +355,11 @@ export function DashboardView() {
 	);
 
 	return (
-		<div className="p-6">
+		<div className="space-y-6 p-6">
 			{/* Grid container: Auto height on mobile, fixed 200px on desktop */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:h-[200px]">
 				{/* Card 1: Total Sales (Redesigned) */}
-				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-full">
+				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-full rounded-lg ">
 					<div className="flex justify-between items-center p-6 h-full relative z-10">
 						<div className="flex-0 flex flex-col justify-center h-full min-h-[140px]">
 							<h3 className="text-gray-500 text-sm font-medium mb-1 font-knewave break-all">Congratulation {user?.username || "User"}!</h3>
@@ -397,7 +397,7 @@ export function DashboardView() {
 				</Card>
 
 				{/* Card 3: Donut Chart (Success vs Failed Today) */}
-				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-full">
+				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-full rounded-lg">
 					<div className="flex items-center gap-4 justify-center h-full p-4">
 						<DonutChart
 							size={80}
