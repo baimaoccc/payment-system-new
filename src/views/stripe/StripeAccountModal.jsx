@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToast } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { createStripeAccount, updateStripeAccount } from "../../controllers/stripeController.js";
-import { fetchCountryGroups } from "../../controllers/countryController.js";
+import { fetchCountryGroupsN } from "../../controllers/countryController.js";
 import { fetchUserListNII } from "../../controllers/usersController.js";
 import { getPaymentTypeOptions } from "../../utils/paymentUtils.js";
 import { getStripeAccountStatusOptions, StripeAccountStatus } from "../../utils/stripeStatusUtils.js";
@@ -192,7 +192,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 	}, [isSuperAdmin]);
 
 	const loadGroups = async () => {
-		const res = await fetchCountryGroups({ page: 1, per_page: 100 });
+		const res = await fetchCountryGroupsN();
 		if (res.ok && res.data && Array.isArray(res.data.list)) {
 			const mapped = res.data.list.map((g) => ({
 				code: String(g.id),

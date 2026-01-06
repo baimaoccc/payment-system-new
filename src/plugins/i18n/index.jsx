@@ -468,6 +468,276 @@ const messages = {
 		parentRequired: "请选择上级",
 		additionalDetails: "额外的信息补充...",
 		orderCallback: "订单回调",
+		// Website Navigation
+		nav: {
+			solutions: "解决方案",
+			ecosystem: "生态系统",
+			analytics: "数据分析",
+			features: "功能特性",
+			trust: "信任保障",
+			login: "登录",
+			getStarted: "立即开始",
+		},
+		// Website Footer
+		footer: {
+			description: "致力于构建安全、可靠、可扩展的全球支付基础设施，连接全球企业与消费者。",
+			copyright: "© 2026 CeoPay Inc. 保留所有权利。",
+			privacyPolicy: "隐私政策",
+			termsOfService: "服务条款",
+			cookies: "Cookie 政策",
+		},
+		// Landing Page
+		landing: {
+			hero: {
+				title1: "智能、可信赖的支付",
+				title2: "助力业务增长的解决方案。",
+				description: "接受付款、发送打款、管理财务，一个平台满足高增长企业的所有需求。",
+				startNow: "立即开始",
+				exploreProducts: "探索产品",
+			},
+			stats: {
+				transactions: "年交易量",
+				uptime: "正常运行时间",
+				currencies: "支持币种",
+				customers: "全球客户",
+			},
+			solutions: {
+				subtitle: "核心解决方案",
+				title: "全方位的支付服务",
+				description: "从全球网关到专业企业工具，我们提供扩展业务所需的一切。",
+			},
+			products: {
+				gateway: {
+					title: "支付网关",
+					desc: "强大的在线支付引擎，提供极高的授权成功率。",
+					feat1: "全球收单",
+					feat2: "智能路由",
+					feat3: "循环计费",
+				},
+				risk: {
+					title: "风险与欺诈",
+					desc: "利用 AI 驱动的风控套件，防患于未然。",
+					feat1: "3D 安全验证 2.0",
+					feat2: "行为分析",
+					feat3: "自定义规则",
+				},
+				connect: {
+					title: "平台连接",
+					desc: "将支付功能集成到您的软件平台或市场的最简单方式。",
+					feat1: "入驻界面",
+					feat2: "分账支付",
+					feat3: "合规处理",
+				},
+				terminal: {
+					title: "线下支付",
+					desc: "面向实体零售商的统一商务解决方案。",
+					feat1: "EMV 认证",
+					feat2: "P2PE 加密",
+					feat3: "云端管理",
+				},
+				mobile: {
+					title: "移动端 SDK",
+					desc: "为 iOS 和 Android 应用提供原生移动体验。",
+					feat1: "Apple Pay",
+					feat2: "Google Pay",
+					feat3: "一键结账",
+				},
+				payouts: {
+					title: "全球代付",
+					desc: "向全球卖家、自由职业者和供应商发送资金。",
+					feat1: "即时转账",
+					feat2: "多币种支持",
+					feat3: "低费率",
+				},
+			},
+			featured: {
+				gateway: {
+					title: "企业级支付编排",
+					desc: "强大的多合一支付基础设施，具备原生 Stripe 集成和动态路由功能。配备智能风险雷达、自动拒付防御和全球多币种支持，最大化授权率和安全性。",
+					feat1: "原生 Stripe 集成",
+					feat2: "高级风险雷达",
+					feat3: "全球货币结算",
+				},
+				invoice: {
+					title: "统一计费基础设施",
+					desc: "通过我们的集成发票套件简化 B2B 和 B2C 收款。支持通过 Stripe、PayPal 和 CashApp 进行无缝支付，具有自动计费周期、实时对账和智能支付跟踪功能，以改善现金流。",
+					feat1: "多渠道支付",
+					feat2: "自动对账",
+					feat3: "智能发票逻辑",
+				},
+				logistics: {
+					title: "自动化售后套件",
+					desc: "利用全面的邮件和物流系统优化客户生命周期。自动处理订单确认、实时物流跟踪和交付通知，确保专业透明的售后体验。",
+					feat1: "生命周期自动化",
+					feat2: "实时物流",
+					feat3: "品牌化沟通",
+				},
+				account: {
+					title: "跨境商户解决方案",
+					desc: "面向全球市场（Stripe CA/JP/EUR, eBay UK/JP）的战略账户获取和合规服务。提供专家级风险管理框架、验证账户配置和专属支持，确保长期稳定的运营连续性。",
+					feat1: "验证商户账户",
+					feat2: "合规框架",
+					feat3: "运营连续性",
+				},
+			},
+			ecosystem: {
+				subtitle: "我们的生态系统",
+				title1: "满足",
+				title2: "各种支付需求的完整套件",
+				description: "模块化解决方案，无缝协同工作。按需选择，随业务增长而扩展。",
+				learnMore: "了解更多",
+			},
+			analytics: {
+				badge: "实时数据分析",
+				title1: "完全掌控",
+				title2: "您的财务状况。",
+				description: "实时监控收入、追踪交易并管理打款。我们强大的仪表板为您提供增长所需的洞察力。",
+				feat1: "即时收入报告",
+				feat2: "详细交易日志",
+				feat3: "一键退款与争议管理",
+				feat4: "多币种支持",
+				explore: "探索仪表板",
+			},
+			features: {
+				subtitle: "为什么选择我们",
+				title: "专为现代商业打造",
+				description: "构建支付流程、管理风险和增加收入所需的一切。",
+				grid: {
+					global: {
+						title: "全球触达",
+						desc: "在主要市场进行本地收单，接受来自世界各地的付款。",
+					},
+					fraud: {
+						title: "欺诈保护",
+						desc: "先进的 AI 驱动欺诈检测，确保您的交易安全并获得批准。",
+					},
+					payouts: {
+						title: "即时到账",
+						desc: "通过实时结算选项更快地获取您的资金。",
+					},
+					analytics: {
+						title: "实时分析",
+						desc: "深入了解您的收入、转化率和客户行为。",
+					},
+					local: {
+						title: "本地支付方式",
+						desc: "支持 100 多种本地支付方式，包括钱包和银行转账。",
+					},
+					mobile: {
+						title: "移动端优化",
+						desc: "在任何设备上提供无缝结账体验，完全响应式且快速。",
+					},
+				},
+			},
+			trust: {
+				title: "深受全球行业领导者信赖",
+				item1: "银行级安全标准 (PCI-DSS Level 1)",
+				item2: "销售高峰期 99% 的历史正常运行时间",
+				item3: "面向企业客户的 24/7 专属支持",
+				item4: "直连卡组织网络",
+				volume: "处理金额",
+				transactions: "日交易量",
+			},
+			cta: {
+				title: "准备好开始了吗？",
+				description: "加入成千上万信任我们支付服务的企业。几分钟内即可设置您的账户。",
+				getStart: "立即开始",
+				contactSales: "联系销售",
+			},
+			mockup: {
+				dashboard: {
+					totalRevenue: "总收入",
+					last30Days: "最近30天",
+					transactionId: "交易ID",
+					status: "状态",
+					amount: "金额",
+					success: "成功",
+					pending: "待处理",
+				},
+				chat: {
+					voiceNote: "语音消息",
+					userMessage: "我周末需要一条裙子。",
+					botMessage: "我为您找到了这些尺码合适的裙子，需要下单吗？",
+					newArrival: "新品",
+					productName: "印花连衣裙",
+					collection: "2026 春季系列",
+					add: "添加",
+				},
+			},
+		},
+		legal: {
+				privacyPolicy: {
+					title: "隐私政策",
+					lastUpdated: "最后更新：2026年1月6日",
+					intro: "在 CeoPay（可通过 https://www.pay.ceo 访问），我们的主要任务之一是保护访客的隐私。本隐私政策文件包含 CeoPay 收集和记录的信息类型以及我们如何使用这些信息。",
+					collection: {
+						title: "我们要收集的信息",
+						content: "当您注册账户时，我们可能会要求您提供联系信息，包括姓名、公司名称、地址、电子邮件地址和电话号码。\n\n如果您直接联系我们，我们可能会收到有关您的其他信息，例如您的姓名、电子邮件地址、电话号码、您可能发送给我们的消息内容和/或附件，以及您可能选择提供的任何其他信息。",
+					},
+					usage: {
+						title: "我们如何使用您的信息",
+						content: "我们以各种方式使用收集到的信息，包括：\n\n• 提供、运营和维护我们的网站\n• 改进、个性化和扩展我们的网站\n• 了解和分析您如何使用我们的网站\n• 开发新产品、服务、功能和特性\n• 与您沟通，包括客户服务，为您提供有关网站的更新和其他信息，以及用于营销和促销目的\n• 发送电子邮件\n• 发现并防止欺诈",
+					},
+					sharing: {
+						title: "信息共享",
+						content: "我们不会出售、交易或以其他方式将您的个人身份信息转让给外部方。但这不包括协助我们运营网站、开展业务或为您提供服务的受信任的第三方，前提是这些方同意对这些信息保密。",
+					},
+					security: {
+						title: "安全",
+						content: "我们采取适当的安全措施来防止未经授权的访问、更改、披露或销毁您的个人信息、用户名、密码、交易信息和存储在我们网站上的数据。",
+					},
+					contact: {
+						title: "联系我们",
+						content: "如果您对我们的隐私政策有其他疑问或需要更多信息，请随时通过电子邮件联系我们：privacy@pay.ceo",
+					},
+				},
+				termsOfService: {
+					title: "服务条款",
+					lastUpdated: "最后更新：2026年1月6日",
+					intro: "欢迎使用 CeoPay！这些条款和条件概述了使用位于 https://www.pay.ceo 的 CeoPay 网站的规则和条例。",
+					acceptance: {
+						title: "接受条款",
+						content: "访问本网站，即表示您接受这些条款和条件。如果您不同意本页面上所述的所有条款和条件，请勿继续使用 CeoPay。",
+					},
+					services: {
+						title: "服务",
+						content: "CeoPay 提供支付处理服务，允许商家接受客户的付款。我们保留随时自行决定撤销或修改服务的权利，恕不另行通知。",
+					},
+					account: {
+						title: "用户账户",
+						content: "如果您在本网站创建账户，您有责任维护您的账户和密码的机密性，并限制对您计算机的访问，并且您同意对在您的账户或密码下发生的所有活动承担责任。",
+					},
+					prohibited: {
+						title: "禁止活动",
+						content: "您不得使用本网站或服务进行任何非法或未经授权的目的。在使用服务时，您不得违反您所在司法管辖区的任何法律（包括但不限于版权法）。",
+					},
+					termination: {
+						title: "终止",
+						content: "我们可以出于任何原因（包括但不限于违反条款）立即终止或暂停您的账户，恕不另行通知或承担责任。",
+					},
+					liability: {
+						title: "责任限制",
+						content: "在任何情况下，CeoPay 或其供应商均不对因使用或无法使用 CeoPay 网站上的材料而造成的任何损害（包括但不限于数据丢失或利润损失，或由于业务中断而造成的损害）负责。",
+					},
+				},
+				cookiePolicy: {
+					title: "Cookie 政策",
+					lastUpdated: "最后更新：2026年1月6日",
+					intro: "这是 CeoPay 的 Cookie 政策，可通过 https://www.pay.ceo 访问。",
+					whatAreCookies: {
+						title: "什么是 Cookie",
+						content: "正如几乎所有专业网站的惯例一样，本网站使用 Cookie，这还是下载到您计算机上的微小文件，以改善您的体验。本页面描述了我们收集哪些信息、我们如何使用这些信息以及为什么我们有时需要存储这些 Cookie。",
+					},
+					howWeUse: {
+						title: "我们如何使用 Cookie",
+						content: "我们将 Cookie 用于多种原因。不幸的是，在大多数情况下，没有行业标准选项可以在不完全禁用 Cookie 添加到本网站的功能和特性的情况下禁用 Cookie。如果您不确定是否需要它们，建议您保留所有 Cookie。",
+					},
+					managing: {
+						title: "管理 Cookie",
+						content: "您可以通过调整浏览器上的设置来阻止设置 Cookie（请参阅浏览器帮助了解如何操作）。请注意，禁用 Cookie 将影响本网站和您访问的许多其他网站的功能。",
+					},
+				},
+		},
 	},
 	en: {
 		appTitle: "Payment System",
@@ -903,6 +1173,276 @@ const messages = {
 		parentRequired: "Belong To is required",
 		additionalDetails: "Additional details...",
 		orderCallback: "Order Callback",
+		// Website Navigation
+		nav: {
+			solutions: "Solutions",
+			ecosystem: "Ecosystem",
+			analytics: "Analytics",
+			features: "Features",
+			trust: "Trust",
+			login: "Login",
+			getStarted: "Get Started",
+		},
+		// Website Footer
+		footer: {
+			description: "Powering the world's payments with secure, reliable, and scalable infrastructure. Connecting businesses to customers globally.",
+			copyright: "© 2026 CeoPay Inc. All rights reserved.",
+			privacyPolicy: "Privacy Policy",
+			termsOfService: "Terms of Service",
+			cookies: "Cookies",
+		},
+		// Landing Page
+		landing: {
+			hero: {
+				title1: "Smart, trusted payment",
+				title2: "solutions built for growth.",
+				description: "Accept payments, send payouts, and manage your finances with a single platform designed for high-growth businesses.",
+				startNow: "Start Now",
+				exploreProducts: "Explore Products",
+			},
+			stats: {
+				transactions: "Transactions / Year",
+				uptime: "Uptime Reliability",
+				currencies: "Currencies Supported",
+				customers: "Global Customers",
+			},
+			solutions: {
+				subtitle: "Our Core Solutions",
+				title: "Comprehensive Payment Services",
+				description: "From global gateways to specialized enterprise tools, we provide everything you need to scale.",
+			},
+			products: {
+				gateway: {
+					title: "Payment Gateway",
+					desc: "A powerful engine to accept payments online with high authorization rates.",
+					feat1: "Global acquiring",
+					feat2: "Smart routing",
+					feat3: "Recurring billing",
+				},
+				risk: {
+					title: "Risk & Fraud",
+					desc: "Stop fraud before it happens with our AI-powered risk management suite.",
+					feat1: "3D Secure 2",
+					feat2: "Behavioral analysis",
+					feat3: "Custom rules",
+				},
+				connect: {
+					title: "Platform Connect",
+					desc: "The easiest way to integrate payments into your software platform or marketplace.",
+					feat1: "Onboarding UI",
+					feat2: "Split payments",
+					feat3: "Compliance handling",
+				},
+				terminal: {
+					title: "In-Person Payments",
+					desc: "Unified commerce solution for brick-and-mortar retailers.",
+					feat1: "EMV certified",
+					feat2: "P2PE encryption",
+					feat3: "Cloud management",
+				},
+				mobile: {
+					title: "Mobile SDK",
+					desc: "Native mobile experiences for iOS and Android apps.",
+					feat1: "Apple Pay",
+					feat2: "Google Pay",
+					feat3: "One-tap checkout",
+				},
+				payouts: {
+					title: "Global Payouts",
+					desc: "Send money to sellers, freelancers, and suppliers worldwide.",
+					feat1: "Instant transfers",
+					feat2: "Multi-currency",
+					feat3: "Low fees",
+				},
+			},
+			featured: {
+				gateway: {
+					title: "Enterprise Payment Orchestration",
+					desc: "A robust, all-in-one payment infrastructure featuring native Stripe integration and dynamic routing. Equipped with intelligent risk radar, automated chargeback defense, and global multi-currency support to maximize authorization rates and security.",
+					feat1: "Native Stripe Integration",
+					feat2: "Advanced Risk Radar",
+					feat3: "Global Currency Settlement",
+				},
+				invoice: {
+					title: "Unified Billing Infrastructure",
+					desc: "Streamline B2B and B2C collections with our integrated invoicing suite. Supports seamless payments via Stripe, PayPal, and CashApp, featuring automated billing cycles, real-time reconciliation, and smart payment tracking for improved cash flow.",
+					feat1: "Multi-Channel Payments",
+					feat2: "Automated Reconciliation",
+					feat3: "Smart Invoicing Logic",
+				},
+				logistics: {
+					title: "Automated Post-Purchase Suite",
+					desc: "Optimize your customer lifecycle with a comprehensive mail and logistics system. Automates order confirmations, real-time shipping tracking, and delivery notifications, ensuring a professional and transparent after-sales experience.",
+					feat1: "Lifecycle Automation",
+					feat2: "Real-Time Logistics",
+					feat3: "Branded Communication",
+				},
+				account: {
+					title: "Cross-Border Merchant Solutions",
+					desc: "Strategic account acquisition and compliance services for global markets (Stripe CA/JP/EUR, eBay UK/JP). Provides expert risk management frameworks, verified account provisioning, and dedicated support to ensure stable, long-term operational continuity.",
+					feat1: "Verified Merchant Accounts",
+					feat2: "Compliance Frameworks",
+					feat3: "Operational Continuity",
+				},
+			},
+			ecosystem: {
+				subtitle: "Our Ecosystem",
+				title1: "A complete suite for",
+				title2: "every payment need",
+				description: "Modular solutions that work together seamlessly. Choose what you need now and expand as you grow.",
+				learnMore: "Learn more",
+			},
+			analytics: {
+				badge: "REAL-TIME ANALYTICS",
+				title1: "Complete control over",
+				title2: "your finances.",
+				description: "Monitor your revenue, track transactions, and manage payouts in real-time. Our powerful dashboard gives you the insights you need to grow.",
+				feat1: "Instant revenue reporting",
+				feat2: "Detailed transaction logs",
+				feat3: "One-click refunds & dispute management",
+				feat4: "Multi-currency support",
+				explore: "Explore the Dashboard",
+			},
+			features: {
+				subtitle: "Why Choose Us",
+				title: "Built for modern commerce",
+				description: "Everything you need to build your payment flow, manage risk, and grow your revenue.",
+				grid: {
+					global: {
+						title: "Global Reach",
+						desc: "Accept payments from anywhere in the world with local acquiring in major markets.",
+					},
+					fraud: {
+						title: "Fraud Protection",
+						desc: "Advanced AI-driven fraud detection to keep your transactions secure and approved.",
+					},
+					payouts: {
+						title: "Instant Payouts",
+						desc: "Get access to your funds faster with real-time settlement options.",
+					},
+					analytics: {
+						title: "Real-time Analytics",
+						desc: "Deep insights into your revenue, conversion rates, and customer behavior.",
+					},
+					local: {
+						title: "Local Payment Methods",
+						desc: "Support for 100+ local payment methods including wallets and bank transfers.",
+					},
+					mobile: {
+						title: "Mobile Optimized",
+						desc: "Seamless checkout experiences on any device, fully responsive and fast.",
+					},
+				},
+			},
+			trust: {
+				title: "Trusted by industry leaders worldwide",
+				item1: "Bank-grade security standards (PCI-DSS Level 1)",
+				item2: "99% historical uptime during peak sales",
+				item3: "24/7 dedicated support for enterprise clients",
+				item4: "Direct connections to card networks",
+				volume: "Volume Processed",
+				transactions: "Transactions / Day",
+			},
+			cta: {
+				title: "Ready to get started?",
+				description: "Join thousands of businesses that trust us with their payments. Set up your account in minutes.",
+				getStart: "Get Start",
+				contactSales: "Contact Sales",
+			},
+			mockup: {
+				dashboard: {
+					totalRevenue: "Total Revenue",
+					last30Days: "Last 30 Days",
+					transactionId: "Transaction ID",
+					status: "Status",
+					amount: "Amount",
+					success: "Success",
+					pending: "Pending",
+				},
+				chat: {
+					voiceNote: "Voice Note",
+					userMessage: "I need a dress for the weekend.",
+					botMessage: "I found these dresses in your size, shall I order one?",
+					newArrival: "New Arrival",
+					productName: "Patterned dress",
+					collection: "Spring Collection 2026",
+					add: "Add",
+				},
+			},
+		},
+		legal: {
+				privacyPolicy: {
+					title: "Privacy Policy",
+					lastUpdated: "Last Updated: January 6, 2026",
+					intro: "At CeoPay, accessible from https://www.pay.ceo, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by CeoPay and how we use it.",
+					collection: {
+						title: "Information We Collect",
+						content: "When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.\n\nIf you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.",
+					},
+					usage: {
+						title: "How We Use Your Information",
+						content: "We use the information we collect in various ways, including to:\n\n• Provide, operate, and maintain our website\n• Improve, personalize, and expand our website\n• Understand and analyze how you use our website\n• Develop new products, services, features, and functionality\n• Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes\n• Send you emails\n• Find and prevent fraud",
+					},
+					sharing: {
+						title: "Sharing Information",
+						content: "We do not sell, trade, or otherwise transfer to outside parties your Personally Identifiable Information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.",
+					},
+					security: {
+						title: "Security",
+						content: "We adopt appropriate data collection, storage and processing practices and security measures to protect against unauthorized access, alteration, disclosure or destruction of your personal information, username, password, transaction information and data stored on our Site.",
+					},
+					contact: {
+						title: "Contact Us",
+						content: "If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us through email at privacy@pay.ceo",
+					},
+				},
+				termsOfService: {
+					title: "Terms of Service",
+					lastUpdated: "Last Updated: January 6, 2026",
+					intro: "Welcome to CeoPay! These terms and conditions outline the rules and regulations for the use of CeoPay's Website, located at https://www.pay.ceo.",
+					acceptance: {
+						title: "Acceptance of Terms",
+						content: "By accessing this website we assume you accept these terms and conditions. Do not continue to use CeoPay if you do not agree to take all of the terms and conditions stated on this page.",
+					},
+					services: {
+						title: "Services",
+						content: "CeoPay provides payment processing services that allow merchants to accept payments from customers. We reserve the right to withdraw or amend the services we provide without notice.",
+					},
+					account: {
+						title: "User Account",
+						content: "If you create an account on the Website, you are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer, and you agree to accept responsibility for all activities that occur under your account or password.",
+					},
+					prohibited: {
+						title: "Prohibited Activities",
+						content: "You may not use the Site or Services for any purpose that is unlawful or prohibited by these Terms. You may not use the Services in violation of any laws in your jurisdiction (including but not limited to copyright laws).",
+					},
+					termination: {
+						title: "Termination",
+						content: "We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.",
+					},
+					liability: {
+						title: "Limitation of Liability",
+						content: "In no event shall CeoPay, nor any of its officers, directors, and employees, be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract. CeoPay, including its officers, directors, and employees shall not be held liable for any indirect, consequential, or special liability arising out of or in any way related to your use of this Website.",
+					},
+				},
+				cookiePolicy: {
+					title: "Cookie Policy",
+					lastUpdated: "Last Updated: January 6, 2026",
+					intro: "This is the Cookie Policy for CeoPay, accessible from https://www.pay.ceo.",
+					whatAreCookies: {
+						title: "What Are Cookies",
+						content: "As is common practice with almost all professional websites this site uses cookies, which are tiny files that are downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies.",
+					},
+					howWeUse: {
+						title: "How We Use Cookies",
+						content: "We use cookies for a variety of reasons detailed below. Unfortunately in most cases there are no industry standard options for disabling cookies without completely disabling the functionality and features they add to this site. It is recommended that you leave on all cookies if you are not sure whether you need them or not in case they are used to provide a service that you use.",
+					},
+					managing: {
+						title: "Managing Cookies",
+						content: "You can prevent the setting of cookies by adjusting the settings on your browser (see your browser Help for how to do this). Be aware that disabling cookies will affect the functionality of this and many other websites that you visit.",
+					},
+				},
+		},
 	},
 };
 
@@ -928,7 +1468,18 @@ export function I18nProvider({ children }) {
 
 	const value = useMemo(
 		() => ({
-			t: (k) => dict[k] || k,
+			t: (k) => {
+				const keys = k.split(".");
+				let value = dict;
+				for (const key of keys) {
+					if (value && value[key]) {
+						value = value[key];
+					} else {
+						return k;
+					}
+				}
+				return value;
+			},
 			lang,
 			setLanguage,
 		}),

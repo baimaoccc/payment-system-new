@@ -35,6 +35,7 @@ export const API_STRIPE_GROUP_GET = "/index.php/Api/Stripe/getPaygroup";
 export const API_STRIPE_GROUP_DELETE = "/index.php/Api/Stripe/delPaygroup";
 export const API_COUNTRY_LIST = "/index.php/Api/Country/getCountryListN";
 export const API_COUNTRY_GROUP_LIST = "/index.php/Api/Country/getCountrygroupList";
+export const API_COUNTRY_GROUP_LIST_N = "/index.php/Api/Country/getCountrygroupListN";
 export const API_COUNTRY_GROUP_GET = "/index.php/Api/Country/getCountrygroup";
 export const API_COUNTRY_GROUP_CREATE = "/index.php/Api/Country/setCountrygroup";
 export const API_COUNTRY_GROUP_DELETE = "/index.php/Api/Country/delCountrygroup";

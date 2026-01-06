@@ -20,8 +20,15 @@ export default {
 			},
 			animation: {
 				page: "fadeInUp 200ms ease-out",
+				"fade-in-up": "fadeInUp 0.5s ease-out forwards",
 			},
 			colors: {
+				welcome: {
+					DEFAULT: "#0a1f44",
+				},
+				website: {
+					dark: "#0B1120",
+				},
 				brand: {
 					DEFAULT: "#1E4DB7",
 					dark: "#1E4DB7D9",

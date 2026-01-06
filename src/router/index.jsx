@@ -13,6 +13,11 @@ import { EmailTemplateView } from "../views/email/EmailTemplateView.jsx";
 import { EmailTaskView } from "../views/email/EmailTaskView.jsx";
 import { SmtpServerView } from "../views/email/SmtpServerView.jsx";
 import OrderDetailsView from "../views/orders/OrderDetailsView.jsx";
+import { OfficialSiteLayout } from "../components/layout/OfficialSiteLayout.jsx";
+import { LandingPage } from "../views/website/LandingPage.jsx";
+import { PrivacyPolicy } from "../views/website/PrivacyPolicy.jsx";
+import { TermsOfService } from "../views/website/TermsOfService.jsx";
+import { CookiePolicy } from "../views/website/CookiePolicy.jsx";
 import { GuardedRoute } from "../components/common/GuardedRoute.jsx";
 import { AppLayout } from "../components/layout/AppLayout.jsx";
 import { DashboardView } from "../views/dashboard/DashboardView.jsx";
@@ -26,6 +31,14 @@ export function AppRouter() {
 	return (
 		<Routes>
 			<Route path="/login" element={<LoginView />} />
+
+			{/* Official Website Routes */}
+			<Route path="/website" element={<OfficialSiteLayout />}>
+				<Route index element={<LandingPage />} />
+				<Route path="privacy-policy" element={<PrivacyPolicy />} />
+				<Route path="terms-of-service" element={<TermsOfService />} />
+				<Route path="cookie-policy" element={<CookiePolicy />} />
+			</Route>
 
 			<Route
 				path="/"

@@ -43,6 +43,7 @@ export function DashboardView() {
 		paid_today_order_amount: 0,
 		paid_yesterday_order_num: 0,
 		paid_yesterday_order_amount: 0,
+		paid_order_amount: 0,
 		failed_today_order_num: 0,
 	});
 
@@ -204,6 +205,7 @@ export function DashboardView() {
 					paid_today_order_amount: parseFloat(d.paid_today_order_amount || d.Paid_today_order_amount || d.today_paid_order_amount || 0),
 					paid_yesterday_order_num: parseInt(d.paid_yesterday_order_num || d.Paid_yesterday_order_num || d.yesterday_paid_order_num || 0),
 					paid_yesterday_order_amount: parseFloat(d.paid_yesterday_order_amount || d.Paid_yesterday_order_amount || d.yesterday_paid_order_amount || 0),
+					paid_order_amount: parseFloat(d.paid_order_amount || 0),
 					failed_today_order_num: parseInt(d.failed_today_order_num || d.Failed_today_order_num || d.today_failed_order_num || 0),
 				});
 			}
@@ -364,7 +366,7 @@ export function DashboardView() {
 						<div className="flex-0 flex flex-col justify-center h-full min-h-[140px]">
 							<h3 className="text-gray-500 text-sm font-medium mb-1 font-knewave break-all">Congratulation {user?.username || "User"}!</h3>
 							<div className="flex items-baseline gap-2">
-								<span className="text-2xl font-bold text-gray-900">${stats.total_order_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+								<span className="text-2xl font-bold text-gray-900">${stats.paid_order_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
 								{/* <span className="text-green-500 text-xs font-semibold">+9%</span> */}
 							</div>
 						</div>
@@ -493,19 +495,11 @@ export function DashboardView() {
 										/>
 									</div>
 									<div className="pt-2 flex gap-2">
-										<button
-											onClick={handleSearch}
-											disabled={loadingGraph}
-											className="flex-1 bg-brand text-white py-1.5 rounded text-xs font-medium hover:bg-brand-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-										>
+										<button onClick={handleSearch} disabled={loadingGraph} className="flex-1 bg-brand text-white py-1.5 rounded text-xs font-medium hover:bg-brand-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
 											{loadingGraph && <FontAwesomeIcon icon={faSpinner} spin />}
 											{t("search")}
 										</button>
-										<button
-											onClick={handleResetClick}
-											disabled={loadingGraph}
-											className="flex-1 bg-gray-100 text-gray-600 py-1.5 rounded text-xs font-medium hover:bg-gray-200 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-										>
+										<button onClick={handleResetClick} disabled={loadingGraph} className="flex-1 bg-gray-100 text-gray-600 py-1.5 rounded text-xs font-medium hover:bg-gray-200 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
 											{t("reset")}
 										</button>
 									</div>
@@ -601,13 +595,8 @@ export function DashboardView() {
 
 										{/* Footer: Date & Expand */}
 										<div className="flex justify-between items-center pt-2 border-t border-gray-200/50">
-											<div className="text-[10px] text-gray-400">
-												{updateDate.split(" ")[0]}
-											</div>
-											<button
-												onClick={() => setExpandedOrderId(isExpanded ? null : i)}
-												className={`flex items-center gap-1 text-xs font-medium transition-colors ${isExpanded ? "text-brand" : "text-gray-500 hover:text-gray-700"}`}
-											>
+											<div className="text-[10px] text-gray-400">{updateDate.split(" ")[0]}</div>
+											<button onClick={() => setExpandedOrderId(isExpanded ? null : i)} className={`flex items-center gap-1 text-xs font-medium transition-colors ${isExpanded ? "text-brand" : "text-gray-500 hover:text-gray-700"}`}>
 												{isExpanded ? t("collapse") || "Collapse" : t("details") || "Details"}
 												<FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} className="text-[10px]" />
 											</button>
@@ -627,20 +616,26 @@ export function DashboardView() {
 															</div>
 														</div>
 													)}
-													
+
 													{/* Customer Details */}
 													<div className="flex flex-col gap-0.5">
 														<span className="text-[10px] text-gray-400">{t("customer")}</span>
 														<div className="truncate">{o.email}</div>
 														{o.phone && <div className="truncate text-gray-500">{o.phone}</div>}
-														{o.country && <div className="truncate text-gray-500">{o.country} {o.ip ? `(${o.ip})` : ""}</div>}
+														{o.country && (
+															<div className="truncate text-gray-500">
+																{o.country} {o.ip ? `(${o.ip})` : ""}
+															</div>
+														)}
 													</div>
 
 													{/* Amount Details */}
 													{(o.jine || o.bizhong) && (
 														<div className="flex flex-col gap-0.5">
 															<span className="text-[10px] text-gray-400">{t("amount")}</span>
-															<div>≈ {o.jine} {o.bizhong}</div>
+															<div>
+																≈ {o.jine} {o.bizhong}
+															</div>
 														</div>
 													)}
 

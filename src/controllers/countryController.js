@@ -1,5 +1,5 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import { API_COUNTRY_GROUP_LIST, API_COUNTRY_GROUP_GET, API_COUNTRY_GROUP_CREATE, API_COUNTRY_GROUP_DELETE, API_COUNTRY_LIST } from "../constants/api.js";
+import { API_COUNTRY_GROUP_LIST, API_COUNTRY_GROUP_LIST_N, API_COUNTRY_GROUP_GET, API_COUNTRY_GROUP_CREATE, API_COUNTRY_GROUP_DELETE, API_COUNTRY_LIST } from "../constants/api.js";
 
 /**
  * Fetch Country List
@@ -45,6 +45,32 @@ export async function fetchCountryGroups({ page = 1, per_page = 20, name = null 
     // Based on previous patterns in this project, it's usually data.data.list
     return { ok: true, data: data.data };
 }
+
+/**
+ * Fetch Country Groups List N
+ * @param {Object} params - { page, per_page, name }
+ */
+export async function fetchCountryGroupsN() {
+    const res = await apiRequest({
+        url: API_COUNTRY_GROUP_LIST_N,
+        method: "POST",
+        data: null
+    });
+
+    if (!res.ok) return res;
+
+    const data = res.data || {};
+    if (data.code !== undefined && data.code != 1) {
+        return { ok: false, error: { code: data.code, message: data.msg || "Error fetching country groups" } };
+    }
+
+    // Assuming API returns { data: { list: [], total: 0 } } based on other APIs
+    // But user input just said "分页查询国家分组", didn't specify return structure.
+    // Based on previous patterns in this project, it's usually data.data.list
+    return { ok: true, data: data.data };
+}
+
+
 
 /**
  * Fetch Country Group Details

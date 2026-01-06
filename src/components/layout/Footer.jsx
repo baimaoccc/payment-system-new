@@ -40,12 +40,12 @@ export function Footer() {
 					</a> */}
 				</div>
 				<div className="relative flex items-center">
-					<a href={telegramLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 group">
+					{/* <a href={telegramLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 group">
 						<FontAwesomeIcon icon={faTelegram} className="text-lg group-hover:scale-110 transition-transform" />
 						<span className="font-medium">
 							{t("contactUs")}: {telegram}
 						</span>
-					</a>
+					</a> */}
 
 					<div className="relative ml-4">
 						<FontAwesomeIcon icon={faGlobe} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none text-xs" />
