@@ -113,9 +113,9 @@ export function LoginView() {
 						<h1 className="text-2xl font-semibold text-gray-800">{t("welcomeTitle")}</h1>
 						<div className="text-sm text-gray-500">
 							{t("welcomeSub")}
-							<button type="button" className="ml-2 text-brand hover:text-brand-dark">
+							{/* <button type="button" className="ml-2 text-brand hover:text-brand-dark">
 								{t("createAccount")}
-							</button>
+							</button> */}
 						</div>
 					</div>
 					<form onSubmit={onSubmit} className="space-y-4">

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useI18n } from "../../plugins/i18n/index.jsx";
+import { useResponsive } from "../../hooks/useResponsive.js";
 
 // Helper for scroll reveal within the component
 function RevealOnScroll({ children, className = "" }) {
@@ -37,9 +38,10 @@ function RevealOnScroll({ children, className = "" }) {
 
 export default function HeroDashboardMockup() {
 	const { t } = useI18n();
+	const { isMobile } = useResponsive();
 
 	return (
-		<div className="relative w-full h-80 md:h-96 shadow-2xl rounded-2xl overflow-hidden border border-slate-200/60 bg-white/90 backdrop-blur-xl">
+		<div className="relative w-full h-90 md:h-96 shadow-2xl rounded-2xl overflow-hidden border border-slate-200/60 bg-white/90 backdrop-blur-xl">
 			<RevealOnScroll className="w-full h-full p-6">
 				{/* Browser Header */}
 				<div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
@@ -52,7 +54,7 @@ export default function HeroDashboardMockup() {
 						<span className="w-2 h-2 rounded-full bg-green-500"></span>
 						https://www.pay.ceo
 					</div>
-					<div className="w-16"></div>
+					{!isMobile && <div className="w-16"></div>}
 				</div>
 
 				{/* Dashboard Content */}
@@ -70,12 +72,12 @@ export default function HeroDashboardMockup() {
 
 					{/* Main Content Area */}
 					<div className="flex-1">
-						<div className="flex justify-between items-end mb-6">
-							<div>
+						<div className="flex justify-between items-end mb-6 flex-wrap">
+							<div className="flex-1">
 								<div className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">{t("landing.mockup.dashboard.totalRevenue")}</div>
 								<div className="text-3xl font-bold text-slate-800">$1,245,300.00</div>
 							</div>
-							<div className="flex gap-1">
+							<div className="flex flex-1 gap-1">
 								<div className="p-1 w-[50px] h-[50px] flex justify-center items-center bg-blue-50 text-blue-600 text-xs font-bold rounded-full">+12.5%</div>
 								<div className="py-1 px-3 flex items-center justify-center bg-slate-100 text-slate-500 text-xs font-bold rounded-full">{t("landing.mockup.dashboard.last30Days")}</div>
 							</div>

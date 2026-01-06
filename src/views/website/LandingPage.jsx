@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCheckCircle, faGlobeAmericas, faShieldAlt, faBolt, faChartLine, faCreditCard, faMobileAlt, faCode, faTerminal, faMobile, faExchangeAlt, faFileInvoiceDollar, faEnvelopeOpenText, faIdCard, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { faTelegram } from "@fortawesome/free-brands-svg-icons";
@@ -42,6 +42,7 @@ function RevealOnScroll({ children, className = "" }) {
 
 export function LandingPage() {
 	const { t } = useI18n();
+	const navigate = useNavigate();
 	const telegram = "@ACeo_Pay";
 	const telegramLink = "https://t.me/ACeo_Pay";
 
@@ -122,7 +123,7 @@ export function LandingPage() {
 										className="px-8 py-4 bg-transparent border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-full font-bold text-lg transition-all"
 										onClick={(e) => {
 											e.preventDefault();
-											document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+											document.getElementById("solutions")?.scrollIntoView({ behavior: "smooth" });
 										}}>
 										{t("landing.hero.exploreProducts")}
 									</Link>
@@ -151,7 +152,7 @@ export function LandingPage() {
 					</div>
 				</div>
 				{/* Bottom Wave Transition - Rotate 180 (Wavy Top, Flat Bottom to simulate White rising up) */}
-				<div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">
+				<div className="absolute -bottom-[1px] left-0 w-full overflow-hidden leading-[0] z-[1000]">
 					<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-[calc(100%+1.3px)] h-[50px] transform rotate-180">
 						<path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="fill-slate-900"></path>
 					</svg>
@@ -267,7 +268,7 @@ export function LandingPage() {
 					}
 				`}</style>
 				{/* Top Wave Transition - No Rotation (Flat Top, Wavy Bottom to simulate Light dripping into Dark) */}
-				<div className="absolute -top-[1px] left-0 w-full overflow-hidden leading-[0] z-30">
+				<div className="absolute -top-[0.1rem] left-0 w-full overflow-hidden leading-[0] z-30">
 					<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-[calc(100%+1.3px)] h-[50px]">
 						<path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="fill-slate-900"></path>
 					</svg>
@@ -285,7 +286,7 @@ export function LandingPage() {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 						{products.map((product, idx) => (
 							<RevealOnScroll key={product.id} className={`delay-[${idx * 100}ms] h-full`}>
-								<div className="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-2xl hover:bg-white transition-all duration-300 border border-slate-100 hover:border-blue-200 group h-full hover:-translate-y-2">
+								<div onClick={() => navigate("/")} className="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-2xl hover:bg-white transition-all duration-300 border border-slate-100 hover:border-blue-200 group h-full hover:-translate-y-2">
 									<div className={`w-14 h-14 rounded-xl ${product.color} text-white flex items-center justify-center text-2xl mb-6 shadow-md transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 animate-float-slow`} style={{ animationDelay: `${idx * 0.5}s` }}>
 										<FontAwesomeIcon icon={product.icon} />
 									</div>
@@ -349,7 +350,7 @@ export function LandingPage() {
 			{/* Features Grid */}
 			<section id="features" className="py-20 bg-website-dark text-white relative">
 				{/* Top Wave Transition - No Rotation (Flat Top, Wavy Bottom to simulate White dripping into Dark) */}
-				<div className="absolute top-0 left-0 w-full overflow-hidden leading-[0]">
+				<div className="absolute -top-[0.05rem] left-0 w-full overflow-hidden leading-[0]">
 					<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-[calc(100%+1.3px)] h-[50px]">
 						<path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="fill-white"></path>
 					</svg>
@@ -395,7 +396,7 @@ export function LandingPage() {
 				<div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
 					<div className="md:w-1/2 mb-12 md:mb-0 pr-0 md:pr-12">
 						<RevealOnScroll>
-							<h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-8">{t("landing.trust.title")}</h2>
+							<h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">{t("landing.trust.title")}</h2>
 							<div className="space-y-6">
 								{[t("landing.trust.item1"), t("landing.trust.item2"), t("landing.trust.item3"), t("landing.trust.item4")].map((item, idx) => (
 									<div key={idx} className="flex items-start">
@@ -442,11 +443,11 @@ export function LandingPage() {
 
 			{/* CTA Section */}
 			<section className="py-24 bg-website-dark relative overflow-hidden">
-				<div className="absolute -top-[0.05rem] left-0 w-full overflow-hidden leading-[0] z-30">
+				{/* <div className="absolute -top-[0.1rem] left-0 w-full overflow-hidden leading-[0] z-30">
 					<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" shapeRendering="geometricPrecision" className="relative block w-[calc(100%+1.3px)] h-[50px]">
 						<path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="fill-white"></path>
 					</svg>
-				</div>
+				</div> */}
 				<div className="absolute inset-0 from-blue-900/20 to-purple-900/20"></div>
 				<div className="container mx-auto px-6 relative z-10 text-center">
 					<RevealOnScroll>

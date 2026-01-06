@@ -7,6 +7,8 @@ import { restoreSession } from "./controllers/authController.js";
 import { fetchEmailTemplatesForOrders } from "./controllers/ordersController.js";
 import { setEmailTemplatesAll } from "./store/slices/ui.js";
 
+import { store } from "./store/index.js";
+
 /**
  * 中文：应用组件，负责渲染路由
  * English: App component, renders router
@@ -18,9 +20,13 @@ export function App() {
 	useEffect(() => {
 		restoreSession({ dispatch }).finally(() => {
 			setInit(true);
-			fetchEmailTemplatesForOrders().then((res) => {
-				if (res && res.ok) dispatch(setEmailTemplatesAll(res.data || []));
-			});
+			// Only fetch templates if authenticated
+			const state = store.getState();
+			if (state.auth.isAuthed) {
+				fetchEmailTemplatesForOrders().then((res) => {
+					if (res && res.ok) dispatch(setEmailTemplatesAll(res.data || []));
+				});
+			}
 		});
 	}, [dispatch]);
 

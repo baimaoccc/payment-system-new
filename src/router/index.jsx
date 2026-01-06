@@ -28,42 +28,67 @@ import { BlacklistView } from "../views/blacklist/BlacklistView.jsx";
  * English: App route config; protected routes require login and permissions
  */
 export function AppRouter() {
-	return (
-		<Routes>
-			<Route path="/login" element={<LoginView />} />
+	const hostname = window.location.hostname;
+	// Logic: If hostname starts with www, or is localhost, it's the App Domain.
+	// Otherwise (e.g. host.com), it's the Website Domain.
+	// We treat localhost as App Domain for development convenience.
+	// const isAppDomain = hostname.startsWith("www.") || hostname.includes("localhost") || hostname.includes("127.0.0.1");
+	const isAppDomain = true;
 
-			{/* Official Website Routes */}
-			<Route path="/website" element={<OfficialSiteLayout />}>
-				<Route index element={<LandingPage />} />
-				<Route path="privacy-policy" element={<PrivacyPolicy />} />
-				<Route path="terms-of-service" element={<TermsOfService />} />
-				<Route path="cookie-policy" element={<CookiePolicy />} />
-			</Route>
+	if (isAppDomain) {
+		return (
+			<Routes>
+				<Route path="/login" element={<LoginView />} />
 
-			<Route
-				path="/"
-				element={
-					<GuardedRoute>
-						<AppLayout />
-					</GuardedRoute>
-				}>
-				<Route index element={<Navigate to="/dashboard" replace />} />
-				<Route path="dashboard" element={<DashboardView />} />
-				<Route path="orders" element={<OrdersView />} />
-				<Route path="orders/:id" element={<OrderDetailsView />} />
-				<Route path="stripe-accounts" element={<StripeAccountsView />} />
-				<Route path="stripe-whitelist-groups" element={<StripeWhitelistGroupsView />} />
-				<Route path="stripe-groups" element={<StripeGroupsView />} />
-				<Route path="users" element={<UsersView />} />
-				<Route path="roles" element={<RolesView />} />
-				<Route path="blacklist" element={<BlacklistView />} />
-				<Route path="email/types" element={<EmailTypeView />} />
-				<Route path="email/templates" element={<EmailTemplateView />} />
-				<Route path="email/tasks" element={<EmailTaskView />} />
-				<Route path="email/smtp" element={<SmtpServerView />} />
-			</Route>
+				{/* Official Website Routes (accessible via /website on App Domain) */}
+				<Route path="/website" element={<OfficialSiteLayout />}>
+					<Route index element={<LandingPage />} />
+					<Route path="privacy-policy" element={<PrivacyPolicy />} />
+					<Route path="terms-of-service" element={<TermsOfService />} />
+					<Route path="cookie-policy" element={<CookiePolicy />} />
+					{/* Redirect unknown /website/* paths back to /website to prevent falling into app routes */}
+					<Route path="*" element={<Navigate to="/website" replace />} />
+				</Route>
 
-			<Route path="*" element={<Navigate to="/dashboard" replace />} />
-		</Routes>
-	);
+				<Route
+					path="/"
+					element={
+						<GuardedRoute>
+							<AppLayout />
+						</GuardedRoute>
+					}>
+					<Route index element={<Navigate to="/dashboard" replace />} />
+					<Route path="dashboard" element={<DashboardView />} />
+					<Route path="orders" element={<OrdersView />} />
+					<Route path="orders/:id" element={<OrderDetailsView />} />
+					<Route path="stripe-accounts" element={<StripeAccountsView />} />
+					<Route path="stripe-whitelist-groups" element={<StripeWhitelistGroupsView />} />
+					<Route path="stripe-groups" element={<StripeGroupsView />} />
+					<Route path="users" element={<UsersView />} />
+					<Route path="roles" element={<RolesView />} />
+					<Route path="blacklist" element={<BlacklistView />} />
+					<Route path="email/types" element={<EmailTypeView />} />
+					<Route path="email/templates" element={<EmailTemplateView />} />
+					<Route path="email/tasks" element={<EmailTaskView />} />
+					<Route path="email/smtp" element={<SmtpServerView />} />
+				</Route>
+
+				<Route path="*" element={<Navigate to="/dashboard" replace />} />
+			</Routes>
+		);
+	} else {
+		// Website Domain Routes (host.com) - Serve Website at Root
+		return (
+			<Routes>
+				<Route element={<OfficialSiteLayout />}>
+					<Route index element={<LandingPage />} />
+					<Route path="privacy-policy" element={<PrivacyPolicy />} />
+					<Route path="terms-of-service" element={<TermsOfService />} />
+					<Route path="cookie-policy" element={<CookiePolicy />} />
+				</Route>
+				{/* Redirect unknown routes to home */}
+				<Route path="*" element={<Navigate to="/" replace />} />
+			</Routes>
+		);
+	}
 }

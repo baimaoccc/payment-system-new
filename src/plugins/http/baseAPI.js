@@ -30,7 +30,9 @@ export async function request({ url, method = "GET", data, params, headers = {} 
 			store.dispatch(clearSession());
 			unsetTokenHeader();
 			idb.del("session").finally(() => {
-				if (window.location.pathname !== "/login") {
+				const pathname = window.location.pathname;
+				// Do not redirect if we are already on login page or on the public website
+				if (pathname !== "/login" && !pathname.startsWith("/website")) {
 					window.location.href = "/login";
 				}
 			});

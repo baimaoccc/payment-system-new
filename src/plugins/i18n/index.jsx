@@ -397,7 +397,7 @@ const messages = {
 		user: "用户",
 		contactInfo: "联系信息",
 		basicInfoHint: "用户身份和角色设置",
-		goTo: '前往',
+		goTo: "前往",
 		contactInfoHint: "联系渠道设置",
 		pleaseEnterCaptcha: "请输入验证码",
 		receipt: "收据",
@@ -426,8 +426,8 @@ const messages = {
 		orderBelong: "订单归属",
 		accountOwnership: "账号归属",
 		isRequired: "不能为空",
-		emailTaskHistory: '邮件任务历史',
-		emailTemplate: '邮件模版',
+		emailTaskHistory: "邮件任务历史",
+		emailTemplate: "邮件模版",
 		stripeCustomEmbeddedForms: "Stripe 自定义内嵌表单",
 		stripeCheckout: "Stripe 收银台",
 		paymentType: "支付类型",
@@ -666,77 +666,77 @@ const messages = {
 			},
 		},
 		legal: {
-				privacyPolicy: {
-					title: "隐私政策",
-					lastUpdated: "最后更新：2026年1月6日",
-					intro: "在 CeoPay（可通过 https://www.pay.ceo 访问），我们的主要任务之一是保护访客的隐私。本隐私政策文件包含 CeoPay 收集和记录的信息类型以及我们如何使用这些信息。",
-					collection: {
-						title: "我们要收集的信息",
-						content: "当您注册账户时，我们可能会要求您提供联系信息，包括姓名、公司名称、地址、电子邮件地址和电话号码。\n\n如果您直接联系我们，我们可能会收到有关您的其他信息，例如您的姓名、电子邮件地址、电话号码、您可能发送给我们的消息内容和/或附件，以及您可能选择提供的任何其他信息。",
-					},
-					usage: {
-						title: "我们如何使用您的信息",
-						content: "我们以各种方式使用收集到的信息，包括：\n\n• 提供、运营和维护我们的网站\n• 改进、个性化和扩展我们的网站\n• 了解和分析您如何使用我们的网站\n• 开发新产品、服务、功能和特性\n• 与您沟通，包括客户服务，为您提供有关网站的更新和其他信息，以及用于营销和促销目的\n• 发送电子邮件\n• 发现并防止欺诈",
-					},
-					sharing: {
-						title: "信息共享",
-						content: "我们不会出售、交易或以其他方式将您的个人身份信息转让给外部方。但这不包括协助我们运营网站、开展业务或为您提供服务的受信任的第三方，前提是这些方同意对这些信息保密。",
-					},
-					security: {
-						title: "安全",
-						content: "我们采取适当的安全措施来防止未经授权的访问、更改、披露或销毁您的个人信息、用户名、密码、交易信息和存储在我们网站上的数据。",
-					},
-					contact: {
-						title: "联系我们",
-						content: "如果您对我们的隐私政策有其他疑问或需要更多信息，请随时通过电子邮件联系我们：privacy@pay.ceo",
-					},
+			privacyPolicy: {
+				title: "隐私政策",
+				lastUpdated: "最后更新：2026年1月6日",
+				intro: "在 CeoPay（可通过 https://www.pay.ceo 访问），我们的主要任务之一是保护访客的隐私。本隐私政策文件包含 CeoPay 收集和记录的信息类型以及我们如何使用这些信息。",
+				collection: {
+					title: "我们要收集的信息",
+					content: "当您注册账户时，我们可能会要求您提供联系信息，包括姓名、公司名称、地址、电子邮件地址和电话号码。\n\n如果您直接联系我们，我们可能会收到有关您的其他信息，例如您的姓名、电子邮件地址、电话号码、您可能发送给我们的消息内容和/或附件，以及您可能选择提供的任何其他信息。",
 				},
-				termsOfService: {
-					title: "服务条款",
-					lastUpdated: "最后更新：2026年1月6日",
-					intro: "欢迎使用 CeoPay！这些条款和条件概述了使用位于 https://www.pay.ceo 的 CeoPay 网站的规则和条例。",
-					acceptance: {
-						title: "接受条款",
-						content: "访问本网站，即表示您接受这些条款和条件。如果您不同意本页面上所述的所有条款和条件，请勿继续使用 CeoPay。",
-					},
-					services: {
-						title: "服务",
-						content: "CeoPay 提供支付处理服务，允许商家接受客户的付款。我们保留随时自行决定撤销或修改服务的权利，恕不另行通知。",
-					},
-					account: {
-						title: "用户账户",
-						content: "如果您在本网站创建账户，您有责任维护您的账户和密码的机密性，并限制对您计算机的访问，并且您同意对在您的账户或密码下发生的所有活动承担责任。",
-					},
-					prohibited: {
-						title: "禁止活动",
-						content: "您不得使用本网站或服务进行任何非法或未经授权的目的。在使用服务时，您不得违反您所在司法管辖区的任何法律（包括但不限于版权法）。",
-					},
-					termination: {
-						title: "终止",
-						content: "我们可以出于任何原因（包括但不限于违反条款）立即终止或暂停您的账户，恕不另行通知或承担责任。",
-					},
-					liability: {
-						title: "责任限制",
-						content: "在任何情况下，CeoPay 或其供应商均不对因使用或无法使用 CeoPay 网站上的材料而造成的任何损害（包括但不限于数据丢失或利润损失，或由于业务中断而造成的损害）负责。",
-					},
+				usage: {
+					title: "我们如何使用您的信息",
+					content: "我们以各种方式使用收集到的信息，包括：\n\n• 提供、运营和维护我们的网站\n• 改进、个性化和扩展我们的网站\n• 了解和分析您如何使用我们的网站\n• 开发新产品、服务、功能和特性\n• 与您沟通，包括客户服务，为您提供有关网站的更新和其他信息，以及用于营销和促销目的\n• 发送电子邮件\n• 发现并防止欺诈",
 				},
-				cookiePolicy: {
-					title: "Cookie 政策",
-					lastUpdated: "最后更新：2026年1月6日",
-					intro: "这是 CeoPay 的 Cookie 政策，可通过 https://www.pay.ceo 访问。",
-					whatAreCookies: {
-						title: "什么是 Cookie",
-						content: "正如几乎所有专业网站的惯例一样，本网站使用 Cookie，这还是下载到您计算机上的微小文件，以改善您的体验。本页面描述了我们收集哪些信息、我们如何使用这些信息以及为什么我们有时需要存储这些 Cookie。",
-					},
-					howWeUse: {
-						title: "我们如何使用 Cookie",
-						content: "我们将 Cookie 用于多种原因。不幸的是，在大多数情况下，没有行业标准选项可以在不完全禁用 Cookie 添加到本网站的功能和特性的情况下禁用 Cookie。如果您不确定是否需要它们，建议您保留所有 Cookie。",
-					},
-					managing: {
-						title: "管理 Cookie",
-						content: "您可以通过调整浏览器上的设置来阻止设置 Cookie（请参阅浏览器帮助了解如何操作）。请注意，禁用 Cookie 将影响本网站和您访问的许多其他网站的功能。",
-					},
+				sharing: {
+					title: "信息共享",
+					content: "我们不会出售、交易或以其他方式将您的个人身份信息转让给外部方。但这不包括协助我们运营网站、开展业务或为您提供服务的受信任的第三方，前提是这些方同意对这些信息保密。",
 				},
+				security: {
+					title: "安全",
+					content: "我们采取适当的安全措施来防止未经授权的访问、更改、披露或销毁您的个人信息、用户名、密码、交易信息和存储在我们网站上的数据。",
+				},
+				contact: {
+					title: "联系我们",
+					content: "如果您对我们的隐私政策有其他疑问或需要更多信息，请随时通过电子邮件联系我们：privacy@pay.ceo",
+				},
+			},
+			termsOfService: {
+				title: "服务条款",
+				lastUpdated: "最后更新：2026年1月6日",
+				intro: "欢迎使用 CeoPay！这些条款和条件概述了使用位于 https://www.pay.ceo 的 CeoPay 网站的规则和条例。",
+				acceptance: {
+					title: "接受条款",
+					content: "访问本网站，即表示您接受这些条款和条件。如果您不同意本页面上所述的所有条款和条件，请勿继续使用 CeoPay。",
+				},
+				services: {
+					title: "服务",
+					content: "CeoPay 提供支付处理服务，允许商家接受客户的付款。我们保留随时自行决定撤销或修改服务的权利，恕不另行通知。",
+				},
+				account: {
+					title: "用户账户",
+					content: "如果您在本网站创建账户，您有责任维护您的账户和密码的机密性，并限制对您计算机的访问，并且您同意对在您的账户或密码下发生的所有活动承担责任。",
+				},
+				prohibited: {
+					title: "禁止活动",
+					content: "您不得使用本网站或服务进行任何非法或未经授权的目的。在使用服务时，您不得违反您所在司法管辖区的任何法律（包括但不限于版权法）。",
+				},
+				termination: {
+					title: "终止",
+					content: "我们可以出于任何原因（包括但不限于违反条款）立即终止或暂停您的账户，恕不另行通知或承担责任。",
+				},
+				liability: {
+					title: "责任限制",
+					content: "在任何情况下，CeoPay 或其供应商均不对因使用或无法使用 CeoPay 网站上的材料而造成的任何损害（包括但不限于数据丢失或利润损失，或由于业务中断而造成的损害）负责。",
+				},
+			},
+			cookiePolicy: {
+				title: "Cookie 政策",
+				lastUpdated: "最后更新：2026年1月6日",
+				intro: "这是 CeoPay 的 Cookie 政策，可通过 https://www.pay.ceo 访问。",
+				whatAreCookies: {
+					title: "什么是 Cookie",
+					content: "正如几乎所有专业网站的惯例一样，本网站使用 Cookie，这还是下载到您计算机上的微小文件，以改善您的体验。本页面描述了我们收集哪些信息、我们如何使用这些信息以及为什么我们有时需要存储这些 Cookie。",
+				},
+				howWeUse: {
+					title: "我们如何使用 Cookie",
+					content: "我们将 Cookie 用于多种原因。不幸的是，在大多数情况下，没有行业标准选项可以在不完全禁用 Cookie 添加到本网站的功能和特性的情况下禁用 Cookie。如果您不确定是否需要它们，建议您保留所有 Cookie。",
+				},
+				managing: {
+					title: "管理 Cookie",
+					content: "您可以通过调整浏览器上的设置来阻止设置 Cookie（请参阅浏览器帮助了解如何操作）。请注意，禁用 Cookie 将影响本网站和您访问的许多其他网站的功能。",
+				},
+			},
 		},
 	},
 	en: {
@@ -1105,7 +1105,7 @@ const messages = {
 		user: "User",
 		contactInfo: "Contact Info",
 		basicInfoHint: "User identity and role settings",
-		goTo: 'Go to',
+		goTo: "Go to",
 		contactInfoHint: "Contact channel settings",
 		pleaseEnterCaptcha: "Please enter captcha",
 		receipt: "Receipt",
@@ -1134,8 +1134,8 @@ const messages = {
 		orderBelong: "Order ownership",
 		accountOwnership: "Account ownership",
 		isRequired: "is required",
-		emailTaskHistory: 'Email Task History',
-		emailTemplate: 'Email Template',
+		emailTaskHistory: "Email Task History",
+		emailTemplate: "Email Template",
 		stripeCustomEmbeddedForms: "Stripe Custom embedded forms",
 		stripeCheckout: "Stripe Checkout",
 		paymentType: "Payment Type",
@@ -1371,77 +1371,77 @@ const messages = {
 			},
 		},
 		legal: {
-				privacyPolicy: {
-					title: "Privacy Policy",
-					lastUpdated: "Last Updated: January 6, 2026",
-					intro: "At CeoPay, accessible from https://www.pay.ceo, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by CeoPay and how we use it.",
-					collection: {
-						title: "Information We Collect",
-						content: "When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.\n\nIf you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.",
-					},
-					usage: {
-						title: "How We Use Your Information",
-						content: "We use the information we collect in various ways, including to:\n\n• Provide, operate, and maintain our website\n• Improve, personalize, and expand our website\n• Understand and analyze how you use our website\n• Develop new products, services, features, and functionality\n• Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes\n• Send you emails\n• Find and prevent fraud",
-					},
-					sharing: {
-						title: "Sharing Information",
-						content: "We do not sell, trade, or otherwise transfer to outside parties your Personally Identifiable Information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.",
-					},
-					security: {
-						title: "Security",
-						content: "We adopt appropriate data collection, storage and processing practices and security measures to protect against unauthorized access, alteration, disclosure or destruction of your personal information, username, password, transaction information and data stored on our Site.",
-					},
-					contact: {
-						title: "Contact Us",
-						content: "If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us through email at privacy@pay.ceo",
-					},
+			privacyPolicy: {
+				title: "Privacy Policy",
+				lastUpdated: "Last Updated: January 6, 2026",
+				intro: "At CeoPay, accessible from https://www.pay.ceo, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by CeoPay and how we use it.",
+				collection: {
+					title: "Information We Collect",
+					content: "When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.\n\nIf you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.",
 				},
-				termsOfService: {
-					title: "Terms of Service",
-					lastUpdated: "Last Updated: January 6, 2026",
-					intro: "Welcome to CeoPay! These terms and conditions outline the rules and regulations for the use of CeoPay's Website, located at https://www.pay.ceo.",
-					acceptance: {
-						title: "Acceptance of Terms",
-						content: "By accessing this website we assume you accept these terms and conditions. Do not continue to use CeoPay if you do not agree to take all of the terms and conditions stated on this page.",
-					},
-					services: {
-						title: "Services",
-						content: "CeoPay provides payment processing services that allow merchants to accept payments from customers. We reserve the right to withdraw or amend the services we provide without notice.",
-					},
-					account: {
-						title: "User Account",
-						content: "If you create an account on the Website, you are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer, and you agree to accept responsibility for all activities that occur under your account or password.",
-					},
-					prohibited: {
-						title: "Prohibited Activities",
-						content: "You may not use the Site or Services for any purpose that is unlawful or prohibited by these Terms. You may not use the Services in violation of any laws in your jurisdiction (including but not limited to copyright laws).",
-					},
-					termination: {
-						title: "Termination",
-						content: "We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.",
-					},
-					liability: {
-						title: "Limitation of Liability",
-						content: "In no event shall CeoPay, nor any of its officers, directors, and employees, be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract. CeoPay, including its officers, directors, and employees shall not be held liable for any indirect, consequential, or special liability arising out of or in any way related to your use of this Website.",
-					},
+				usage: {
+					title: "How We Use Your Information",
+					content: "We use the information we collect in various ways, including to:\n\n• Provide, operate, and maintain our website\n• Improve, personalize, and expand our website\n• Understand and analyze how you use our website\n• Develop new products, services, features, and functionality\n• Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes\n• Send you emails\n• Find and prevent fraud",
 				},
-				cookiePolicy: {
-					title: "Cookie Policy",
-					lastUpdated: "Last Updated: January 6, 2026",
-					intro: "This is the Cookie Policy for CeoPay, accessible from https://www.pay.ceo.",
-					whatAreCookies: {
-						title: "What Are Cookies",
-						content: "As is common practice with almost all professional websites this site uses cookies, which are tiny files that are downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies.",
-					},
-					howWeUse: {
-						title: "How We Use Cookies",
-						content: "We use cookies for a variety of reasons detailed below. Unfortunately in most cases there are no industry standard options for disabling cookies without completely disabling the functionality and features they add to this site. It is recommended that you leave on all cookies if you are not sure whether you need them or not in case they are used to provide a service that you use.",
-					},
-					managing: {
-						title: "Managing Cookies",
-						content: "You can prevent the setting of cookies by adjusting the settings on your browser (see your browser Help for how to do this). Be aware that disabling cookies will affect the functionality of this and many other websites that you visit.",
-					},
+				sharing: {
+					title: "Sharing Information",
+					content: "We do not sell, trade, or otherwise transfer to outside parties your Personally Identifiable Information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.",
 				},
+				security: {
+					title: "Security",
+					content: "We adopt appropriate data collection, storage and processing practices and security measures to protect against unauthorized access, alteration, disclosure or destruction of your personal information, username, password, transaction information and data stored on our Site.",
+				},
+				contact: {
+					title: "Contact Us",
+					content: "If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us through email at privacy@pay.ceo",
+				},
+			},
+			termsOfService: {
+				title: "Terms of Service",
+				lastUpdated: "Last Updated: January 6, 2026",
+				intro: "Welcome to CeoPay! These terms and conditions outline the rules and regulations for the use of CeoPay's Website, located at https://www.pay.ceo.",
+				acceptance: {
+					title: "Acceptance of Terms",
+					content: "By accessing this website we assume you accept these terms and conditions. Do not continue to use CeoPay if you do not agree to take all of the terms and conditions stated on this page.",
+				},
+				services: {
+					title: "Services",
+					content: "CeoPay provides payment processing services that allow merchants to accept payments from customers. We reserve the right to withdraw or amend the services we provide without notice.",
+				},
+				account: {
+					title: "User Account",
+					content: "If you create an account on the Website, you are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer, and you agree to accept responsibility for all activities that occur under your account or password.",
+				},
+				prohibited: {
+					title: "Prohibited Activities",
+					content: "You may not use the Site or Services for any purpose that is unlawful or prohibited by these Terms. You may not use the Services in violation of any laws in your jurisdiction (including but not limited to copyright laws).",
+				},
+				termination: {
+					title: "Termination",
+					content: "We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.",
+				},
+				liability: {
+					title: "Limitation of Liability",
+					content: "In no event shall CeoPay, nor any of its officers, directors, and employees, be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract. CeoPay, including its officers, directors, and employees shall not be held liable for any indirect, consequential, or special liability arising out of or in any way related to your use of this Website.",
+				},
+			},
+			cookiePolicy: {
+				title: "Cookie Policy",
+				lastUpdated: "Last Updated: January 6, 2026",
+				intro: "This is the Cookie Policy for CeoPay, accessible from https://www.pay.ceo.",
+				whatAreCookies: {
+					title: "What Are Cookies",
+					content: "As is common practice with almost all professional websites this site uses cookies, which are tiny files that are downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies.",
+				},
+				howWeUse: {
+					title: "How We Use Cookies",
+					content: "We use cookies for a variety of reasons detailed below. Unfortunately in most cases there are no industry standard options for disabling cookies without completely disabling the functionality and features they add to this site. It is recommended that you leave on all cookies if you are not sure whether you need them or not in case they are used to provide a service that you use.",
+				},
+				managing: {
+					title: "Managing Cookies",
+					content: "You can prevent the setting of cookies by adjusting the settings on your browser (see your browser Help for how to do this). Be aware that disabling cookies will affect the functionality of this and many other websites that you visit.",
+				},
+			},
 		},
 	},
 };
@@ -1455,13 +1455,22 @@ export const I18nContext = createContext({
 export function I18nProvider({ children }) {
 	const lang = useSelector((s) => s.ui.lang);
 	const dispatch = useDispatch();
-	const setLanguage = (l) => dispatch(setLang(l));
+	const setLanguage = (l) => {
+		dispatch(setLang(l));
+		db.set("lang", l);
+	};
 	const dict = messages[lang] || messages.en;
 
 	useEffect(() => {
 		db.get("lang").then((savedLang) => {
 			if (savedLang && messages[savedLang]) {
 				dispatch(setLang(savedLang));
+			} else {
+				// No saved language, detect browser language
+				const browserLang = navigator.language || navigator.userLanguage;
+				// Only use 'zh' if browser language starts with 'zh', otherwise default to 'en'
+				const defaultLang = browserLang && browserLang.toLowerCase().startsWith("zh") ? "zh" : "en";
+				dispatch(setLang(defaultLang));
 			}
 		});
 	}, [dispatch]);

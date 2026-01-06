@@ -96,7 +96,7 @@ function EmailTaskFormModal({ open, initial, onClose, onSave, t, readOnly, templ
 
 const MobileEmailTaskCard = ({ item, onView, onEdit, onDelete, t, templates, formatDate }) => {
 	const getTemplateName = (templateId) => {
-		const tpl = templates.find((t) => String(t.id) === String(templateId));
+		const tpl = templates && templates.find((t) => String(t.id) === String(templateId));
 		return tpl ? tpl.name || tpl.title || `#${tpl.id}` : templateId;
 	};
 

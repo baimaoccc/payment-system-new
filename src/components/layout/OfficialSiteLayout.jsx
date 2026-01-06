@@ -15,12 +15,16 @@ export function OfficialSiteLayout() {
 	const [activeSection, setActiveSection] = useState("");
 	const location = useLocation();
 
+	// Determine base path: if we are at /website, use /website, otherwise use root /
+	const isWebsiteSubpath = location.pathname.startsWith("/website");
+	const basePath = isWebsiteSubpath ? "/website" : "";
+
 	const navLinks = [
-		{ name: t("nav.solutions"), path: "/website#solutions" },
-		{ name: t("nav.ecosystem"), path: "/website#products" },
-		{ name: t("nav.analytics"), path: "/website#analytics" },
-		{ name: t("nav.features"), path: "/website#features" },
-		{ name: t("nav.trust"), path: "/website#trust" },
+		{ name: t("nav.solutions"), path: `${basePath}#solutions` },
+		{ name: t("nav.ecosystem"), path: `${basePath}#products` },
+		{ name: t("nav.analytics"), path: `${basePath}#analytics` },
+		{ name: t("nav.features"), path: `${basePath}#features` },
+		{ name: t("nav.trust"), path: `${basePath}#trust` },
 	];
 
 	useEffect(() => {
@@ -46,7 +50,7 @@ export function OfficialSiteLayout() {
 				if (element) {
 					const rect = element.getBoundingClientRect();
 					if (rect.top <= 150 && rect.bottom >= 150) {
-						current = "/website#" + id;
+						current = `${basePath}#` + id;
 					}
 				}
 			}
@@ -170,17 +174,19 @@ export function OfficialSiteLayout() {
 
 					<div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
 						<p>{t("footer.copyright")}</p>
-						<div className="flex space-x-6 mt-4 md:mt-0">
-							<Link to="/website/privacy-policy" className="hover:text-white transition-colors">
-								{t("footer.privacyPolicy")}
-							</Link>
-							<Link to="/website/terms-of-service" className="hover:text-white transition-colors">
-								{t("footer.termsOfService")}
-							</Link>
-							<Link to="/website/cookie-policy" className="hover:text-white transition-colors">
-								{t("footer.cookies")}
-							</Link>
-							<div className="flex items-center space-x-2 border-l border-slate-700 pl-6">
+						<div className="w-full sm:w-auto flex justify-between items-center flex-wrap  sm:space-x-6 mt-4 md:mt-0">
+							<div className="w-full sm:w-auto sm:min-w-[300px] flex justify-between items-center">
+								<Link to="/website/privacy-policy" className="hover:text-white transition-colors">
+									{t("footer.privacyPolicy")}
+								</Link>
+								<Link to="/website/terms-of-service" className="hover:text-white transition-colors">
+									{t("footer.termsOfService")}
+								</Link>
+								<Link to="/website/cookie-policy" className="hover:text-white transition-colors">
+									{t("footer.cookies")}
+								</Link>
+							</div>
+							<div className="block sm:inline-block flex items-center space-x-2 mt-2 sm:mt-0">
 								<button onClick={() => setLanguage("en")} className={`transition-colors ${lang === "en" ? "text-white font-medium" : "hover:text-white"}`}>
 									En
 								</button>
@@ -195,7 +201,7 @@ export function OfficialSiteLayout() {
 			</footer>
 
 			{/* Back to Top Button */}
-			<button onClick={scrollToTop} className={`fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-40 ${showBackToTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`} aria-label="Back to top">
+			<button onClick={scrollToTop} className={`fixed bottom-24 right-4 bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-40 ${showBackToTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`} aria-label="Back to top">
 				<FontAwesomeIcon icon={faArrowUp} />
 			</button>
 		</div>

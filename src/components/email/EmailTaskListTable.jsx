@@ -9,7 +9,7 @@ export function EmailTaskListTable({ list, t, templates, onView, onEdit, onDelet
 	};
 
 	const getTemplateName = (templateId) => {
-		const item = templates.find((tpl) => String(tpl.id) === String(templateId));
+		const item = templates && templates.find((tpl) => String(tpl.id) === String(templateId));
 		return item ? item.name || item.title || `#${item.id}` : templateId;
 	};
 
