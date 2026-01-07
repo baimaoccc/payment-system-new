@@ -71,7 +71,7 @@ export default function OrderDetailsView() {
 	return (
 		<div className="p-4 md:py-6 w-full mx-auto animate-in fade-in duration-300">
 			{/* Header */}
-			<div className="flex items-center gap-4 mb-6">
+			<div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-6">
 				<div className="flex items-center">
 					<button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
 						<FontAwesomeIcon icon={faArrowLeft} className="text-xl" />
@@ -79,7 +79,7 @@ export default function OrderDetailsView() {
 					<h1 className="text-2xl font-bold text-gray-900">{t("orderDetails")}</h1>
 				</div>
 
-				<p className="text-sm text-gray-500">
+				<p className="text-sm text-gray-500 ml-2 md:ml-0">
 					{t("idLabel")}: {order.orderNo || order.id}
 				</p>
 			</div>
@@ -253,56 +253,101 @@ export default function OrderDetailsView() {
 					) : charges.length === 0 ? (
 						<div className="text-center py-8 text-gray-500">{t("noData")}</div>
 					) : (
-						<div className="overflow-x-auto">
-							<table className="w-full text-sm text-left">
-								<thead className="bg-gray-50 text-gray-500">
-									<tr>
-										<th className="px-4 py-3 font-medium rounded-l-lg">{t("amount")}</th>
-										<th className="px-4 py-3 font-medium">{t("status")}</th>
-										<th className="px-4 py-3 font-medium">{t("paymentMethod")}</th>
-										<th className="px-4 py-3 font-medium">{t("date")}</th>
-										<th className="px-4 py-3 font-medium">{t("riskScore")}</th>
-										<th className="px-4 py-3 font-medium">{t("receipt") || "Receipt"}</th>
-										<th className="px-4 py-3 font-medium rounded-r-lg">{t("idLabel")}</th>
-									</tr>
-								</thead>
-								<tbody className="divide-y divide-gray-100">
-									{charges.map((charge, idx) => (
-										<tr key={charge.id || idx} className="hover:bg-gray-50 transition-colors">
-											<td className="px-4 py-3 font-medium text-gray-900">
-												{(charge.amount / 100).toFixed(2)} <span className="text-gray-500 font-normal">{charge.currency?.toUpperCase()}</span>
-											</td>
-											<td className="px-4 py-3">
-												{charge.refunded ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}
-												{charge.failure_message && (
-													<div className="text-xs text-red-600 mt-1 max-w-[200px] truncate" title={charge.failure_message}>
-														{charge.failure_message}
+						<>
+							{/* Desktop/Tablet Table View */}
+							<div className="hidden md:block overflow-x-auto">
+								<table className="w-full text-sm text-left">
+									<thead className="bg-gray-50 text-gray-500">
+										<tr>
+											<th className="px-4 py-3 font-medium rounded-l-lg">{t("amount")}</th>
+											<th className="px-4 py-3 font-medium">{t("status")}</th>
+											<th className="px-4 py-3 font-medium">{t("paymentMethod")}</th>
+											<th className="px-4 py-3 font-medium">{t("date")}</th>
+											<th className="px-4 py-3 font-medium">{t("riskScore")}</th>
+											<th className="px-4 py-3 font-medium">{t("receipt") || "Receipt"}</th>
+											<th className="px-4 py-3 font-medium rounded-r-lg">{t("idLabel")}</th>
+										</tr>
+									</thead>
+									<tbody className="divide-y divide-gray-100">
+										{charges.map((charge, idx) => (
+											<tr key={charge.id || idx} className="hover:bg-gray-50 transition-colors">
+												<td className="px-4 py-3 font-medium text-gray-900">
+													{(charge.amount / 100).toFixed(2)} <span className="text-gray-500 font-normal">{charge.currency?.toUpperCase()}</span>
+												</td>
+												<td className="px-4 py-3">
+													{charge.refunded ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}
+													{charge.failure_message && (
+														<div className="text-xs text-red-600 mt-1 max-w-[200px] truncate" title={charge.failure_message}>
+															{charge.failure_message}
+														</div>
+													)}
+												</td>
+												<td className="px-4 py-3">
+													<div className="flex items-center gap-2">
+														<span className="uppercase font-medium text-gray-700">{charge.payment_method_details?.card?.brand}</span>
+														<span className="text-gray-400">•••• {charge.payment_method_details?.card?.last4}</span>
 													</div>
-												)}
-											</td>
-											<td className="px-4 py-3">
+												</td>
+												<td className="px-4 py-3 text-gray-500">{new Date(charge.created * 1000).toLocaleString()}</td>
+												<td className="px-4 py-3">{charge.outcome?.risk_score !== undefined ? <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${charge.outcome.risk_score < 65 ? "bg-green-100 text-green-800" : charge.outcome.risk_score < 75 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>{charge.outcome.risk_score}</span> : "-"}</td>
+												<td className="px-4 py-3">
+													{charge.receipt_url ? (
+														<a href={charge.receipt_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs">
+															{t("view") || "View"}
+														</a>
+													) : (
+														"-"
+													)}
+												</td>
+												<td className="px-4 py-3 text-gray-400 font-mono text-xs">{charge.id}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+
+							{/* Mobile Card View */}
+							<div className="md:hidden space-y-4">
+								{charges.map((charge, idx) => (
+									<div key={charge.id || idx} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+										<div className="flex justify-between items-start mb-3">
+											<div>
+												<div className="text-lg font-bold text-gray-900">
+													{(charge.amount / 100).toFixed(2)} <span className="text-sm font-normal text-gray-500">{charge.currency?.toUpperCase()}</span>
+												</div>
+												<div className="text-xs text-gray-400 mt-1">{new Date(charge.created * 1000).toLocaleString()}</div>
+											</div>
+											<div className="text-right">{charge.refunded ? <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}</div>
+										</div>
+
+										{charge.failure_message && <div className="bg-red-50 text-red-700 text-xs p-2 rounded mb-3 break-words border border-red-100">{charge.failure_message}</div>}
+
+										<div className="grid grid-cols-2 gap-2 text-sm border-t border-gray-200 pt-3 mt-3">
+											<div>
+												<div className="text-xs text-gray-500 mb-1">{t("paymentMethod")}</div>
 												<div className="flex items-center gap-2">
 													<span className="uppercase font-medium text-gray-700">{charge.payment_method_details?.card?.brand}</span>
 													<span className="text-gray-400">•••• {charge.payment_method_details?.card?.last4}</span>
 												</div>
-											</td>
-											<td className="px-4 py-3 text-gray-500">{new Date(charge.created * 1000).toLocaleString()}</td>
-											<td className="px-4 py-3">{charge.outcome?.risk_score !== undefined ? <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${charge.outcome.risk_score < 65 ? "bg-green-100 text-green-800" : charge.outcome.risk_score < 75 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>{charge.outcome.risk_score}</span> : "-"}</td>
-											<td className="px-4 py-3">
-												{charge.receipt_url ? (
-													<a href={charge.receipt_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs">
-														{t("view") || "View"}
-													</a>
-												) : (
-													"-"
-												)}
-											</td>
-											<td className="px-4 py-3 text-gray-400 font-mono text-xs">{charge.id}</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
+											</div>
+											<div>
+												<div className="text-xs text-gray-500 mb-1">{t("riskScore")}</div>
+												<div>{charge.outcome?.risk_score !== undefined ? <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${charge.outcome.risk_score < 65 ? "bg-green-100 text-green-800" : charge.outcome.risk_score < 75 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>{charge.outcome.risk_score}</span> : "-"}</div>
+											</div>
+										</div>
+
+										<div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-100">
+											<div className="text-xs font-mono text-gray-400 truncate max-w-[200px]">{charge.id}</div>
+											{charge.receipt_url && (
+												<a href={charge.receipt_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs font-medium">
+													{t("view") || "View"} {t("receipt") || "Receipt"}
+												</a>
+											)}
+										</div>
+									</div>
+								))}
+							</div>
+						</>
 					)}
 				</div>
 			</div>

@@ -5,7 +5,7 @@ import { logout } from "../../controllers/authController.js";
 import { NavLink } from "react-router-dom";
 import { setTheme, toggleSidebar } from "../../store/slices/ui.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch, faMoon, faCommentDots, faCreditCard, faBell, faUser, faEnvelope, faUserCircle, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSearch, faMoon, faCommentDots, faCreditCard, faBell, faUser, faEnvelope, faUserCircle, faSignOutAlt, faGlobe, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "../ui/IconButton.jsx";
 import { MobileSidebar } from "./MobileSidebar.jsx";
 import { useResponsive } from "../../hooks/useResponsive.js";
@@ -17,7 +17,7 @@ import BrandTextImg from "../../assets/brand-text.png";
  * 顶部栏：语言切换、用户信息、登出
  */
 export function Header() {
-	const { t } = useI18n();
+	const { t, lang, setLanguage } = useI18n();
 	const dispatch = useDispatch();
 	const user = useSelector((s) => s.auth.user);
 	const authRole = useSelector((s) => s.auth.role);
@@ -29,16 +29,21 @@ export function Header() {
 	const [loading, setLoading] = useState(false);
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const profileRef = useRef(null);
+	const [isLangOpen, setIsLangOpen] = useState(false);
+	const langRef = useRef(null);
 
 	useEffect(() => {
 		function handleClickOutside(event) {
 			if (profileRef.current && !profileRef.current.contains(event.target)) {
 				setIsProfileOpen(false);
 			}
+			if (langRef.current && !langRef.current.contains(event.target)) {
+				setIsLangOpen(false);
+			}
 		}
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, [profileRef]);
+	}, [profileRef, langRef]);
 
 	// Derive effective role
 	const currentRole = user?.juese_id ? ROLE_MAP[user.juese_id] : authRole || "guest";
@@ -97,7 +102,6 @@ export function Header() {
 				<div className="flex items-center gap-2 text-sm">
 					<IconButton icon={faBars} label="menu" onClick={handleMenuClick} />
 
-					
 					{/* <IconButton icon={faSearch} label={t("search")} /> */}
 					{/* <div className="relative">
 						<button onClick={() => setAppsOpen((v) => !v)} className="px-2 md:px-3 py-1 rounded hover:bg-gray-100 flex items-center gap-1">
@@ -136,6 +140,31 @@ export function Header() {
 					)}
 				</div>
 				<div className="flex items-center gap-2 md:gap-4">
+					<div className="relative" ref={langRef}>
+						<IconButton onClick={() => setIsLangOpen(!isLangOpen)} icon={faGlobe} label={t("language")} />
+						{isLangOpen && (
+							<div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50 animate-in fade-in zoom-in-95 duration-200">
+								<button
+									onClick={() => {
+										setLanguage("en");
+										setIsLangOpen(false);
+									}}
+									className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-gray-50 transition-colors ${lang === "en" ? "text-blue-600 font-medium bg-blue-50" : "text-gray-700"}`}>
+									<span>English</span>
+									{lang === "en" && <FontAwesomeIcon icon={faCheck} className="text-xs" />}
+								</button>
+								<button
+									onClick={() => {
+										setLanguage("zh");
+										setIsLangOpen(false);
+									}}
+									className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-gray-50 transition-colors ${lang === "zh" ? "text-blue-600 font-medium bg-blue-50" : "text-gray-700"}`}>
+									<span>中文</span>
+									{lang === "zh" && <FontAwesomeIcon icon={faCheck} className="text-xs" />}
+								</button>
+							</div>
+						)}
+					</div>
 					<div className="hidden sm:block">
 						<IconButton onClick={toggleTheme} icon={faMoon} label={t("theme")} />
 					</div>
