@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchOrder, fetchOrderCharges } from "../../controllers/ordersController.js";
@@ -17,6 +17,17 @@ export default function OrderDetailsView() {
 	const [loading, setLoading] = useState(true);
 	const [charges, setCharges] = useState([]);
 	const [loadingCharges, setLoadingCharges] = useState(false);
+
+	const extraData = useMemo(() => {
+		if (!order?.data) return {};
+		try {
+			const parsed = JSON.parse(order.data);
+			return typeof parsed === "object" ? parsed : {};
+		} catch (e) {
+			console.error("Failed to parse order.data", e);
+			return {};
+		}
+	}, [order?.data]);
 
 	useEffect(() => {
 		if (id) {
@@ -206,6 +217,23 @@ export default function OrderDetailsView() {
 							<div className="text-xs font-mono text-gray-600 bg-gray-50 p-2 rounded break-all border border-gray-100">{order.user_agent || "-"}</div>
 						</div>
 					</div>
+
+					{(extraData.title || extraData.ad) && (
+						<div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+							{extraData.title && (
+								<div className={!extraData.ad ? "md:col-span-2" : ""}>
+									<label className="block text-xs font-medium text-gray-500 mb-1">{t("title") || "Title"}</label>
+									<div className="text-sm font-medium text-gray-900 break-words">{extraData.title}</div>
+								</div>
+							)}
+							{extraData.ad && (
+								<div className={!extraData.title ? "md:col-span-2" : ""}>
+									<label className="block text-xs font-medium text-gray-500 mb-1">{t("ad") || "Ad"}</label>
+									<div className="text-sm font-medium text-gray-900 break-words">{extraData.ad}</div>
+								</div>
+							)}
+						</div>
+					)}
 				</div>
 
 				{/* Charges List Card */}
