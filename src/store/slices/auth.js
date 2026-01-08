@@ -8,7 +8,6 @@ const initialState = {
 	isAuthed: false,
 	user: null,
 	role: null,
-	merchantId: null,
 	token: null,
 	loading: false,
 	error: null,
@@ -25,11 +24,10 @@ const slice = createSlice({
 			state.error = action.payload || null;
 		},
 		setSession(state, action) {
-			const { user, role, merchantId, token } = action.payload || {};
+			const { user, role, token } = action.payload || {};
 			state.isAuthed = !!user;
 			state.user = user || null;
 			state.role = role || null;
-			state.merchantId = merchantId || null;
 			state.token = token || null;
 		},
 		clearSession(state) {

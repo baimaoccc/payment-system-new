@@ -23,6 +23,14 @@ export const ROLE_MAP = {
 	6: "adv",
 };
 
+// Helper functions for role checking
+export const isSuperAdmin = (role) => role === "super_admin";
+export const isAdmin = (role) => role === "admin" || role === "super_admin"; // Includes super_admin for convenience
+export const isStrictAdmin = (role) => role === "admin";
+export const isCS = (role) => role === "cs";
+export const isAdv = (role) => role === "adv";
+export const isMerchant = (role) => role === "merchant";
+
 /**
  * Menu Configuration
  * roles: allowed roles. If undefined or empty, allowed for all.
@@ -95,12 +103,12 @@ export const MENU_CONFIG = [
 				icon: faFileAlt,
 				roles: ["super_admin", "admin"],
 			},
-			{
-				path: "/email/smtp",
-				label: "smtpServerManagement",
-				icon: faServer,
-				roles: ["super_admin", "admin"],
-			},
+			// {
+			// 	path: "/email/smtp",
+			// 	label: "smtpServerManagement",
+			// 	icon: faServer,
+			// 	roles: ["super_admin", "admin"],
+			// },
 			{
 				path: "/email/tasks",
 				label: "emailTaskManagement",

@@ -10,6 +10,7 @@ export const getOrderStatusOptions = (t) => [
     { value: 1, label: t("succeed") },
     { value: 6, label: t("failed") },
     { value: 0, label: t("noPay") },
+    { value: 2, label: t("testSucceed") },
     // { value: 8, label: t("pendingWithdrawal") },
     // { value: 9, label: t("refunded") },
     // { value: 120, label: t("120-day-delay") },
@@ -28,7 +29,8 @@ export function renderOrderStatus(order, t, showDetails = true) {
 
     // Check status
     const isPaid = status === "1" || status === "paid";
-    const isFailed = status === "6" || status === "2" || status === "failed";
+    const isTestSucceed = status === "2";
+    const isFailed = status === "6" || status === "failed";
     const isNoPay = status === "0" || status === "pending";
     const isPendingWithdrawal = status === "8";
     const isRefunded = status === "9";
@@ -37,6 +39,9 @@ export function renderOrderStatus(order, t, showDetails = true) {
     if (isPaid) {
         label = t("succeed");
         badgeCls = "bg-action-green text-white";
+    } else if (isTestSucceed) {
+        label = t("testSucceed");
+        badgeCls = "bg-blue-500 text-white";
     } else if (isFailed) {
         label = t("failed");
         badgeCls = "bg-peach text-white";
@@ -63,7 +68,7 @@ export function renderOrderStatus(order, t, showDetails = true) {
             {showDetails && (
                 <div className="text-gray-500 text-[10px] space-y-1">
                     {/* Risk Score - Shown for both success and failure if present */}
-                    {(isPaid || isFailed) && order.risk_score !== undefined && order.risk_score !== null && (
+                    {(isPaid || isFailed || isTestSucceed) && order.risk_score !== undefined && order.risk_score !== null && (
                         <div title={t("riskScore")}>
                             <span className="text-gray-400">{t("riskScore")}:</span> {order.risk_score}
                         </div>

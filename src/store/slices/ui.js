@@ -56,8 +56,16 @@ const slice = createSlice({
 		setEmailTemplatesAll(state, action) {
 			state.emailTemplatesAll = Array.isArray(action.payload) ? action.payload : [];
 		},
+		resetState(state) {
+			// Keep lang and theme preference
+			return {
+				...initialState,
+				lang: state.lang,
+				theme: state.theme,
+			};
+		},
 	},
 });
 
-export const { setLang, setTheme, setNotifications, setMessages, toggleSidebar, setSidebarCollapsed, addToast, removeToast, setModal, clearModal, setEmailTemplatesAll } = slice.actions;
+export const { setLang, setTheme, setNotifications, setMessages, toggleSidebar, setSidebarCollapsed, addToast, removeToast, setModal, clearModal, setEmailTemplatesAll, resetState } = slice.actions;
 export default slice.reducer;

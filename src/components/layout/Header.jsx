@@ -5,7 +5,7 @@ import { logout } from "../../controllers/authController.js";
 import { NavLink } from "react-router-dom";
 import { setTheme, toggleSidebar } from "../../store/slices/ui.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch, faMoon, faCommentDots, faCreditCard, faBell, faUser, faEnvelope, faUserCircle, faSignOutAlt, faGlobe, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSearch, faMoon, faCommentDots, faCreditCard, faBell, faUser, faEnvelope, faUserCircle, faSignOutAlt, faGlobe, faCheck, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "../ui/IconButton.jsx";
 import { MobileSidebar } from "./MobileSidebar.jsx";
 import { useResponsive } from "../../hooks/useResponsive.js";

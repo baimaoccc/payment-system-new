@@ -21,8 +21,9 @@ const slice = createSlice({
     setPage(state, action) { state.page = Number(action.payload || 1) },
     setPageSize(state, action) { state.pageSize = Number(action.payload || 10) },
     setAllUsers(state, action) { state.allUsers = action.payload || [] },
+    resetState() { return initialState },
   },
 })
 
-export const { setLoading, setError, setList, setTotal, setPage, setPageSize, setAllUsers } = slice.actions
+export const { setLoading, setError, setList, setTotal, setPage, setPageSize, setAllUsers, resetState } = slice.actions
 export default slice.reducer

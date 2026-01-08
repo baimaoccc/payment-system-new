@@ -1,15 +1,5 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import {
-	API_ORDER_LIST,
-	API_ORDER_GET,
-	API_ORDER_CHARGES_LIST,
-	API_ORDER_UPDATE_LOGISTICS,
-	API_ORDER_RISK_LEVEL,
-	API_EMAIL_TEMPLATE_LIST,
-	API_EMAIL_TEMPLATE_LIST_N,
-	API_EMAIL_SET_TASK,
-}
-	from "../constants/api.js";
+import { API_ORDER_LIST, API_ORDER_GET, API_ORDER_CHARGES_LIST, API_ORDER_UPDATE_LOGISTICS, API_ORDER_RISK_LEVEL, API_EMAIL_TEMPLATE_LIST, API_EMAIL_TEMPLATE_LIST_N, API_EMAIL_SET_TASK } from "../constants/api.js";
 import { setLoading, setError, setList, setTotal, setStats } from "../store/slices/orders.js";
 
 /**
@@ -108,10 +98,10 @@ export async function fetchOrder({ dispatch, id }) {
  * English: Fetch order charges list; params { dispatch, id }
  */
 export async function fetchOrderCharges({ dispatch, id }) {
-	// Don't set global loading here to avoid full page blocker if not desired, 
-	// but user might want local loading state. 
+	// Don't set global loading here to avoid full page blocker if not desired,
+	// but user might want local loading state.
 	// We'll return the raw result for the component to handle state.
-	
+
 	const res = await apiRequest({ url: API_ORDER_CHARGES_LIST, method: "POST", data: { id } });
 
 	if (!res.ok) {
@@ -164,4 +154,12 @@ export async function fetchEmailTemplatesForOrders() {
 export async function sendOrderEmailByTemplate({ template_id, orderNo }) {
 	const payload = { template_id, orderNo };
 	return apiRequest({ url: API_EMAIL_SET_TASK, method: "POST", data: payload });
+}
+
+export async function createOrUpdateEmailTask(data) {
+	return apiRequest({
+		url: API_EMAIL_SET_TASK,
+		method: "POST",
+		data,
+	});
 }

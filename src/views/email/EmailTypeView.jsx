@@ -5,8 +5,9 @@ import { Select } from "../../components/ui/Select.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faPlus, faEnvelope, faTimes, faSpinner, faEye } from "@fortawesome/free-solid-svg-icons";
 import { fetchEmailTypes, createEmailType, deleteEmailType, fetchEmailType } from "../../controllers/emailController.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToast } from "../../store/slices/ui.js";
+import { isSuperAdmin } from "../../components/layout/menuConfig.js";
 
 const InputRow = ({ label, children, className = "" }) => (
 	<div className={`mb-4 ${className}`}>
@@ -96,7 +97,7 @@ function EmailTypeFormModal({ open, initial, onClose, onSave, t, readOnly }) {
 	);
 }
 
-const MobileEmailTypeCard = ({ item, onView, onEdit, onDelete, onCopy, t, formatDate }) => {
+const MobileEmailTypeCard = ({ item, onView, onEdit, onDelete, onCopy, t, formatDate, canEdit }) => {
 	const [expanded, setExpanded] = useState(false);
 
 	return (
@@ -114,12 +115,16 @@ const MobileEmailTypeCard = ({ item, onView, onEdit, onDelete, onCopy, t, format
 					</div>
 				</div>
 				<div className="flex gap-2 shrink-0">
-					<button onClick={() => onEdit(item)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
-						<FontAwesomeIcon icon={faPen} size="sm" />
-					</button>
-					<button onClick={() => onDelete(item.id)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
-						<FontAwesomeIcon icon={faTrash} size="sm" />
-					</button>
+					{canEdit && (
+						<>
+							<button onClick={() => onEdit(item)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
+								<FontAwesomeIcon icon={faPen} size="sm" />
+							</button>
+							<button onClick={() => onDelete(item.id)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
+								<FontAwesomeIcon icon={faTrash} size="sm" />
+							</button>
+						</>
+					)}
 				</div>
 			</div>
 
@@ -171,6 +176,7 @@ const MobileEmailTypeCard = ({ item, onView, onEdit, onDelete, onCopy, t, format
 export function EmailTypeView() {
 	const { t } = useI18n();
 	const dispatch = useDispatch();
+	const authRole = useSelector((state) => state.auth.role);
 	const [list, setList] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [page, setPage] = useState(1);
@@ -401,12 +407,16 @@ export function EmailTypeView() {
 												<button onClick={() => handleView(item)} className="text-green-600 hover:text-green-800 transition-colors" title={t("view")}>
 													<FontAwesomeIcon icon={faEye} />
 												</button>
-												<button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800 transition-colors" title={t("edit")}>
-													<FontAwesomeIcon icon={faPen} />
-												</button>
-												<button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800 transition-colors" title={t("delete")}>
-													<FontAwesomeIcon icon={faTrash} />
-												</button>
+												{isSuperAdmin(authRole) && (
+													<>
+														<button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800 transition-colors" title={t("edit")}>
+															<FontAwesomeIcon icon={faPen} />
+														</button>
+														<button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800 transition-colors" title={t("delete")}>
+															<FontAwesomeIcon icon={faTrash} />
+														</button>
+													</>
+												)}
 											</div>
 										</td>
 									</tr>

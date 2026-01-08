@@ -47,7 +47,17 @@ export function createIndexedDB({ dbName = 'payment-db', storeName = 'kv' } = {}
       req.onerror = () => reject(req.error)
     })
   }
-  return { open, get, set, del }
+  async function clear() {
+    if (!db) await open()
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(storeName, 'readwrite')
+      const store = tx.objectStore(storeName)
+      const req = store.clear()
+      req.onsuccess = () => resolve(true)
+      req.onerror = () => reject(req.error)
+    })
+  }
+  return { open, get, set, del, clear }
 }
 
 export const idb = createIndexedDB()

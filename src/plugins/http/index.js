@@ -20,7 +20,7 @@ export async function request({ url, method = 'GET', data, headers = {} }) {
       if (!username || !password) throw errorFactory({ code: 'VALIDATION', message: 'Missing credentials' })
       const roleMap = { admin: 'admin', merchant: 'merchant', cs: 'cs', adv: 'adv' }
       const role = roleMap[username] || 'merchant'
-      return { ok: true, data: { user: { username }, role, merchantId: role === 'admin' ? null : 'm-001' } }
+      return { ok: true, data: { user: { username }, role } }
     }
     if (url === '/api/orders' && method === 'GET') {
       const now = Date.now()

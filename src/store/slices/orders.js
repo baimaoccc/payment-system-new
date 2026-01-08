@@ -58,8 +58,11 @@ const slice = createSlice({
 		setTotal(state, action) {
 			state.total = Number(action.payload || 0);
 		},
+		resetState() {
+			return initialState;
+		},
 	},
 });
 
-export const { setLoading, setError, setList, setFilters, setStats, setPage, setPageSize, setTotal } = slice.actions;
+export const { setLoading, setError, setList, setFilters, setStats, setPage, setPageSize, setTotal, resetState } = slice.actions;
 export default slice.reducer;

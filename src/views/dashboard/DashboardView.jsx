@@ -6,7 +6,7 @@ import { DonutChart } from "../../components/charts/DonutChart.jsx";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { useResponsive } from "../../hooks/useResponsive";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserFriends, faCopy, faBoxes, faChartLine, faUndo, faEllipsisH, faEdit, faTrash, faDownload, faFilter, faChevronDown, faChevronUp, faTimes, faCheckCircle, faTimesCircle, faCalendarCheck, faMoneyBillWave, faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faUserFriends, faCopy, faSpinner, faFilter, faChevronDown, faChevronUp, faTimes, faCalendarCheck, faMoneyBillWave, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { Select } from "../../components/ui/Select.jsx";
 import { fetchUserListN } from "../../controllers/usersController.js";
 import { fetchOrderGraphData, fetchOrderData, fetchRecentOrders } from "../../controllers/dashboardController.js";

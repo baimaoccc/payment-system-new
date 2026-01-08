@@ -2,13 +2,13 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { Select } from "../../components/ui/Select.jsx";
-import { RichTextEditor } from "../../components/ui/RichTextEditor.jsx";
+// import { RichTextEditor } from "../../components/ui/RichTextEditor.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrash, faPlus, faEnvelope, faTimes, faSpinner, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faTrash, faPlus, faEnvelope, faTimes, faSpinner, faEye, faCode } from "@fortawesome/free-solid-svg-icons";
 import { fetchEmailTemplates, createEmailTemplate, deleteEmailTemplate, fetchEmailTypes, fetchEmailTemplate, fetchEmailTypesN } from "../../controllers/emailController.js";
 import { fetchEmailTemplatesForOrders } from "../../controllers/ordersController.js";
 import { useDispatch } from "react-redux";
-import { addToast, setEmailTemplatesAll } from "../../store/slices/ui.js";
+import { addToast, setEmailTemplatesAll, setModal } from "../../store/slices/ui.js";
 
 const InputRow = ({ label, children, className = "" }) => (
 	<div className={`mb-4 ${className}`}>
@@ -17,34 +17,55 @@ const InputRow = ({ label, children, className = "" }) => (
 	</div>
 );
 
+const IframePreview = ({ content }) => {
+	const iframeRef = React.useRef(null);
+	const [height, setHeight] = useState("300px");
+
+	const updateHeight = () => {
+		const iframe = iframeRef.current;
+		if (iframe && iframe.contentDocument && iframe.contentDocument.documentElement) {
+			const h = iframe.contentDocument.documentElement.scrollHeight;
+			setHeight(`${Math.max(h, 300)}px`);
+		}
+	};
+
+	useEffect(() => {
+		updateHeight();
+		const interval = setInterval(updateHeight, 500);
+		return () => clearInterval(interval);
+	}, [content]);
+
+	return <iframe ref={iframeRef} srcDoc={content} style={{ width: "100%", height, border: "none", backgroundColor: "#fff" }} onLoad={updateHeight} title="Email Preview" sandbox="allow-same-origin" />;
+};
+
 function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, emailTypes = [] }) {
-	const [form, setForm] = useState(initial || { name: "", type_id: "", template: "", description: "" });
+	const [form, setForm] = useState(initial || { name: "", type_id: "", template: "", description: "", serviceemail: "" });
 	const [saving, setSaving] = useState(false);
+	const [isCodeMode, setIsCodeMode] = useState(false);
 	const dispatch = useDispatch();
 
 	function decodeHtmlStr(html) {
 		if (typeof html !== "string") return "";
-		const div = document.createElement("div");
-		div.innerHTML = html;
-		const decoded = div.textContent || div.innerText || "";
-		return decoded.replace(/\u00a0|&nbsp;/g, " ");
+		const textarea = document.createElement("textarea");
+		textarea.innerHTML = html;
+		return textarea.value;
 	}
 
 	function isHtml(str) {
 		if (typeof str !== "string" || !str.trim()) return false;
 		const s = decodeHtmlStr(str).trim();
-		if (!s) return false;
-		return /<([A-Za-z][A-Za-z0-9]*)\b[^>]*>([\s\S]*?)<\/\1>|<([A-Za-z][A-Za-z0-9]*)\b[^>]*\/>/i.test(s);
+		return /<[a-z][\s\S]*>/i.test(s);
 	}
 
 	function toForm(data) {
-		if (!data || typeof data !== "object") return { name: "", type_id: "", template: "", description: "" };
+		if (!data || typeof data !== "object") return { name: "", type_id: "", template: "", description: "", serviceemail: "" };
 		const name = data.name ?? data.title ?? "";
 		const typeId = data.type_id ?? data.typeId ?? "";
 		const description = data.description ?? data.desc ?? "";
 		const rawTpl = data.template ?? data.tpl ?? data.content ?? "";
 		const template = decodeHtmlStr(rawTpl);
-		return { ...data, name, type_id: typeId, description, template };
+		const serviceemail = data.serviceemail ?? "";
+		return { ...data, name, type_id: typeId, description, template, serviceemail };
 	}
 
 	function extractVariablePlaceholder(str) {
@@ -71,7 +92,9 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 	}
 
 	useEffect(() => {
-		setForm(toForm(initial));
+		const f = toForm(initial);
+		setForm(f);
+		setIsCodeMode(!!(f.template && isHtml(f.template)));
 	}, [initial, open]);
 
 	if (!open) return null;
@@ -121,6 +144,10 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 								isDisabled={readOnly}
 							/>
 						</InputRow>
+
+						<InputRow label={t("serviceEmail")}>
+							<input type="email" className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm disabled:bg-gray-100 disabled:text-gray-500" value={form.serviceemail || ""} onChange={(e) => setForm({ ...form, serviceemail: e.target.value })} placeholder={t("serviceEmailPlaceholder")} disabled={readOnly} />
+						</InputRow>
 					</div>
 
 					<InputRow label={t("description")}>
@@ -128,13 +155,18 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 					</InputRow>
 
 					<InputRow label={t("templateContent")}>
-						<RichTextEditor value={form.template} onChange={(val) => setForm({ ...form, template: val })} placeholder={t("templateContentPlaceholder")} readOnly={readOnly} />
+						{/* <div className="flex justify-end mb-2">
+							<button type="button" onClick={() => setIsCodeMode(!isCodeMode)} className={`text-xs px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors ${isCodeMode ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`} title={isCodeMode ? "Switch to Visual Editor" : "Switch to Code Editor"}>
+								<FontAwesomeIcon icon={isCodeMode ? faPen : faCode} />
+								{isCodeMode ? "Visual Editor" : "Code Editor"}
+							</button>
+						</div> */}
+						<textarea className="w-full h-[300px] px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm font-mono" value={form.template || ""} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="Paste your HTML code here..." disabled={readOnly} />
+						{/* {isCodeMode ? <textarea className="w-full h-[300px] px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm font-mono" value={form.template || ""} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="Paste your HTML code here..." disabled={readOnly} /> : <RichTextEditor value={form.template} onChange={(val) => setForm({ ...form, template: val })} placeholder={t("templateContentPlaceholder")} readOnly={readOnly} />} */}
 					</InputRow>
 
 					<InputRow label={t("templatePreview")}>
-						<div className="bg-white py-4 px-2 border-gray-200 rounded-lg overflow-hidden">
-							<div className="max-w-2xl mx-auto text-sm">{isHtml(form.template) ? <div dangerouslySetInnerHTML={{ __html: decodeHtmlStr(form.template) || "" }} /> : <div className="p-4 whitespace-pre-wrap text-sm text-gray-800">{form.template || ""}</div>}</div>
-						</div>
+						<div className="bg-white border-gray-200 rounded-lg overflow-hidden">{isHtml(form.template) ? <IframePreview content={decodeHtmlStr(form.template)} /> : <div className="p-4 whitespace-pre-wrap text-sm text-gray-800">{form.template || ""}</div>}</div>
 					</InputRow>
 
 					{(() => {
@@ -226,14 +258,8 @@ const MobileEmailTemplateCard = ({ item, onView, onEdit, onDelete, t, getTypeNam
 						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.name}</h3>
 					</div>
 					<div className="flex flex-wrap gap-2 mt-2">
-						<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
-							{getTypeName(item.type_id)}
-						</span>
-						{item.status == 1 ? (
-							<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-100">{t("active") || "Active"}</span>
-						) : (
-							<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 text-gray-700 border border-gray-100">{t("inactive") || "Inactive"}</span>
-						)}
+						<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">{getTypeName(item.type_id)}</span>
+						{item.status == 1 ? <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-100">{t("active") || "Active"}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 text-gray-700 border border-gray-100">{t("inactive") || "Inactive"}</span>}
 					</div>
 				</div>
 			</div>
@@ -246,7 +272,12 @@ const MobileEmailTemplateCard = ({ item, onView, onEdit, onDelete, t, getTypeNam
 					</div>
 					{item.description.length > 50 && (
 						<div className="text-center mt-1">
-							<button onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }} className="text-[10px] text-blue-500 hover:text-blue-700">
+							<button
+								onClick={(e) => {
+									e.stopPropagation();
+									setExpanded(!expanded);
+								}}
+								className="text-[10px] text-blue-500 hover:text-blue-700">
 								{expanded ? t("clickToCollapse") || "Collapse" : t("clickToExpand") || "Expand"}
 							</button>
 						</div>
@@ -256,32 +287,25 @@ const MobileEmailTemplateCard = ({ item, onView, onEdit, onDelete, t, getTypeNam
 
 			<div className="flex items-center justify-between pt-3 border-t border-gray-50">
 				<div className="flex flex-col gap-0.5 text-[10px] text-gray-400">
-					{item.createtime && <span>{t("crt")}: {formatDate(item.createtime).split(" ")[0]}</span>}
-					{item.updatetime && <span>{t("upd")}: {formatDate(item.updatetime).split(" ")[0]}</span>}
+					{item.createtime && (
+						<span>
+							{t("crt")}: {formatDate(item.createtime).split(" ")[0]}
+						</span>
+					)}
+					{item.updatetime && (
+						<span>
+							{t("upd")}: {formatDate(item.updatetime).split(" ")[0]}
+						</span>
+					)}
 				</div>
 				<div className="flex items-center gap-2">
-					<button 
-						onClick={() => onView(item)} 
-						disabled={!!actionLoading} 
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
-						title={t("view")}
-					>
+					<button onClick={() => onView(item)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors" title={t("view")}>
 						{actionLoading === `view-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faEye} size="sm" />}
 					</button>
-					<button 
-						onClick={() => onEdit(item)} 
-						disabled={!!actionLoading} 
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-						title={t("edit")}
-					>
+					<button onClick={() => onEdit(item)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
 						{actionLoading === `edit-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faPen} size="sm" />}
 					</button>
-					<button 
-						onClick={() => onDelete(item.id)} 
-						disabled={!!actionLoading} 
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
-						title={t("delete")}
-					>
+					<button onClick={() => onDelete(item.id)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
 						<FontAwesomeIcon icon={faTrash} size="sm" />
 					</button>
 				</div>
@@ -452,23 +476,9 @@ export function EmailTemplateView() {
 						{t("loading")}
 					</div>
 				) : (list || []).length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
-						{t("noData")}
-					</div>
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">{t("noData")}</div>
 				) : (
-					(list || []).map((item) => (
-						<MobileEmailTemplateCard 
-							key={item.id} 
-							item={item} 
-							onView={handleView}
-							onEdit={handleEdit} 
-							onDelete={() => handleDelete(item.id)} 
-							t={t} 
-							getTypeName={getTypeName}
-							formatDate={formatDate}
-							actionLoading={actionLoading}
-						/>
-					))
+					(list || []).map((item) => <MobileEmailTemplateCard key={item.id} item={item} onView={handleView} onEdit={handleEdit} onDelete={() => handleDelete(item.id)} t={t} getTypeName={getTypeName} formatDate={formatDate} actionLoading={actionLoading} />)
 				)}
 				<div className="mt-4">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />

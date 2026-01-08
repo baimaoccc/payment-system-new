@@ -1,7 +1,13 @@
 import { request as apiRequest, setTokenHeader, unsetTokenHeader } from "../plugins/http/baseAPI.js";
 import { API_LOGIN, API_LOGOUT, API_USER_GET, API_TELMS } from "../constants/api.js";
 import { idb } from "../plugins/indexeddb/index.js";
+import { db } from "../utils/indexedDB.js";
 import { setLoading, setSession, clearSession } from "../store/slices/auth.js";
+import { resetState as resetUsers } from "../store/slices/users.js";
+import { resetState as resetOrders } from "../store/slices/orders.js";
+import { resetState as resetUI } from "../store/slices/ui.js";
+import { resetState as resetBlacklist } from "../store/slices/blacklist.js";
+import { ROLE_MAP } from "../components/layout/menuConfig.js";
 
 /**
  * 中文：获取验证码 / Get Captcha
@@ -57,10 +63,9 @@ export async function login({ dispatch, username, password, code, remember }) {
 	const token = data.token || payload.token || null;
 	if (token) setTokenHeader(token);
 	const user = apiUser;
-	const role = "merchant";
-	const merchantId = role === "admin" ? null : "m-001";
-	dispatch(setSession({ user, role, merchantId, token }));
-	if (remember) await idb.set("session", { user, role, merchantId, token });
+	const role = ROLE_MAP[user.juese_id];
+	dispatch(setSession({ user, role, token }));
+	if (remember) await idb.set("session", { user, role, token });
 	dispatch(setLoading(false));
 	return { ok: true };
 }
@@ -68,8 +73,13 @@ export async function login({ dispatch, username, password, code, remember }) {
 /** 中文/English：登出控制器 / logout controller */
 export async function logout({ dispatch }) {
 	const res = await apiRequest({ url: API_LOGOUT, method: "POST" });
-	await idb.del("session");
+	await idb.clear(); // Clear plugin DB (payment-db)
+	await db.clear(); // Clear utils DB (AppDB)
 	dispatch(clearSession());
+	dispatch(resetUsers());
+	dispatch(resetOrders());
+	dispatch(resetUI());
+	dispatch(resetBlacklist());
 	unsetTokenHeader();
 	return res.ok ? { ok: true } : { ok: false, error: res.error };
 }
@@ -91,7 +101,10 @@ export async function restoreSession({ dispatch }) {
 			if (apiCode === 1) {
 				const apiUser = payload.data || {};
 				// Merge existing user with fresh data
-				const newSession = { ...s, user: { ...s.user, ...apiUser } };
+				const updatedUser = { ...s.user, ...apiUser };
+				const newRole = ROLE_MAP[updatedUser.juese_id];
+
+				const newSession = { ...s, user: updatedUser, role: newRole };
 				dispatch(setSession(newSession));
 				await idb.set("session", newSession);
 			} else if (apiCode === 401) {

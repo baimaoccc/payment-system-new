@@ -30,8 +30,9 @@ export function ActionDropdown({ actions }) {
 				const scrollX = window.scrollX || window.pageXOffset;
 
 				// Default to opening to the left
-				let left = rect.right - 160 + scrollX; // 160 is approx width (w-40)
-				let top = rect.bottom + 8 + scrollY;
+				const MENU_WIDTH = 128; // w-32
+				let left = rect.right - MENU_WIDTH + scrollX;
+				let top = rect.bottom + 6 + scrollY;
 
 				// Adjust if off screen (simple check)
 				if (left < 0) left = rect.left + scrollX;
@@ -49,8 +50,7 @@ export function ActionDropdown({ actions }) {
 
 		const handleScrollOrResize = () => {
 			if (buttonRef.current) {
-				const rect = buttonRef.current.getBoundingClientRect();
-				// Close if button moves significantly or just recalculate (simpler to close for now to avoid floating weirdness)
+				// Close on scroll/resize to avoid positioning issues
 				setIsOpen(false);
 			}
 		};
@@ -77,7 +77,7 @@ export function ActionDropdown({ actions }) {
 
 			{isOpen &&
 				createPortal(
-					<div ref={dropdownRef} className="fixed bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-[9999] focus:outline-none py-1 w-42" style={{ top: position.top, left: position.left }}>
+					<div ref={dropdownRef} className="fixed bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-[9999] focus:outline-none py-1 w-32" style={{ top: position.top, left: position.left }}>
 						{actions.map((action, index) => (
 							<button
 								key={index}

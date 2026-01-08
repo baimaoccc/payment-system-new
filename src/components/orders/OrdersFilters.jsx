@@ -451,12 +451,12 @@ export function OrdersFilters() {
 
 						<div className="flex flex-col gap-1">
 							<label className="text-[11px] font-medium text-gray-500">{t("paymentStatus")}</label>
-							<Select options={statusOptions} value={statusOptions.find((o) => o.value === localFilters.status) || statusOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, status: opt?.value || "all" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
+							<Select options={statusOptions} value={statusOptions.find((o) => String(o.value) === String(localFilters.status)) || statusOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, status: opt?.value ?? "all" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
 						</div>
 
 						<div className="flex flex-col gap-1">
 							<label className="text-[11px] font-medium text-gray-500">{t("logisticsStatus")}</label>
-							<Select options={shippingStatusOptions} value={shippingStatusOptions.find((o) => o.value === localFilters.shippingStatus) || shippingStatusOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, shippingStatus: opt?.value || "all" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
+							<Select options={shippingStatusOptions} value={shippingStatusOptions.find((o) => o.value === localFilters.shippingStatus) || shippingStatusOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, shippingStatus: opt?.value ?? "all" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
 						</div>
 
 						<div className="flex flex-col gap-1">

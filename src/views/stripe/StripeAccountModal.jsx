@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToast } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
+import { isSuperAdmin as checkIsSuperAdmin } from "../../components/layout/menuConfig.js";
 import { createStripeAccount, updateStripeAccount } from "../../controllers/stripeController.js";
 import { fetchCountryGroupsN } from "../../controllers/countryController.js";
 import { fetchUserListNII } from "../../controllers/usersController.js";
@@ -132,8 +133,8 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 	const [groups, setGroups] = useState([]);
 	const [adminUsers, setAdminUsers] = useState([]);
 
-	const currentUser = useSelector((state) => state.auth.user);
-	const isSuperAdmin = currentUser?.juese_id === 1;
+	const { user: currentUser, role: authRole } = useSelector((state) => state.auth);
+	const isSuperAdmin = checkIsSuperAdmin(authRole);
 
 	// Cache for admin users to avoid redundant calls
 	const adminUsersRef = useRef(null);

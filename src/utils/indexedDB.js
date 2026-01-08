@@ -92,4 +92,25 @@ export const db = {
 			console.error(e);
 		}
 	},
+
+	async clear() {
+		try {
+			const database = await openDB();
+			return new Promise((resolve, reject) => {
+				const transaction = database.transaction([STORE_NAME], "readwrite");
+				const store = transaction.objectStore(STORE_NAME);
+				const request = store.clear();
+
+				request.onsuccess = () => {
+					resolve();
+				};
+
+				request.onerror = () => {
+					reject("IndexedDB clear failed");
+				};
+			});
+		} catch (e) {
+			console.error(e);
+		}
+	},
 };

@@ -7,10 +7,12 @@ import { useI18n } from "../../plugins/i18n/index.jsx";
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
 import { RiskAnalysisModal } from "./RiskAnalysisModal.jsx";
 import { EmailTasksModal } from "../email/EmailTasksModal.jsx";
-import { fetchOrders, updateOrderLogistics, sendOrderEmailByTemplate, fetchOrderRiskLevel } from "../../controllers/ordersController.js";
+import { fetchOrders, updateOrderLogistics, sendOrderEmailByTemplate, fetchOrderRiskLevel, fetchEmailTemplatesForOrders, createOrUpdateEmailTask } from "../../controllers/ordersController.js";
+import { fetchEmailTypesN } from "../../controllers/emailController.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
 import { ActionDropdown } from "../ui/ActionDropdown.jsx";
 import { setSidebarCollapsed } from "../../store/slices/ui.js";
+import { isAdmin, isCS, isAdv } from "../layout/menuConfig.js";
 
 export function OrdersTable({ rows = [] }) {
 	const { t } = useI18n();
@@ -24,11 +26,12 @@ export function OrdersTable({ rows = [] }) {
 		}
 	}, [isTablet, dispatch]);
 
-	const { page, pageSize, filters, emailTemplates } = useSelector((s) => ({
+	const { page, pageSize, filters, emailTemplates, authRole } = useSelector((s) => ({
 		page: s.orders.page,
 		pageSize: s.orders.pageSize,
 		filters: s.orders.filters,
 		emailTemplates: s.ui.emailTemplatesAll || [],
+		authRole: s.auth.role,
 	}));
 	const safeRows = Array.isArray(rows) ? rows : [];
 
@@ -43,6 +46,35 @@ export function OrdersTable({ rows = [] }) {
 	const [emailTasksModalOpen, setEmailTasksModalOpen] = useState(false);
 	const [selectedOrderNo, setSelectedOrderNo] = useState(null);
 	const [loadingRiskOrderId, setLoadingRiskOrderId] = useState(null);
+	const [templateSelectorOpen, setTemplateSelectorOpen] = useState(false);
+	const [selectedOrderForTemplate, setSelectedOrderForTemplate] = useState(null);
+	const [sendingEmail, setSendingEmail] = useState(false);
+
+	const handleOpenTemplateSelector = (order) => {
+		setSelectedOrderForTemplate(order);
+		setTemplateSelectorOpen(true);
+	};
+
+	const handleTemplateSelected = async (template) => {
+		if (!selectedOrderForTemplate || !template) return;
+
+		setSendingEmail(true);
+		const orderNo = selectedOrderForTemplate.orderNo || selectedOrderForTemplate.client_orderNo || selectedOrderForTemplate.id;
+		
+		// Use createOrUpdateEmailTask as requested
+		const res = await createOrUpdateEmailTask({
+			template_id: template.id,
+			orderNo: orderNo
+		});
+		setSendingEmail(false);
+
+		if (res.ok) {
+			dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "success", message: t("sendEmailSuccess") || "Email sent successfully" } });
+			setTemplateSelectorOpen(false);
+		} else {
+			dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("sendEmailFailed") || "Failed to send email" } });
+		}
+	};
 
 	const handleOpenRiskAnalysis = async (order) => {
 		if (loadingRiskOrderId) return;
@@ -237,8 +269,8 @@ export function OrdersTable({ rows = [] }) {
 	};
 
 	const getActions = (o) => {
-		const actions = [
-			{
+		const allActions = {
+			details: {
 				label: t("details"),
 				icon: (
 					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -249,7 +281,7 @@ export function OrdersTable({ rows = [] }) {
 				onClick: () => navigate(`/orders/${o.id}`),
 				className: "text-blue-600",
 			},
-			{
+			radar: {
 				label: loadingRiskOrderId === o.id ? t("loading") : t("radar"),
 				icon:
 					loadingRiskOrderId === o.id ? (
@@ -269,29 +301,50 @@ export function OrdersTable({ rows = [] }) {
 				className: "text-purple-600",
 				disabled: loadingRiskOrderId === o.id,
 			},
-			{
+			email: {
 				label: t("email"),
 				icon: <FontAwesomeIcon icon={faEnvelope} />,
-				onClick: () => handleOpenEmailTasks(o.orderNo || o.client_orderNo || o.id),
+				onClick: () => handleOpenTemplateSelector(o),
 				className: "text-indigo-600",
 			},
-		];
-
-		if (o.status === 1) {
-			actions.push({
+			logistics: {
 				label: t("logisticsShipment") || "Logistics Shipment",
 				icon: <FontAwesomeIcon icon={faPlaneDeparture} />,
 				onClick: () => handleOpenLogisticsModal(o),
 				className: "text-gray-700",
-			});
+			},
+			callback: {
+				label: t("orderCallback") || "Order Callback",
+				icon: <FontAwesomeIcon icon={faCheckSquare} />,
+				onClick: () => handleOrderCallback(o),
+				className: "text-green-600",
+			},
+		};
+
+		const actions = [];
+
+		// 1. Details: Everyone
+		actions.push(allActions.details);
+
+		// 2. Radar: Super Admin, Admin
+		if (isAdmin(authRole) && o.paymentType !== 1 && [1, 2, 6].includes(Number(o.status))) {
+			actions.push(allActions.radar);
 		}
 
-		actions.push({
-			label: t("orderCallback") || "Order Callback",
-			icon: <FontAwesomeIcon icon={faCheckSquare} />,
-			onClick: () => handleOrderCallback(o),
-			className: "text-green-600",
-		});
+		// 3. Email: Super Admin, Admin, CS
+		if (isAdmin(authRole) || isCS(authRole)) {
+			actions.push(allActions.email);
+		}
+
+		// 4. Logistics: Super Admin, Admin, CS (Only if status is 1)
+		if (o.status === 1 && (isAdmin(authRole) || isCS(authRole))) {
+			actions.push(allActions.logistics);
+		}
+
+		// 5. Callback: Super Admin, Admin
+		if (isAdmin(authRole)) {
+			actions.push(allActions.callback);
+		}
 
 		return actions;
 	};
@@ -336,10 +389,12 @@ export function OrdersTable({ rows = [] }) {
 										<div className="px-3 pb-3 pt-0 text-xs text-gray-600 space-y-2 border-t border-gray-50 mt-1">
 											{/* Channel & Ref */}
 											<div className="grid grid-cols-2 gap-2 mt-3">
-												<div>
-													<span className="text-gray-400 block mb-0.5">{t("paymentChannel") || "Payment Channel"}</span>
-													<span className="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded text-[10px]">{o.comment || t("untitledChannel")}</span>
-												</div>
+												{isAdmin(authRole) && (
+													<div>
+														<span className="text-gray-400 block mb-0.5">{t("paymentChannel") || "Payment Channel"}</span>
+														<span className="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded text-[10px]">{o.comment || t("untitledChannel")}</span>
+													</div>
+												)}
 												{o.client_orderNo && (
 													<div>
 														<span className="text-gray-400 block mb-0.5">{t("ref")}</span>
@@ -397,12 +452,16 @@ export function OrdersTable({ rows = [] }) {
 											</div>
 
 											{/* Logistics */}
-											{(o.shipping_status || o.logistics_mode || o.tracking_number) && (
+											{!isAdv(authRole) && (o.shipping_status || o.logistics_mode || o.tracking_number) && (
 												<div className="bg-gray-50 p-2 rounded">
 													{o.shipping_status && (
 														<div className="flex items-center mb-2">
 															<div className="font-medium text-gray-800 mr-2">{t("logisticsInfo") || "Logistics"}:</div>
-															{o.shipping_status == "未发货" ? <span className="text-yellow-500 font-medium">{t("notShipped")}</span> : <span className="text-green-500 font-medium">{t("shipped")}</span>}
+															{o.shipping_status == "未发货" ? (
+																<span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] border border-yellow-200">{t("notShipped")}</span>
+															) : (
+																<span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200 shadow-sm">{t("shipped")}</span>
+															)}
 
 															{/* {t("status")}: {o.shipping_status} */}
 															{/* logisticsInfo */}
@@ -433,7 +492,7 @@ export function OrdersTable({ rows = [] }) {
 							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("amount")}</th>
 							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("status")}</th>
 							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("timeline")}</th>}
-							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[12%]">{t("logisticsInfo") || "Logistics"}</th>}
+							{!isTablet && !isAdv(authRole) && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[12%]">{t("logisticsInfo") || "Logistics"}</th>}
 							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("operations")}</th>
 						</tr>
 					</thead>
@@ -463,9 +522,11 @@ export function OrdersTable({ rows = [] }) {
 											<div className="font-bold text-gray-900 text-sm truncate" title={o.url}>
 												<span className="font-medium text-gray-600">{t("site")}: </span> {o.url || "-"}
 											</div>
-											<div className="text-gray-500 truncate text-xs" title={`Channel: ${o.comment || "-"}`}>
-												<span className="font-medium">{t("paymentChannel") || "Payment Channel"}:</span> {o.comment || t("untitledChannel")}
-											</div>
+											{isAdmin(authRole) && (
+												<div className="text-gray-500 truncate text-xs" title={`Channel: ${o.comment || "-"}`}>
+													<span className="font-medium">{t("paymentChannel") || "Payment Channel"}:</span> {o.comment || t("untitledChannel")}
+												</div>
+											)}
 											{isTablet && (
 												<div className="text-xs text-gray-400">
 													<span className="font-medium">{t("owner")}:</span>
@@ -544,16 +605,21 @@ export function OrdersTable({ rows = [] }) {
 										</td>
 									)}
 									{/* Logistics */}
-									{!isTablet && (
+									{!isTablet && !isAdv(authRole) && (
 										<td className="p-3 align-top">
 											<div className="flex flex-col gap-1 text-gray-500">
 												{(o.shipping_status || o.logistics_mode || o.tracking_number) && (
 													<div className="mt-1 space-y-0.5 text-[11px]">
 														{o.shipping_status && (
-															<div>
-																{t("status")}: {o.shipping_status}
-															</div>
-														)}
+														<div className="flex items-center gap-1 mb-1">
+															<span>{t("status")}:</span>
+															{o.shipping_status == "未发货" ? (
+																<span className="bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded border border-yellow-200">{t("notShipped")}</span>
+															) : (
+																<span className="bg-green-50 text-green-700 px-1.5 py-0.5 rounded font-bold border border-green-200">{t("shipped")}</span>
+															)}
+														</div>
+													)}
 														{o.tracking_number && (
 															<div className="flex items-center gap-1">
 																<span>{o.tracking_number}</span>
@@ -619,6 +685,161 @@ export function OrdersTable({ rows = [] }) {
 				</div>
 			)}
 			<EmailTasksModal t={t} isOpen={emailTasksModalOpen} onClose={() => setEmailTasksModalOpen(false)} orderNo={selectedOrderNo} />
+			<EmailTemplateSelectorModal
+				isOpen={templateSelectorOpen}
+				onClose={() => setTemplateSelectorOpen(false)}
+				onSelect={handleTemplateSelected}
+				t={t}
+				order={selectedOrderForTemplate}
+				sending={sendingEmail}
+			/>
+		</div>
+	);
+}
+
+function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sending }) {
+	const [templates, setTemplates] = useState([]);
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		if (isOpen) {
+			setLoading(true);
+			Promise.all([fetchEmailTemplatesForOrders(), fetchEmailTypesN()]).then(([tplRes, typeRes]) => {
+				setLoading(false);
+				let loadedTemplates = [];
+				let types = [];
+
+				if (tplRes.ok) {
+					loadedTemplates = tplRes.data || [];
+				}
+
+				if (typeRes.ok) {
+					const rawData = typeRes.data || {};
+					const d = rawData.data;
+					if (Array.isArray(d)) {
+						types = d;
+					} else if (d && Array.isArray(d.list)) {
+						types = d.list;
+					}
+				}
+
+				const typeMap = {};
+				types.forEach((t) => (typeMap[t.id] = t.type_name));
+
+				loadedTemplates = loadedTemplates.map((t) => ({
+					...t,
+					type_name: typeMap[t.type_id] || t.type_name,
+				}));
+
+				setTemplates(loadedTemplates);
+			});
+		}
+	}, [isOpen]);
+
+	const getTemplateStatus = (tpl) => {
+		if (!order) return { disabled: true };
+
+		// 1. Order Confirmation (订单确认) - Requires payment success
+		if (tpl.type_name === "订单确认") {
+			const isPaid = String(order.status) === "1";
+			if (!isPaid) {
+				return { 
+					disabled: true, 
+					reason: t("noPay") || "Unpaid" 
+				};
+			}
+		}
+
+		// 2. Shipping Notification (发货通知) - Requires shipped status
+		if (tpl.type_name === "发货通知") {
+			const isShipped = order.shipping_status === "已发货";
+			if (!isShipped) {
+				return { 
+					disabled: true, 
+					reason: t("notShipped") || "Not Shipped" 
+				};
+			}
+		}
+
+		return { disabled: false };
+	};
+
+	if (!isOpen) return null;
+
+	return (
+		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" onClick={!sending ? onClose : undefined}>
+			<div className="bg-white rounded-lg shadow-xl w-[400px] max-h-[80vh] flex flex-col animate-page relative" onClick={(e) => e.stopPropagation()}>
+				{sending && (
+					<div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center rounded-lg">
+						<div className="flex flex-col items-center gap-2">
+							<FontAwesomeIcon icon={faSpinner} spin size="2x" className="text-blue-600" />
+							<span className="text-sm font-medium text-gray-600">{t("sending") || "Sending..."}</span>
+						</div>
+					</div>
+				)}
+				
+				<div className="p-4 border-b flex justify-between items-center">
+					<h3 className="font-bold text-gray-800">{t("selectEmailTemplate") || "Select Email Template"}</h3>
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600" disabled={sending}>
+						&times;
+					</button>
+				</div>
+				<div className="p-4 overflow-y-auto flex-1 min-h-[200px]">
+					{loading ? (
+						<div className="flex justify-center py-8 text-gray-400">
+							<FontAwesomeIcon icon={faSpinner} spin size="2x" />
+						</div>
+					) : templates.length === 0 ? (
+						<div className="text-center py-8 text-gray-400">{t("noTemplates") || "No templates found"}</div>
+					) : (
+						<div className="space-y-2">
+							{templates.map((tpl) => {
+								const { disabled, reason } = getTemplateStatus(tpl);
+								return (
+									<button
+										key={tpl.id}
+										onClick={() => !disabled && onSelect(tpl)}
+										disabled={disabled || sending}
+										className={`w-full text-left p-3 border rounded-lg transition-all flex flex-col gap-1 group relative
+											${disabled 
+												? "bg-gray-50 border-gray-100 opacity-70 cursor-not-allowed" 
+												: "hover:bg-blue-50 hover:border-blue-200 border-gray-200 cursor-pointer"
+											}
+										`}>
+										<div className="flex justify-between items-start w-full">
+											<span className={`font-medium ${disabled ? "text-gray-500" : "text-gray-800 group-hover:text-blue-700"}`}>
+												{tpl.name || tpl.title || tpl.template_name}
+											</span>
+											{tpl.type_name && (
+												<span className={`text-[10px] px-1.5 py-0.5 rounded border ${
+													disabled 
+														? "bg-gray-100 text-gray-500 border-gray-200" 
+														: "bg-blue-50 text-blue-600 border-blue-100"
+												}`}>
+													{tpl.type_name}
+												</span>
+											)}
+										</div>
+										{tpl.description && <span className="text-xs text-gray-500 line-clamp-2">{tpl.description}</span>}
+										
+										{disabled && reason && (
+											<div className="mt-1 flex items-center gap-1 text-[10px] text-red-500 font-medium">
+												<span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span>
+												{reason}
+											</div>
+										)}
+									</button>
+								);
+							})}
+						</div>
+					)}
+				</div>
+				<div className="p-4 border-t bg-gray-50 rounded-b-lg flex justify-end">
+					<button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-200 rounded" disabled={sending}>
+						{t("cancel")}
+					</button>
+				</div>
+			</div>
 		</div>
 	);
 }

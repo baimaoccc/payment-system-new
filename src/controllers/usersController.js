@@ -28,6 +28,7 @@ export async function fetchUserListN() {
 	return { ok: true, data: data.data.list || [] };
 }
 
+// 中文：Superadmin 获取普通管理员用户列表 / Get Admin User List
 export async function fetchUserListNII() {
 	const res = await apiRequest({ url: API_USER_LIST_NII, method: "POST" });
 

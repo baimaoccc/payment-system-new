@@ -35,8 +35,11 @@ const slice = createSlice({
 		setFilters(state, action) {
 			state.filters = action.payload;
 		},
+		resetState() {
+			return initialState;
+		},
 	},
 });
 
-export const { setList, setTotal, setPage, setPageSize, setLoading, setError, setFilters } = slice.actions;
+export const { setList, setTotal, setPage, setPageSize, setLoading, setError, setFilters, resetState } = slice.actions;
 export default slice.reducer;
