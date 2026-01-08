@@ -494,22 +494,29 @@ export function StripeAccountsView() {
 													<div className="font-medium text-gray-900 truncate text-sm" title={item.comment}>
 														{item.comment || "-"}
 													</div>
-													<div className="flex items-center gap-2 mt-1">
-														{(() => {
-															const statusInfo = getStripeAccountStatusInfo(item.status, t);
-															const colorClass =
-																{
-																	gray: "bg-gray-100 text-gray-800",
-																	green: "bg-green-100 text-green-800",
-																	blue: "bg-blue-100 text-blue-800",
-																	red: "bg-red-100 text-red-800",
-																}[statusInfo.color] || "bg-gray-100 text-gray-800";
-															return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
-														})()}
-														<div className="flex items-center gap-1 text-[10px]">
-															<span className="text-gray-500">{t("st_money_sum")}:</span>
-															<span className="font-medium text-blue-600">${item.money_sum || 0}</span>
+													<div className="flex flex-col gap-1 mt-1">
+														<div className="flex items-center gap-2">
+															{(() => {
+																const statusInfo = getStripeAccountStatusInfo(item.status, t);
+																const colorClass =
+																	{
+																		gray: "bg-gray-100 text-gray-800",
+																		green: "bg-green-100 text-green-800",
+																		blue: "bg-blue-100 text-blue-800",
+																		red: "bg-red-100 text-red-800",
+																	}[statusInfo.color] || "bg-gray-100 text-gray-800";
+																return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
+															})()}
+															<div className="flex items-center gap-1 text-[10px]">
+																<span className="text-gray-500">{t("st_money_sum")}:</span>
+																<span className="font-medium text-blue-600">${item.money_sum || 0}</span>
+															</div>
 														</div>
+														{item.lunxun_status !== undefined && (
+															<span className={`self-start inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.lunxun_status === 0 ? "bg-yellow-50 text-yellow-700" : "bg-green-50 text-green-700"}`}>
+																{item.lunxun_status === 0 ? "正在轮询" : "已经轮询"}
+															</span>
+														)}
 													</div>
 												</div>
 												<div onClick={(e) => e.stopPropagation()}>
@@ -691,18 +698,25 @@ export function StripeAccountsView() {
 
 													{/* Status */}
 													<td className="p-3">
-														<div className="flex items-center gap-2 flex-wrap">
-															{(() => {
-																const statusInfo = getStripeAccountStatusInfo(item.status, t);
-																const colorClass =
-																	{
-																		gray: "bg-gray-100 text-gray-800",
-																		green: "bg-green-100 text-green-800",
-																		blue: "bg-blue-100 text-blue-800",
-																		red: "bg-red-100 text-red-800",
-																	}[statusInfo.color] || "bg-gray-100 text-gray-800";
-																return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
-															})()}
+														<div className="flex flex-col gap-1 items-start">
+															<div className="flex items-center gap-2 flex-wrap">
+																{(() => {
+																	const statusInfo = getStripeAccountStatusInfo(item.status, t);
+																	const colorClass =
+																		{
+																			gray: "bg-gray-100 text-gray-800",
+																			green: "bg-green-100 text-green-800",
+																			blue: "bg-blue-100 text-blue-800",
+																			red: "bg-red-100 text-red-800",
+																		}[statusInfo.color] || "bg-gray-100 text-gray-800";
+																	return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
+																})()}
+															</div>
+															{item.lunxun_status !== undefined && (
+																<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.lunxun_status === 0 ? "bg-yellow-50 text-yellow-700" : "bg-green-50 text-green-700"}`}>
+																	{item.lunxun_status === 0 ? "正在轮询" : "已经轮询"}
+																</span>
+															)}
 														</div>
 													</td>
 
