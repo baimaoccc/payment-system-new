@@ -1,5 +1,5 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import { API_ORDER_LIST, API_ORDER_GET, API_ORDER_CHARGES_LIST, API_ORDER_UPDATE_LOGISTICS, API_ORDER_RISK_LEVEL, API_EMAIL_TEMPLATE_LIST, API_EMAIL_TEMPLATE_LIST_N, API_EMAIL_SET_TASK } from "../constants/api.js";
+import { API_ORDER_LIST, API_ORDER_GET, API_ORDER_CHARGES_LIST, API_ORDER_UPDATE_LOGISTICS, API_ORDER_RISK_LEVEL, API_EMAIL_TEMPLATE_LIST, API_EMAIL_TEMPLATE_LIST_N, API_EMAIL_SET_TASK, API_ORDER_EXPORT, API_BASE_URL } from "../constants/api.js";
 import { setLoading, setError, setList, setTotal, setStats } from "../store/slices/orders.js";
 
 /**
@@ -162,4 +162,61 @@ export async function createOrUpdateEmailTask(data) {
 		method: "POST",
 		data,
 	});
+}
+
+export async function exportOrders({ filters = {} }) {
+	const payload = {
+		page: 1,
+		per_page: 10000,
+		keywords: filters.query || null,
+		status: filters.status === "all" ? null : filters.status,
+		start_date: filters.range?.start ? new Date(filters.range.start).getTime() : null,
+		end_date: filters.range?.end ? new Date(filters.range.end).getTime() : null,
+		user_id: filters.userId || null,
+		email: filters.email || null,
+		orderNo: filters.orderNo || null,
+		country: filters.country || null,
+		firstName: filters.firstName || null,
+		lastName: filters.lastName || null,
+		shipping_status: filters.shippingStatus === "all" ? null : filters.shippingStatus,
+		payment_status: filters.paymentStatus === "all" ? null : filters.paymentStatus,
+		phone: filters.phone || null,
+		comment: filters.comment || null,
+		url: filters.url || null,
+	};
+
+	return apiRequest({ url: API_ORDER_EXPORT, method: "GET", params: payload });
+}
+
+export function getExportOrdersUrl({ filters = {}, token = "" }) {
+	const payload = {
+		page: 1,
+		per_page: 10000,
+		keywords: filters.query || null,
+		status: filters.status === "all" ? null : filters.status,
+		start_date: filters.range?.start ? new Date(filters.range.start).getTime() : null,
+		end_date: filters.range?.end ? new Date(filters.range.end).getTime() : null,
+		user_id: filters.userId || null,
+		email: filters.email || null,
+		orderNo: filters.orderNo || null,
+		country: filters.country || null,
+		firstName: filters.firstName || null,
+		lastName: filters.lastName || null,
+		shipping_status: filters.shippingStatus === "all" ? null : filters.shippingStatus,
+		payment_status: filters.paymentStatus === "all" ? null : filters.paymentStatus,
+		phone: filters.phone || null,
+		comment: filters.comment || null,
+		url: filters.url || null,
+		token: token,
+	};
+
+	const params = new URLSearchParams();
+	Object.keys(payload).forEach((key) => {
+		const val = payload[key];
+		if (val !== null && val !== undefined && val !== "") {
+			params.append(key, val);
+		}
+	});
+
+	return `${API_BASE_URL}${API_ORDER_EXPORT}?${params.toString()}`;
 }

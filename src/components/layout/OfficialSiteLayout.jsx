@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlobe, faChevronRight, faBars, faTimes, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes, faArrowUp, faPaperPlane, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { faTwitter, faLinkedin, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import BrandLogo from "../../assets/brand-logo.png";
 import BrandTextLogo from "../../assets/brand-text.png";
 import { useI18n } from "../../plugins/i18n/index.jsx";
+import { addToast } from "../../store/slices/ui.js";
+import { request } from "../../plugins/http/baseAPI.js";
 
 export function OfficialSiteLayout() {
 	const { t, lang, setLanguage } = useI18n();
+	const dispatch = useDispatch();
 	const [scrolled, setScrolled] = useState(false);
 	const [showBackToTop, setShowBackToTop] = useState(false);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [activeSection, setActiveSection] = useState("");
+	const [contactForm, setContactForm] = useState({
+		landing_email: "",
+		landing_phone: "",
+		landing_comment: "",
+	});
+	const [contactLoading, setContactLoading] = useState(false);
 	const location = useLocation();
 
 	// Determine base path: if we are at /website, use /website, otherwise use root /
@@ -25,7 +35,38 @@ export function OfficialSiteLayout() {
 		{ name: t("nav.analytics"), path: `${basePath}#analytics` },
 		{ name: t("nav.features"), path: `${basePath}#features` },
 		{ name: t("nav.trust"), path: `${basePath}#trust` },
+		{ name: t("contact.title"), path: `${basePath}#contact` },
 	];
+
+	const handleContactSubmit = async (e) => {
+		e.preventDefault();
+		if (contactLoading) return;
+		setContactLoading(true);
+		try {
+			const payload = {
+				email: contactForm.landing_email,
+				phone: contactForm.landing_phone,
+				description: contactForm.landing_comment,
+				to_chat_id: "5174983547",
+			};
+
+			const res = await request({
+				url: "https://www.pay.ceo/api/message/setMessage",
+				method: "POST",
+				data: payload,
+			});
+			if (res.ok) {
+				dispatch(addToast({ type: "success", message: t("contact.success") }));
+				setContactForm({ landing_email: "", landing_phone: "", landing_comment: "" });
+			} else {
+				dispatch(addToast({ type: "error", message: res.error?.message || t("contact.error") }));
+			}
+		} catch (error) {
+			dispatch(addToast({ type: "error", message: t("contact.error") }));
+		} finally {
+			setContactLoading(false);
+		}
+	};
 
 	useEffect(() => {
 		// Handle hash scroll on mount or hash change
@@ -149,6 +190,39 @@ export function OfficialSiteLayout() {
 			<main className="pt-0">
 				<Outlet />
 			</main>
+
+			{/* Contact Section */}
+			<section id="contact" className="py-20 bg-slate-50 border-t border-slate-200">
+				<div className="container mx-auto px-6">
+					<div className="max-w-4xl mx-auto text-center mb-12">
+						<h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{t("contact.title")}</h2>
+						<p className="text-lg text-slate-600">{t("contact.subtitle")}</p>
+					</div>
+
+					<div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12">
+						<form onSubmit={handleContactSubmit} className="space-y-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<div>
+									<label className="block text-sm font-semibold text-slate-700 mb-2">{t("contact.email")}</label>
+									<input type="email" required disabled={contactLoading} value={contactForm.landing_email} onChange={(e) => setContactForm({ ...contactForm, landing_email: e.target.value })} placeholder={t("contact.emailPlaceholder")} className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed" />
+								</div>
+								<div>
+									<label className="block text-sm font-semibold text-slate-700 mb-2">{t("contact.phone")}</label>
+									<input type="tel" required disabled={contactLoading} value={contactForm.landing_phone} onChange={(e) => setContactForm({ ...contactForm, landing_phone: e.target.value })} placeholder={t("contact.phonePlaceholder")} className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed" />
+								</div>
+							</div>
+							<div>
+								<label className="block text-sm font-semibold text-slate-700 mb-2">{t("contact.additional")}</label>
+								<textarea rows="4" disabled={contactLoading} value={contactForm.landing_comment} onChange={(e) => setContactForm({ ...contactForm, landing_comment: e.target.value })} placeholder={t("contact.additionalPlaceholder")} className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"></textarea>
+							</div>
+							<button type="submit" disabled={contactLoading} className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2">
+								{contactLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faPaperPlane} />}
+								{t("contact.submit")}
+							</button>
+						</form>
+					</div>
+				</div>
+			</section>
 
 			{/* Footer */}
 			<footer className="bg-slate-900 text-white pt-20 pb-10">

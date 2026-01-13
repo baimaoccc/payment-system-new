@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilters, setPage } from "../../store/slices/orders.js";
 import { setAllUsers } from "../../store/slices/users.js";
+import { addToast } from "../../store/slices/ui.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faFilter, faChevronUp, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faFilter, faChevronUp, faTimes, faSpinner, faDownload } from "@fortawesome/free-solid-svg-icons";
 import Select, { components } from "react-select";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { fetchCountryList } from "../../controllers/countryController.js";
 import { fetchUserListN } from "../../controllers/usersController.js";
+import { getExportOrdersUrl } from "../../controllers/ordersController.js";
 import { getOrderStatusOptions } from "../../utils/orderStatusRender.jsx";
 import { useResponsive } from "../../hooks/useResponsive.js";
 import { db } from "../../utils/indexedDB.js";
@@ -64,9 +66,12 @@ export function OrdersFilters() {
 	const loading = useSelector((s) => s.orders.loading);
 	const ordersStats = useSelector((s) => s.orders.stats);
 	const allUsers = useSelector((s) => s.users.allUsers);
+	const role = useSelector((s) => s.auth.role);
+	const token = useSelector((s) => s.auth.token);
 	const containerRef = useRef(null);
 
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [isExporting, setIsExporting] = useState(false);
 	const [countryOptions, setCountryOptions] = useState([]);
 	const [userOptions, setUserOptions] = useState([]);
 
@@ -255,6 +260,22 @@ export function OrdersFilters() {
 		setIsExpanded(false);
 	};
 
+	const handleExport = () => {
+		if (isExporting) return;
+		setIsExporting(true);
+
+		try {
+			const url = getExportOrdersUrl({ filters: reduxFilters, token });
+			console.log(url);
+			window.open(url, "_blank");
+		} catch (e) {
+			console.error("Export error:", e);
+			dispatch(addToast({ type: "error", message: t("exportFailed") }));
+		} finally {
+			setTimeout(() => setIsExporting(false), 1000);
+		}
+	};
+
 	const statusOptions = getOrderStatusOptions(t);
 
 	const shippingStatusOptions = [
@@ -425,6 +446,12 @@ export function OrdersFilters() {
 							</button>
 						</div>
 					))}
+					{role !== "adv" && (
+						<button onClick={handleExport} disabled={isExporting || loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+							{isExporting ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faDownload} />}
+							{t("exportOrders")}
+						</button>
+					)}
 					<button onClick={() => setIsExpanded(!isExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border whitespace-nowrap ${isExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
 						<FontAwesomeIcon icon={faFilter} />
 						{t("moreFilters")}
