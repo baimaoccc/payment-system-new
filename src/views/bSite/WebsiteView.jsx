@@ -20,7 +20,10 @@ const MobileWebsiteCard = ({ item, onEdit, onDelete, t }) => {
 						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
 						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.domain_name}</h3>
 					</div>
-					<div className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full inline-block mb-1">{item.website_system}</div>
+					<div className="flex items-center gap-2 mb-1">
+						<div className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full inline-block">{item.website_system}</div>
+						{item.username && <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block">{item.username}</div>}
+					</div>
 					<div className="text-xs text-gray-500 break-all">{item.url}</div>
 				</div>
 				<div className="flex gap-2 shrink-0">
@@ -68,6 +71,7 @@ const DesktopWebsiteRow = ({ item, onEdit, onDelete, t }) => {
 			<td className="py-2 px-6 text-xs text-gray-600">
 				<span className="bg-gray-100 px-2 py-0.5 rounded-full">{item.website_system || "-"}</span>
 			</td>
+			<td className="py-2 px-6 text-xs text-gray-600">{item.username || "-"}</td>
 			<td className="py-2 px-6 text-xs">
 				<span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${item.status == 1 ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-600"}`}>
 					<span className={`w-1.5 h-1.5 rounded-full ${item.status == 1 ? "bg-green-500" : "bg-gray-400"}`}></span>
@@ -197,7 +201,7 @@ function WebsiteFormModal({ open, initial, onClose, onSave, t }) {
 
 				<div className="p-6 space-y-6">
 					{isSuperAdmin && (
-						<InputRow icon={faUser} label={t("userId")}>
+						<InputRow icon={faUser} label={t("userId")} noBorder={true}>
 							<Select value={form.user_id} onChange={(val) => setForm((v) => ({ ...v, user_id: val }))} options={[{ value: "", label: `${user?.username || "Me"} (${t("currentUser") || "Current"})` }, ...adminUsers.map((u) => ({ value: u.id, label: u.username }))]} placeholder={t("selectUser") || "Select User"} className="w-full" />
 						</InputRow>
 					)}
@@ -347,6 +351,7 @@ export function WebsiteView() {
 										<th className="py-2 px-6 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("domainName")}</th>
 										<th className="py-2 px-6 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("websiteUrl")}</th>
 										<th className="py-2 px-6 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("websiteSystem")}</th>
+										<th className="py-2 px-6 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("username")}</th>
 										<th className="py-2 px-6 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("status")}</th>
 										<th className="py-2 px-6 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("upd")}</th>
 										<th className="py-2 px-6 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("actions")}</th>

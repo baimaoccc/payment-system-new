@@ -32,12 +32,12 @@ const SectionHeader = ({ title, subtitle }) => (
 );
 
 function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentUser, allUsers = [], saving }) {
-	const [form, setForm] = useState(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null });
+	const [form, setForm] = useState(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "" });
 	const [uploading, setUploading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
 	useEffect(() => {
-		setForm(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: currentUser?.id || "" });
+		setForm(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: currentUser?.id || "", api_token: "" });
 		setShowPassword(false);
 	}, [initial, currentUser]);
 
@@ -60,6 +60,12 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 	};
 
 	const isEdit = !!initial?.id;
+
+	const canEditApiToken = React.useMemo(() => {
+		if (!currentUser) return false;
+		// Superadmin (1) and Admin (4) can edit API Token
+		return [1, 4].includes(Number(currentUser.juese_id));
+	}, [currentUser]);
 
 	// Filter roles based on current user permission
 	// Super Admin (1): Can create all
@@ -181,6 +187,17 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 
 						<InputRow icon={faEnvelope} label={t("email")}>
 							<input value={form.email} onChange={(e) => setForm((v) => ({ ...v, email: e.target.value }))} placeholder={t("email")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+						</InputRow>
+
+						<InputRow icon={faKey} label={t("apiToken")}>
+							<input
+								type="text"
+								value={form.api_token || ""}
+								onChange={(e) => setForm((v) => ({ ...v, api_token: e.target.value }))}
+								placeholder={canEditApiToken ? t("apiToken") : ""}
+								className={`w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 ${!canEditApiToken ? "cursor-not-allowed text-gray-500" : ""}`}
+								disabled={!canEditApiToken}
+							/>
 						</InputRow>
 					</div>
 
@@ -430,7 +447,7 @@ export function UsersView() {
 		allUsers: s.users.allUsers,
 	}));
 
-	const [form, setForm] = useState({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null });
+	const [form, setForm] = useState({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "" });
 	const [modalOpen, setModalOpen] = useState(false);
 	const [assignGroupModalOpen, setAssignGroupModalOpen] = useState(false);
 	const [assignTarget, setAssignTarget] = useState(null);
@@ -463,7 +480,7 @@ export function UsersView() {
 
 	const onAdd = () => {
 		setEditing(null);
-		setForm({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", pid: currentUser?.id || "", avatar: "", group_list: null });
+		setForm({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", pid: currentUser?.id || "", avatar: "", group_list: null, api_token: "" });
 		setModalOpen(true);
 	};
 
@@ -481,6 +498,7 @@ export function UsersView() {
 			pid: user.pid || currentUser?.id || "",
 			avatar: user.avatar,
 			group_list: user.group_list || null,
+			api_token: user.api_token || "",
 			// pay_group_id handled in separate modal
 		});
 		setModalOpen(true);
