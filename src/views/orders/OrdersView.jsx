@@ -9,6 +9,8 @@ import { OrdersTable } from "../../components/orders/OrdersTable.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { setPage, setPageSize, setTotal, setFilters } from "../../store/slices/orders.js";
 import { db } from "../../utils/indexedDB.js";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const getChinaDate = () => {
 	const now = new Date();
@@ -40,9 +42,10 @@ export function OrdersView() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [isInitialized, setIsInitialized] = useState(false);
 
-	const { list, loading, filters, page, pageSize, total } = useSelector((s) => ({
+	const { list, loading, uploading, filters, page, pageSize, total } = useSelector((s) => ({
 		list: s.orders.list,
 		loading: s.orders.loading,
+		uploading: s.orders.uploading,
 		filters: s.orders.filters,
 		page: s.orders.page,
 		pageSize: s.orders.pageSize,
@@ -151,10 +154,19 @@ export function OrdersView() {
 					<h3 className="text-sm font-semibold text-gray-900">{t("orders")}</h3>
 				</div>
 				<OrdersFilters />
-				{loading ? <div className="p-3 text-sm">{t("loading")}</div> : <OrdersTable rows={list} />}
-				<div className="mt-3">
-					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={onPageChange} onPageSizeChange={onPageSizeChange} />
-				</div>
+			{/* Orders Table */}
+			<div className="bg-white rounded-xl shadow-sm border border-gray-100  relative">
+				{uploading && (
+					<div className="absolute inset-0 z-50 bg-white/50 flex items-center justify-center backdrop-blur-[1px]">
+						<div className="flex flex-col items-center gap-3 bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+							<FontAwesomeIcon icon={faSpinner} spin className="text-3xl text-indigo-600" />
+							<span className="text-sm font-medium text-gray-600">{t("uploadLogisticsTemplate") || "Uploading..."}</span>
+						</div>
+					</div>
+				)}
+				<OrdersTable rows={list} loading={loading} />
+				<Pagination page={page} total={total} pageSize={pageSize} onPageChange={(p) => dispatch(setPage(p))} onPageSizeChange={(s) => dispatch(setPageSize(s))} />
+			</div>
 			</div>
 		</div>
 	);

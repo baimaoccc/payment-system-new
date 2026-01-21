@@ -207,7 +207,7 @@ export function RolesView() {
 					</table>
 				</div>
 				<div className="px-6 py-4 border-t border-gray-100">
-					<Pagination current={page} total={total} pageSize={pageSize} onChange={setPage} onPageSizeChange={setPageSize} />
+					<Pagination page={page} total={total} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
 				</div>
 			</div>
 

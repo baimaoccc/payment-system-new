@@ -49,3 +49,12 @@ body,
 .hs-custom-select > div:nth-child(1) > div:nth-child(1) div{
 	height: 100% !important;
 }
+
+.css-16r9osj-menu {
+	height: 200px !important;
+}
+
+.css-16r9osj-menu > div {
+	height: 100% !important;
+	overflow-y: scroll;
+}

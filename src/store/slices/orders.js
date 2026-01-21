@@ -27,6 +27,7 @@ const initialState = {
 	pageSize: 10,
 	total: 0,
 	loading: false,
+	uploading: false,
 	error: null,
 };
 
@@ -36,6 +37,9 @@ const slice = createSlice({
 	reducers: {
 		setLoading(state, action) {
 			state.loading = !!action.payload;
+		},
+		setUploading(state, action) {
+			state.uploading = !!action.payload;
 		},
 		setError(state, action) {
 			state.error = action.payload || null;
@@ -64,5 +68,5 @@ const slice = createSlice({
 	},
 });
 
-export const { setLoading, setError, setList, setFilters, setStats, setPage, setPageSize, setTotal, resetState } = slice.actions;
+export const { setLoading, setUploading, setError, setList, setFilters, setStats, setPage, setPageSize, setTotal, resetState } = slice.actions;
 export default slice.reducer;

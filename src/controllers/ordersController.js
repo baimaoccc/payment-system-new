@@ -1,6 +1,7 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import { API_ORDER_LIST, API_ORDER_GET, API_ORDER_CHARGES_LIST, API_ORDER_UPDATE_LOGISTICS, API_ORDER_RISK_LEVEL, API_EMAIL_TEMPLATE_LIST, API_EMAIL_TEMPLATE_LIST_N, API_EMAIL_SET_TASK, API_ORDER_EXPORT, API_BASE_URL } from "../constants/api.js";
+import { API_ORDER_LIST, API_ORDER_GET, API_ORDER_CHARGES_LIST, API_ORDER_UPDATE_LOGISTICS, API_ORDER_RISK_LEVEL, API_EMAIL_TEMPLATE_LIST, API_EMAIL_TEMPLATE_LIST_N, API_EMAIL_SET_TASK, API_ORDER_EXPORT, API_BASE_URL, API_ORDER_UPLOAD_EXCEL } from "../constants/api.js";
 import { setLoading, setError, setList, setTotal, setStats } from "../store/slices/orders.js";
+import { store } from "../store/index.js";
 
 /**
  * 中文：拉取订单列表；参数 { dispatch, page, pageSize, filters }
@@ -219,4 +220,19 @@ export function getExportOrdersUrl({ filters = {}, token = "" }) {
 	});
 
 	return `${API_BASE_URL}${API_ORDER_EXPORT}?${params.toString()}`;
+}
+
+export async function uploadOrderExcel({ filename, filetype, filedata }) {
+	const state = store.getState();
+	const token = state.auth.token;
+	const payload = { filename, filetype, filedata };
+	return apiRequest({
+		url: API_ORDER_UPLOAD_EXCEL,
+		method: "POST",
+		data: payload,
+		headers: {
+			"Content-Type": "application/json",
+			Token: token,
+		},
+	});
 }

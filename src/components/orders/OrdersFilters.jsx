@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilters, setPage } from "../../store/slices/orders.js";
+import { setFilters, setPage, setUploading } from "../../store/slices/orders.js";
 import { setAllUsers } from "../../store/slices/users.js";
 import { addToast } from "../../store/slices/ui.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faFilter, faChevronUp, faTimes, faSpinner, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faFilter, faChevronUp, faTimes, faSpinner, faDownload, faUpload } from "@fortawesome/free-solid-svg-icons";
 import Select, { components } from "react-select";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { fetchCountryList } from "../../controllers/countryController.js";
 import { fetchUserListN } from "../../controllers/usersController.js";
-import { getExportOrdersUrl } from "../../controllers/ordersController.js";
+import { getExportOrdersUrl, uploadOrderExcel } from "../../controllers/ordersController.js";
+import { API_BASE_URL, API_ORDER_EXPORT_TEMPLATE } from "../../constants/api.js";
 import { getOrderStatusOptions } from "../../utils/orderStatusRender.jsx";
 import { useResponsive } from "../../hooks/useResponsive.js";
 import { db } from "../../utils/indexedDB.js";
@@ -69,9 +70,11 @@ export function OrdersFilters() {
 	const role = useSelector((s) => s.auth.role);
 	const token = useSelector((s) => s.auth.token);
 	const containerRef = useRef(null);
+	const uploadInputRef = useRef(null);
 
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
+	const [isUploading, setIsUploading] = useState(false);
 	const [countryOptions, setCountryOptions] = useState([]);
 	const [userOptions, setUserOptions] = useState([]);
 
@@ -276,6 +279,43 @@ export function OrdersFilters() {
 		}
 	};
 
+	const handleDownloadLogisticsTemplate = () => {
+		const url = `${API_BASE_URL}${API_ORDER_EXPORT_TEMPLATE}`;
+		window.open(url, "_blank");
+	};
+
+	const handleUploadLogisticsTemplate = (e) => {
+		const file = e.target.files && e.target.files[0];
+		if (!file) return;
+		if (isUploading) return;
+		setIsUploading(true);
+		dispatch(setUploading(true));
+
+		const reader = new FileReader();
+		reader.onload = async () => {
+			try {
+				const result = reader.result;
+				if (typeof result !== "string") {
+					throw new Error("Invalid file result");
+				}
+				const base64 = result.split(",")[1] || result;
+
+				const res = await uploadOrderExcel({ filename: file.name, filetype: file.type, filedata: base64 })
+				if (!res.ok) throw new Error(res.error?.message || "Upload failed")
+
+				dispatch(addToast({ type: "success", message: t("logisticsShipment") || "批量发货已提交" }));
+			} catch (error) {
+				console.error("上传物流模版失败", error);
+				dispatch(addToast({ type: "error", message: t("saveFailed") || "上传失败" }));
+			} finally {
+				setIsUploading(false);
+				dispatch(setUploading(false));
+				if (uploadInputRef.current) uploadInputRef.current.value = "";
+			}
+		};
+		reader.readAsDataURL(file);
+	};
+
 	const statusOptions = getOrderStatusOptions(t);
 
 	const shippingStatusOptions = [
@@ -405,8 +445,9 @@ export function OrdersFilters() {
 
 	return (
 		<div className="relative bg-white rounded-xl shadow-sm border border-gray-100 mb-4 transition-all duration-300" ref={containerRef}>
+			<input ref={uploadInputRef} type="file" accept=".xls,.xlsx" className="hidden" onChange={handleUploadLogisticsTemplate} />
 			{/* Header / Stats & Toggle */}
-			<div className="p-4 flex flex-col xl:flex-row gap-4 items-start xl:items-center justify-between">
+			<div className="p-4 grid gap-4 xl:grid-cols-[2fr_1fr] xl:items-center">
 				{/* Stats */}
 				<div className={`flex flex-wrap gap-2 items-center flex-1 ${isMobile ? "justify-start" : ""}`}>
 					{displayStats.currencies.map((curr, idx) => (
@@ -434,7 +475,7 @@ export function OrdersFilters() {
 				</div>
 
 				{/* Filter Toggle */}
-				<div className="flex flex-wrap items-center gap-2 shrink-0">
+				<div className="flex flex-wrap justify-end items-center gap-2 shrink-0">
 					{activeFiltersList.map((filter) => (
 						<div key={filter.key} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md border border-blue-100 animate-fade-in">
 							<span className="font-medium">{filter.label}:</span>
@@ -447,10 +488,25 @@ export function OrdersFilters() {
 						</div>
 					))}
 					{role !== "adv" && (
-						<button onClick={handleExport} disabled={isExporting || loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-							{isExporting ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faDownload} />}
-							{t("exportOrders")}
-						</button>
+						<>
+							<button onClick={handleDownloadLogisticsTemplate} disabled={loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+								<FontAwesomeIcon icon={faDownload} />
+								{t("downloadLogisticsTemplate")}
+							</button>
+							<button
+								onClick={() => {
+									if (uploadInputRef.current) uploadInputRef.current.click();
+								}}
+								disabled={isUploading || loading}
+								className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+								{isUploading ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faUpload} />}
+								{t("uploadLogisticsTemplate")}
+							</button>
+							<button onClick={handleExport} disabled={isExporting || loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+								{isExporting ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faDownload} />}
+								{t("exportOrders")}
+							</button>
+						</>
 					)}
 					<button onClick={() => setIsExpanded(!isExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border whitespace-nowrap ${isExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
 						<FontAwesomeIcon icon={faFilter} />

@@ -35,7 +35,7 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
     };
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 select-none">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2 select-none">
             {/* Left: Page Size Selector */}
             <div className="flex items-center gap-2">
                 <Select
@@ -49,6 +49,7 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
                         { value: 100, label: `100 / ${t('page') || 'page'}` },
                     ]}
                     className="min-w-[120px] text-xs"
+                    menuPlacement="top"
                 />
             </div>
 

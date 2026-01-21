@@ -47,7 +47,7 @@ export function OfficialSiteLayout() {
 				email: contactForm.landing_email,
 				phone: contactForm.landing_phone,
 				description: contactForm.landing_comment,
-				to_chat_id: "5174983547",
+				to_chat_id: "2042615858",
 			};
 
 			const res = await request({

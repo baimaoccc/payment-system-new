@@ -410,8 +410,8 @@ export function StripeAccountsView() {
 		<div className="p-6">
 			<div className="bg-white rounded-2xl shadow p-4">
 				<div className="relative flex flex-col gap-4 mb-4" ref={containerRef}>
+					<h3 className="text-sm font-semibold text-gray-900 flex-shrink-0">{t("stripeAccounts")}</h3>
 					<div className="flex items-center justify-between">
-						<h3 className="text-sm font-semibold text-gray-900">{t("stripeAccounts")}</h3>
 						<div className="flex flex-wrap items-center justify-end gap-2">
 							{/* Active Filter Chips */}
 							{activeFiltersList.map((filter) => (
@@ -426,15 +426,17 @@ export function StripeAccountsView() {
 								</div>
 							))}
 
-							<button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border ${isFiltersExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
-								<FontAwesomeIcon icon={faFilter} />
-								{t("filter")}
-								<FontAwesomeIcon icon={isFiltersExpanded ? faChevronUp : faChevronDown} className="ml-1" />
-							</button>
-							<button onClick={handleCreate} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white bg-brand rounded-lg hover:bg-blue-700 transition-colors">
-								<FontAwesomeIcon icon={faPlus} />
-								{t("addNew")}
-							</button>
+							<div className="flex items-center gap-x-2 flex-wrap">
+								<button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border ${isFiltersExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
+									<FontAwesomeIcon icon={faFilter} />
+									{t("filter")}
+									<FontAwesomeIcon icon={isFiltersExpanded ? faChevronUp : faChevronDown} className="ml-1" />
+								</button>
+								<button onClick={handleCreate} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white bg-brand rounded-lg hover:bg-blue-700 transition-colors">
+									<FontAwesomeIcon icon={faPlus} />
+									{t("addNew")}
+								</button>
+							</div>
 						</div>
 					</div>
 
@@ -512,11 +514,7 @@ export function StripeAccountsView() {
 																<span className="font-medium text-blue-600">${item.money_sum || 0}</span>
 															</div>
 														</div>
-														{item.lunxun_status !== undefined && (
-															<span className={`self-start inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.lunxun_status === 0 ? "bg-yellow-50 text-yellow-700" : "bg-green-50 text-green-700"}`}>
-																{item.lunxun_status === 0 ? "正在轮询" : "已经轮询"}
-															</span>
-														)}
+														{item.lunxun_status !== undefined && <span className={`self-start inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.lunxun_status === 0 ? "bg-yellow-50 text-yellow-700" : "bg-green-50 text-green-700"}`}>{item.lunxun_status === 0 ? "正在轮询" : "已经轮询"}</span>}
 													</div>
 												</div>
 												<div onClick={(e) => e.stopPropagation()}>
@@ -549,8 +547,29 @@ export function StripeAccountsView() {
 
 														{/* Keys */}
 														<div>
-															<span className="text-gray-400 block mb-0.5">{t("st_keys")}</span>
-															{renderKeys(item)}
+															<span className="text-gray-400 block mb-0.5">{t("st_statistics")}</span>
+															<div className="flex flex-col gap-0.5 text-[10px]">
+																<div className="flex justify-between">
+																	<span>{t("st_today_success_rate")}:</span>
+																	<span className="font-medium">
+																		{(() => {
+																			const s = Number(item.today_order_count_1 || 0);
+																			const f = Number(item.today_order_count_6 || 0);
+																			const sum = s + f;
+																			const rate = sum > 0 ? ((s / sum) * 100).toFixed(2) + "%" : "0%";
+																			return `${rate}`;
+																		})()}
+																	</span>
+																</div>
+																<div className="flex justify-between">
+																	<span>{t("st_today_payment_rate")}:</span>
+																	<span className="font-medium">{Number(item.today_order_count) > 0 ? (((Number(item.today_order_count_1) || 0) / Number(item.today_order_count)) * 100).toFixed(2) + "%" : "0%"}</span>
+																</div>
+																<div className="flex justify-between">
+																	<span>{t("st_total_payment_rate")}:</span>
+																	<span className="font-medium">{Number(item.order_count) > 0 ? (((Number(item.order_count_1) || 0) / Number(item.order_count)) * 100).toFixed(2) + "%" : "0%"}</span>
+																</div>
+															</div>
 														</div>
 
 														{/* Limits & Stats */}
@@ -635,13 +654,13 @@ export function StripeAccountsView() {
 											{t("st_group")} / {t("st_comment")}
 										</th>
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>{t("st_site")}</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[8%]"}`}>{t("st_status")}</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>{t("remark") || "Remark"}</th>
-										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_whitelist")}</th>}
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[6%]"}`}>{t("st_status")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[8%]"}`}>{t("remark") || "Remark"}</th>
+										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[8%]">{t("st_whitelist")}</th>}
 										{/* {!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_keys")}</th>} */}
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[20%]" : "w-[10%]"}`}>{t("st_limits")}</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[8%]"}`}>{t("st_stats")}</th>
-										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_dates")}</th>}
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[11%]"}`}>{t("st_stats")}</th>
+										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_statistics")}</th>}
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[10%]"}`}>{t("actions")}</th>
 									</tr>
 								</thead>
@@ -712,11 +731,7 @@ export function StripeAccountsView() {
 																	return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
 																})()}
 															</div>
-															{item.lunxun_status !== undefined && (
-																<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.lunxun_status === 0 ? "bg-yellow-50 text-yellow-700" : "bg-green-50 text-green-700"}`}>
-																	{item.lunxun_status === 0 ? "正在轮询" : "已经轮询"}
-																</span>
-															)}
+															{item.lunxun_status !== undefined && <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.lunxun_status === 0 ? "bg-yellow-50 text-yellow-700" : "bg-green-50 text-green-700"}`}>{item.lunxun_status === 0 ? "正在轮询" : "已经轮询"}</span>}
 														</div>
 													</td>
 
@@ -808,17 +823,30 @@ export function StripeAccountsView() {
 														</div>
 													</td>
 
-													{/* Dates (Hidden on Tablet) */}
+													{/* Stats (Hidden on Tablet) */}
 													{!isTablet && (
-														<td className="p-3 overflow-hidden">
+														<td className="p-4 overflow-hidden">
 															<div className="flex flex-col gap-1.5 text-[10px] text-gray-500">
-																<div>
-																	<div className="text-[9px] text-gray-400">{t("createTime")}</div>
-																	<div className="truncate">{createDate}</div>
+																<div className="flex items-center gap-2 flex-wrap">
+																	<div className="text-[9px] text-gray-500">{t("st_today_success_rate")}:</div>
+																	<div className="truncate">
+																		{(() => {
+																			if (item.today_order_count_1 == null && item.today_order_count_6 == null) return "-";
+																			const s = Number(item.today_order_count_1 || 0);
+																			const f = Number(item.today_order_count_6 || 0);
+																			const sum = s + f;
+																			const rate = sum > 0 ? ((s / sum) * 100).toFixed(2) + "%" : "0%";
+																			return `${rate}`;
+																		})()}
+																	</div>
 																</div>
-																<div>
-																	<div className="text-[9px] text-gray-400">{t("upd")}</div>
-																	<div className="truncate">{updateDate}</div>
+																<div className="flex items-center gap-2 flex-wrap">
+																	<div className="text-[9px] text-gray-500">{t("st_today_payment_rate")}:</div>
+																	<div className="truncate">{Number(item.today_order_count) > 0 ? (((Number(item.today_order_count_1) || 0) / Number(item.today_order_count)) * 100).toFixed(2) + "%" : "0%"}</div>
+																</div>
+																<div className="flex items-center gap-2 flex-wrap">
+																	<div className="text-[9px] text-gray-500">{t("st_total_payment_rate")}:</div>
+																	<div className="truncate">{Number(item.order_count) > 0 ? (((Number(item.order_count_1) || 0) / Number(item.order_count)) * 100).toFixed(2) + "%" : "0%"}</div>
 																</div>
 															</div>
 														</td>
