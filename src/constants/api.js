@@ -68,3 +68,24 @@ export const API_BLACKLIST_LIST = "/index.php/Api/Heimingdan/getHeimingdanList";
 export const API_BLACKLIST_GET = "/index.php/Api/Heimingdan/getHeimingdan";
 export const API_BLACKLIST_DELETE = "/index.php/Api/Heimingdan/delHeimingdan";
 export const API_CONTACT_US = "/index.php/Api/Home/contactUs";
+
+// Account Type (Product Category) APIs
+export const API_ACCOUNT_TYPE_SET = "/index.php/api/Account/setAccountType";
+export const API_ACCOUNT_TYPE_LIST = "/index.php/api/Account/getAccountTypeList";
+export const API_ACCOUNT_TYPE_LIST_N = "/index.php/api/Account/getAccountTypeListN";
+export const API_ACCOUNT_TYPE_GET = "/index.php/api/Account/getAccountType";
+export const API_ACCOUNT_TYPE_DELETE = "/index.php/api/Account/delAccountType";
+
+// Account Product Name (BSite Product) APIs
+export const API_ACCOUNT_PRODUCT_SET = "/index.php/api/Account/setAccountProductName";
+export const API_ACCOUNT_PRODUCT_LIST = "/index.php/api/Account/getAccountProductNameList";
+export const API_ACCOUNT_PRODUCT_GET = "/index.php/api/Account/getAccountProductName";
+export const API_ACCOUNT_PRODUCT_DELETE = "/index.php/api/Account/delAccountProductName";
+export const API_ACCOUNT_EXPORT_TEMPLATE = "/index.php/Api/Account/exportTemplate";
+export const API_ACCOUNT_UPLOAD_EXCEL = "/index.php/api/Account/uploadExcel";
+
+// Website Management APIs
+export const API_WEBSITE_SET = "/index.php/Api/Website/setWebsite";
+export const API_WEBSITE_LIST = "/index.php/Api/Website/getWebsiteList";
+export const API_WEBSITE_GET = "/index.php/Api/Website/getWebsite";
+export const API_WEBSITE_DELETE = "/index.php/Api/Website/delWebsite";

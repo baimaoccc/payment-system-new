@@ -22,6 +22,9 @@ import { GuardedRoute } from "../components/common/GuardedRoute.jsx";
 import { AppLayout } from "../components/layout/AppLayout.jsx";
 import { DashboardView } from "../views/dashboard/DashboardView.jsx";
 import { BlacklistView } from "../views/blacklist/BlacklistView.jsx";
+import { ProductCategoryView } from "../views/bSite/ProductCategoryView.jsx";
+import { ProductView } from "../views/bSite/ProductView.jsx";
+import { WebsiteView } from "../views/bSite/WebsiteView.jsx";
 
 /**
  * 中文：应用路由配置；受保护路由需登录与权限
@@ -60,6 +63,9 @@ export function AppRouter() {
 					<Route path="users" element={<UsersView />} />
 					<Route path="roles" element={<RolesView />} />
 					<Route path="blacklist" element={<BlacklistView />} />
+					<Route path="bSite/categories" element={<ProductCategoryView />} />
+					<Route path="bSite/products" element={<ProductView />} />
+					<Route path="bSite/websites" element={<WebsiteView />} />
 					<Route path="email/types" element={<EmailTypeView />} />
 					<Route path="email/templates" element={<EmailTemplateView />} />
 					<Route path="email/tasks" element={<EmailTaskView />} />
@@ -101,6 +107,9 @@ export function AppRouter() {
 					<Route path="users" element={<UsersView />} />
 					<Route path="roles" element={<RolesView />} />
 					<Route path="blacklist" element={<BlacklistView />} />
+					<Route path="bSite/categories" element={<ProductCategoryView />} />
+					<Route path="bSite/products" element={<ProductView />} />
+					<Route path="bSite/websites" element={<WebsiteView />} />
 					<Route path="email/types" element={<EmailTypeView />} />
 					<Route path="email/templates" element={<EmailTemplateView />} />
 					<Route path="email/tasks" element={<EmailTaskView />} />

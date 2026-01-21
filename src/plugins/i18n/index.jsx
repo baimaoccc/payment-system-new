@@ -14,6 +14,7 @@ const messages = {
 		logout: "退出登录",
 		guest: "访客",
 		username: "用户名",
+		userId: "用户ID",
 		password: "密码",
 		rememberMe: "记住登录",
 		rememberDevice: "记住此设备",
@@ -407,6 +408,14 @@ const messages = {
 		exporting: "导出中...",
 		exportSuccess: "导出成功",
 		exportFailed: "导出失败",
+		edit: "编辑",
+		domainPlaceholder: "例如：example.com",
+		urlPlaceholder: "例如：https://example.com",
+		system_wordpress: "WordPress",
+		system_shopify: "Shopify",
+		system_magento: "Magento",
+		system_opencart: "OpenCart",
+		system_other: "其他",
 		// Filters
 		startTime: "开始时间",
 		endTime: "结束时间",
@@ -422,6 +431,7 @@ const messages = {
 		phone: "手机号",
 		comment: "备注",
 		selectUser: "请选择用户",
+		currentUser: "当前用户",
 		enterOrderNo: "请输入订单号",
 		enterPhone: "请输入手机号",
 		enterEmail: "请输入邮箱",
@@ -511,6 +521,34 @@ const messages = {
 		parentRequired: "请选择上级",
 		additionalDetails: "额外的信息补充...",
 		orderCallback: "订单回调",
+		// BSite Management
+		bSiteManagement: "B站管理",
+		websiteManagement: "站点管理",
+		websiteList: "站点列表",
+		addWebsite: "新增站点",
+		editWebsite: "编辑站点",
+		domainName: "域名",
+		websiteUrl: "网址",
+		websiteSystem: "建站系统",
+		deleteWebsiteConfirm: "确定要删除站点 {name} 吗？",
+		productCategory: "产品分类",
+		bSiteProduct: "B站产品",
+		categoryName: "分类名称",
+		addCategory: "新增分类",
+		editCategory: "编辑分类",
+		deleteCategoryConfirm: "确定要删除分类 {name} 吗？",
+		productName: "产品名称",
+		productNameZh: "中文名称",
+		addProduct: "新增产品",
+		editProduct: "编辑产品",
+		deleteProductConfirm: "确定要删除产品 {name} 吗？",
+		selectCategory: "选择分类",
+		exportTemplate: "导出模版",
+		importData: "导入数据",
+		uploadSuccess: "上传成功",
+		uploadFailed: "上传失败",
+		exportFailed: "导出失败",
+
 		// Website Navigation
 		nav: {
 			solutions: "解决方案",
@@ -789,6 +827,7 @@ const messages = {
 		logout: "Logout",
 		guest: "Guest",
 		username: "Username",
+		userId: "User ID",
 		password: "Password",
 		rememberMe: "Remember me",
 		rememberDevice: "Remember this device",
@@ -1172,6 +1211,7 @@ const messages = {
 		phone: "Phone",
 		comment: "Comment",
 		selectUser: "Select User",
+		currentUser: "Current User",
 		enterOrderNo: "Enter Order No",
 		enterPhone: "Enter Phone",
 		enterEmail: "Enter Email",
@@ -1258,6 +1298,38 @@ const messages = {
 		parentRequired: "Belong To is required",
 		additionalDetails: "Additional details...",
 		orderCallback: "Order Callback",
+		// BSite Management
+		bSiteManagement: "BSite Management",
+		websiteManagement: "Website Management",
+		websiteList: "Website List",
+		addWebsite: "Add Website",
+		editWebsite: "Edit Website",
+		domainName: "Domain Name",
+		websiteUrl: "URL",
+		websiteSystem: "Website System",
+		deleteWebsiteConfirm: "Are you sure you want to delete website {name}?",
+		productCategory: "Product Category",
+		bSiteProduct: "BSite Product",
+		categoryName: "Category Name",
+		addCategory: "Add Category",
+		editCategory: "Edit Category",
+		deleteCategoryConfirm: "Are you sure you want to delete category {name}?",
+		productName: "Product Name",
+		productNameZh: "Chinese Name",
+		addProduct: "Add Product",
+		editProduct: "Edit Product",
+		deleteProductConfirm: "Are you sure you want to delete product {name}?",
+		selectCategory: "Select Category",
+		exportTemplate: "Export Template",
+		importData: "Import Data",
+		edit: "Edit",
+		domainPlaceholder: "e.g. example.com",
+		urlPlaceholder: "e.g. https://example.com",
+		system_wordpress: "WordPress",
+		system_shopify: "Shopify",
+		system_magento: "Magento",
+		system_opencart: "OpenCart",
+		system_other: "Other",
 		// Website Navigation
 		nav: {
 			solutions: "Solutions",
@@ -1562,7 +1634,7 @@ export function I18nProvider({ children }) {
 
 	const value = useMemo(
 		() => ({
-			t: (k) => {
+			t: (k, params) => {
 				const keys = k.split(".");
 				let value = dict;
 				for (const key of keys) {
@@ -1572,12 +1644,17 @@ export function I18nProvider({ children }) {
 						return k;
 					}
 				}
+				if (params && typeof value === "string") {
+					Object.keys(params).forEach((key) => {
+						value = value.replace(`{${key}}`, params[key]);
+					});
+				}
 				return value;
 			},
 			lang,
 			setLanguage,
 		}),
-		[dict, lang]
+		[dict, lang],
 	);
 
 	return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

@@ -6,6 +6,7 @@ import { isSuperAdmin as checkIsSuperAdmin } from "../../components/layout/menuC
 import { createStripeAccount, updateStripeAccount } from "../../controllers/stripeController.js";
 import { fetchCountryGroupsN } from "../../controllers/countryController.js";
 import { fetchUserListNII } from "../../controllers/usersController.js";
+import { fetchAccountTypesAll } from "../../controllers/bSiteProductController.js";
 import { getPaymentTypeOptions } from "../../utils/paymentUtils.js";
 import { getStripeAccountStatusOptions, StripeAccountStatus } from "../../utils/stripeStatusUtils.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -132,6 +133,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 	const [error, setError] = useState(null);
 	const [groups, setGroups] = useState([]);
 	const [adminUsers, setAdminUsers] = useState([]);
+	const [accountTypes, setAccountTypes] = useState([]);
 
 	const { user: currentUser, role: authRole } = useSelector((state) => state.auth);
 	const isSuperAdmin = checkIsSuperAdmin(authRole);
@@ -170,10 +172,12 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		type: 1,
 		user_id: null,
 		paymentType: 0,
+		account_type_id: null,
 	});
 
 	useEffect(() => {
 		loadGroups();
+		loadAccountTypes();
 		if (isSuperAdmin) {
 			if (adminUsersRef.current && adminUsersRef.current.length > 0) {
 				setAdminUsers(adminUsersRef.current);
@@ -204,6 +208,13 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		}
 	};
 
+	const loadAccountTypes = async () => {
+		const res = await fetchAccountTypesAll();
+		if (res.ok) {
+			setAccountTypes(res.data.list.map((c) => ({ value: c.id, label: c.category_name })));
+		}
+	};
+
 	useEffect(() => {
 		if (isOpen) {
 			if (initialData) {
@@ -230,6 +241,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					type: initialData.type !== undefined ? initialData.type : 1,
 					user_id: initialData.user_id || null,
 					paymentType: initialData.paymentType || 0,
+					account_type_id: initialData.account_type_id || null,
 				});
 			} else {
 				// Reset form
@@ -251,6 +263,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					type: 1,
 					user_id: null,
 					paymentType: 0,
+					account_type_id: null,
 				});
 			}
 			setError(null);
@@ -301,6 +314,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 			{ key: "max_order", label: t("st_max_order") || "Max Order" },
 			{ key: "maximum_purchase_amount", label: t("st_max_purchase") || "Max Purchase Amount" },
 			{ key: "paymentType", label: t("paymentType") || "Payment Type" },
+			{ key: "account_type_id", label: t("productCategory") || "Product Category" },
 		];
 
 		if (isSuperAdmin) {
@@ -404,6 +418,10 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 
 							<InputRow icon={faCommentAlt} label={t("st_comment")} className="md:col-span-1">
 								<input type="text" name="comment" value={formData.comment} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder={t("commentPlaceholder")} disabled={readOnly} />
+							</InputRow>
+
+							<InputRow icon={faLayerGroup} label={t("productCategory") || "Product Category"} className="md:col-span-1" noBorder>
+								<Select value={formData.account_type_id} onChange={(val) => setFormData((prev) => ({ ...prev, account_type_id: val }))} options={accountTypes} placeholder={t("selectCategory") || "Select Category"} isDisabled={readOnly} className="w-full" />
 							</InputRow>
 
 							<InputRow icon={faCreditCard} label={t("paymentType")} className="md:col-span-1" noBorder>

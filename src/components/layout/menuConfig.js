@@ -13,6 +13,9 @@ import {
 	faFileAlt,
 	faServer,
 	faTasks,
+	faTv,
+	faBox,
+	faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Role mapping based on juese_id
@@ -85,6 +88,31 @@ export const MENU_CONFIG = [
 		icon: faBan,
 		label: "blacklist",
 		roles: ["super_admin", "admin"],
+	},
+	{
+		label: "bSiteManagement",
+		icon: faTv, // Using faTv as a placeholder for BSite, you might need to import it
+		roles: ["super_admin", "admin"],
+		children: [
+			{
+				path: "/bSite/categories",
+				label: "productCategory",
+				icon: faList,
+				roles: ["super_admin", "admin"],
+			},
+			{
+				path: "/bSite/products",
+				label: "bSiteProduct",
+				icon: faBox, // Using faBox as placeholder
+				roles: ["super_admin", "admin"],
+			},
+			{
+				path: "/bSite/websites",
+				label: "websiteManagement",
+				icon: faGlobe,
+				roles: ["super_admin", "admin"],
+			},
+		],
 	},
 	{
 		label: "emailManagement",
