@@ -8,7 +8,7 @@ import { StripeAccountModal } from "./StripeAccountModal.jsx";
 import { StripeWarningModal } from "./StripeWarningModal.jsx";
 import { StripeDisputeModal } from "./StripeDisputeModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCopy, faPen, faTrash, faEye, faExclamationTriangle, faGavel, faFilter, faChevronUp, faChevronDown, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCopy, faPen, faTrash, faEye, faExclamationTriangle, faGavel, faFilter, faChevronUp, faChevronDown, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Select, { components } from "react-select";
 import { fetchUserListN } from "../../controllers/usersController.js";
 import { setAllUsers } from "../../store/slices/users.js";

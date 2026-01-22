@@ -231,10 +231,10 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					api_publishable_key: initialData.api_publishable_key || "",
 					endpoint_secret: initialData.endpoint_secret || "",
 					c_site_url: initialData.c_site_url || "",
-					max_money: initialData.max_money || "",
-					max_order: initialData.max_order || "",
+					max_money: initialData.max_money ?? "",
+					max_order: initialData.max_order ?? "",
 					description: initialData.description || "",
-					maximum_purchase_amount: initialData.maximum_purchase_amount || "",
+					maximum_purchase_amount: initialData.maximum_purchase_amount ?? "",
 					white_list: "", // We don't use this for display anymore
 					country_group: initialData.country_group ? String(initialData.country_group) : "",
 					level: initialData.level !== undefined ? initialData.level : "",
@@ -314,7 +314,6 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 			{ key: "max_order", label: t("st_max_order") || "Max Order" },
 			{ key: "maximum_purchase_amount", label: t("st_max_purchase") || "Max Purchase Amount" },
 			{ key: "paymentType", label: t("paymentType") || "Payment Type" },
-			{ key: "account_type_id", label: t("productCategory") || "Product Category" },
 		];
 
 		if (isSuperAdmin) {
