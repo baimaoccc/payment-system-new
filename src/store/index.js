@@ -3,6 +3,7 @@ import authReducer from './slices/auth.js'
 import ordersReducer from './slices/orders.js'
 import usersReducer from './slices/users.js'
 import blacklistReducer from './slices/blacklist.js'
+import logsReducer from './slices/logs.js'
 import uiReducer from './slices/ui.js'
 
 /**
@@ -15,6 +16,7 @@ export const store = configureStore({
     orders: ordersReducer,
     users: usersReducer,
     blacklist: blacklistReducer,
+    logs: logsReducer,
     ui: uiReducer,
   },
 })

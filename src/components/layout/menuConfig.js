@@ -1,22 +1,5 @@
 import { faStripeS, faStripe } from "@fortawesome/free-brands-svg-icons";
-import {
-	faTachometerAlt,
-	faClipboardList,
-	faUsers,
-	faCreditCard,
-	faBan,
-	faLayerGroup,
-	faUnlock,
-	faShieldAlt,
-	faEnvelope,
-	faList,
-	faFileAlt,
-	faServer,
-	faTasks,
-	faTv,
-	faBox,
-	faGlobe,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTachometerAlt, faClipboardList, faUsers, faCreditCard, faBan, faLayerGroup, faUnlock, faShieldAlt, faEnvelope, faList, faFileAlt, faServer, faTasks, faTv, faBox, faGlobe } from "@fortawesome/free-solid-svg-icons";
 
 // Role mapping based on juese_id
 export const ROLE_MAP = {
@@ -87,6 +70,12 @@ export const MENU_CONFIG = [
 		path: "/blacklist",
 		icon: faBan,
 		label: "blacklist",
+		roles: ["super_admin", "admin"],
+	},
+	{
+		path: "/logs",
+		icon: faFileAlt,
+		label: "logManagement",
 		roles: ["super_admin", "admin"],
 	},
 	{

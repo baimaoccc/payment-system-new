@@ -6,7 +6,7 @@ import { DonutChart } from "../../components/charts/DonutChart.jsx";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { useResponsive } from "../../hooks/useResponsive";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserFriends, faCopy, faSpinner, faFilter, faChevronDown, faChevronUp, faTimes, faCalendarCheck, faMoneyBillWave, faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faUserFriends, faCopy, faSpinner, faFilter, faChevronDown, faChevronUp, faTimes, faCalendarCheck, faMoneyBillWave, faHistory, faCrown, faTrophy, faMedal } from "@fortawesome/free-solid-svg-icons";
 import { Select } from "../../components/ui/Select.jsx";
 import { fetchUserListN } from "../../controllers/usersController.js";
 import { fetchOrderGraphData, fetchOrderData, fetchRecentOrders } from "../../controllers/dashboardController.js";
@@ -22,11 +22,14 @@ export function DashboardView() {
 	const dispatch = useDispatch();
 	const { isMobile, isTablet } = useResponsive();
 	const user = useSelector((s) => s.auth.user);
+	const role = useSelector((s) => s.auth.role);
 	const allUsers = useSelector((s) => s.users.allUsers);
 	const [showFilters, setShowFilters] = useState(false);
 	const filterRef = useRef(null);
 	const [userOptions, setUserOptions] = useState([]);
 	const [expandedOrderId, setExpandedOrderId] = useState(null);
+
+	const canViewStats = ["admin", "superadmin"].includes(role);
 
 	const handleCopy = (text) => {
 		if (navigator.clipboard && text) {
@@ -108,6 +111,7 @@ export function DashboardView() {
 	const [loadingGraph, setLoadingGraph] = useState(false);
 	const [recentOrders, setRecentOrders] = useState([]);
 	const [loadingRecent, setLoadingRecent] = useState(false);
+	const [userStats, setUserStats] = useState([]);
 
 	// Close filters when clicking outside
 	useEffect(() => {
@@ -179,7 +183,7 @@ export function DashboardView() {
 					user_id: currentFilters.user || null,
 				}),
 				fetchRecentOrders({
-					limit: 5,
+					limit: 8,
 					user_id: currentFilters.user || null,
 				}),
 			]);
@@ -213,6 +217,11 @@ export function DashboardView() {
 			// API returns { code: 0, data: { list: { date: count } } }
 			// baseAPI returns { ok: true, data: responseBody }
 			const successList = (resSuccess.ok && resSuccess.data?.data?.list) || {};
+			if (resSuccess.ok && resSuccess.data?.data?.groupUserList) {
+				setUserStats(resSuccess.data.data.groupUserList);
+			} else {
+				setUserStats([]);
+			}
 			const failedList = (resFailed.ok && resFailed.data?.data?.list) || {};
 
 			// Merge keys and sort
@@ -439,7 +448,7 @@ export function DashboardView() {
 									? [
 											{ value: stats.paid_today_order_num, color: "#10B981" }, // Green for success
 											{ value: stats.failed_today_order_num, color: "#EF4444" }, // Red for failed
-									  ]
+										]
 									: [{ value: 1, color: "#E5E7EB" }]
 							}
 						/>
@@ -579,206 +588,311 @@ export function DashboardView() {
 				</div>
 			</div>
 
-			<Card
-				className="bg-white p-4 rounded-xl"
-				title={t("recentOrders")}
-				action={
-					<div className="flex items-center gap-2">
-						{/* <span className="text-xs text-gray-500">{t("pending")}</span>
-						<span className="px-2 py-1 bg-brand text-white rounded text-xs">{t("active")}</span> */}
-					</div>
-				}>
-				{loadingRecent ? (
-					<div className="flex justify-center items-center py-10">
-						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
-					</div>
-				) : recentOrders.length > 0 ? (
-					isMobile ? (
-						<div className="flex flex-col gap-3">
-							{recentOrders.map((o, i) => {
-								const createDate = o.createtime || "-";
-								const updateDate = o.updatetime || "-";
-								const isExpanded = expandedOrderId === i;
-
-								return (
-									<div key={i} className="bg-gray-50 rounded-lg p-3 border border-gray-100 transition-all">
-										{/* Header: Site & Status */}
-										<div className="flex justify-between items-start mb-2">
-											<div className="flex-1 min-w-0 mr-2">
-												<div className="font-bold text-gray-900 text-sm truncate" title={o.url}>
-													{o.url || "-"}
-												</div>
-												<div className="text-xs text-gray-500 truncate">{o.comment || t("untitledChannel")}</div>
-											</div>
-											<div className="flex-shrink-0">{renderOrderStatus(o, t, false)}</div>
-										</div>
-
-										{/* Amount & Customer */}
-										<div className="flex justify-between items-center mb-2">
-											<div className="font-bold text-gray-900 text-sm">
-												{o.amount} <span className="text-xs font-normal text-gray-500">{o.currency}</span>
-											</div>
-											<div className="text-xs text-gray-700 font-medium">
-												{o.first_name} {o.last_name}
-											</div>
-										</div>
-
-										{/* Footer: Date & Expand */}
-										<div className="flex justify-between items-center pt-2 border-t border-gray-200/50">
-											<div className="text-[10px] text-gray-400">{updateDate.split(" ")[0]}</div>
-											<button onClick={() => setExpandedOrderId(isExpanded ? null : i)} className={`flex items-center gap-1 text-xs font-medium transition-colors ${isExpanded ? "text-brand" : "text-gray-500 hover:text-gray-700"}`}>
-												{isExpanded ? t("collapse") || "Collapse" : t("details") || "Details"}
-												<FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} className="text-[10px]" />
-											</button>
-										</div>
-
-										{/* Expanded Content */}
-										<div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0"}`}>
-											<div className="overflow-hidden">
-												<div className="space-y-2 text-xs text-gray-600 bg-white p-3 rounded border border-gray-100">
-													{/* Ref No */}
-													{o.client_orderNo && (
-														<div className="flex flex-col gap-0.5">
-															<span className="text-[10px] text-gray-400">{t("ref")}</span>
-															<div className="font-mono bg-gray-50 px-1.5 py-0.5 rounded flex items-center justify-between cursor-pointer active:bg-gray-100" onClick={() => handleCopy(o.client_orderNo)}>
-																<span className="truncate">{o.client_orderNo}</span>
-																<FontAwesomeIcon icon={faCopy} className="text-gray-400 text-[10px]" />
-															</div>
-														</div>
-													)}
-
-													{/* Customer Details */}
-													<div className="flex flex-col gap-0.5">
-														<span className="text-[10px] text-gray-400">{t("customer")}</span>
-														<div className="truncate">{o.email}</div>
-														{o.phone && <div className="truncate text-gray-500">{o.phone}</div>}
-														{o.country && (
-															<div className="truncate text-gray-500">
-																{o.country} {o.ip ? `(${o.ip})` : ""}
-															</div>
-														)}
-													</div>
-
-													{/* Amount Details */}
-													{(o.jine || o.bizhong) && (
-														<div className="flex flex-col gap-0.5">
-															<span className="text-[10px] text-gray-400">{t("amount")}</span>
-															<div>
-																≈ {o.jine} {o.bizhong}
-															</div>
-														</div>
-													)}
-
-													{/* Timeline */}
-													<div className="flex flex-col gap-0.5">
-														<span className="text-[10px] text-gray-400">{t("timeline")}</span>
-														<div className="flex justify-between">
-															<span>{t("upd")}:</span>
-															<span>{updateDate}</span>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					) : (
-						<div className="overflow-x-auto">
-							<table className="w-full text-left border-collapse">
-								<thead>
-									<tr className="text-gray-400 text-xs border-b border-gray-100">
-										<th className="p-3 font-medium">{t("orderDetailsAndChannel")}</th>
-										<th className="p-3 font-medium">{t("customer")}</th>
-										<th className="p-3 font-medium">{t("amount")}</th>
-										<th className="p-3 font-medium">{t("status")}</th>
-										{!isTablet && <th className="p-3 font-medium">{t("timeline")}</th>}
-									</tr>
-								</thead>
-								<tbody className="text-xs">
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+				<div className={`lg:col-span-${canViewStats ? 2 : 3}`}>
+					<Card
+						className="bg-white p-4 rounded-xl h-full"
+						title={t("recentOrders")}
+						action={
+							<div className="flex items-center gap-2">
+								{/* <span className="text-xs text-gray-500">{t("pending")}</span>
+								<span className="px-2 py-1 bg-brand text-white rounded text-xs">{t("active")}</span> */}
+							</div>
+						}>
+						{loadingRecent ? (
+							<div className="flex justify-center items-center py-10">
+								<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
+							</div>
+						) : recentOrders.length > 0 ? (
+							isMobile ? (
+								<div className="flex flex-col gap-3">
 									{recentOrders.map((o, i) => {
 										const createDate = o.createtime || "-";
 										const updateDate = o.updatetime || "-";
+										const isExpanded = expandedOrderId === i;
 
 										return (
-											<tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-												{/* Order Info */}
-												<td className="p-3 align-top">
-													<div className="flex flex-col gap-1">
+											<div key={i} className="bg-gray-50 rounded-lg p-3 border border-gray-100 transition-all">
+												{/* Header: Site & Status */}
+												<div className="flex justify-between items-start mb-2">
+													<div className="flex-1 min-w-0 mr-2">
 														<div className="font-bold text-gray-900 text-sm truncate" title={o.url}>
-															<span className="font-medium text-gray-600">{t("site")}: </span> {o.url || "-"}
+															{o.url || "-"}
 														</div>
-														<div className="text-gray-500 truncate text-xs" title={`Channel: ${o.comment || "-"}`}>
-															<span className="font-medium">{t("paymentChannel") || "Payment Channel"}:</span> {o.comment || t("untitledChannel")}
-														</div>
-
-														{o.client_orderNo && (
-															<div className="flex items-center gap-1 text-[10px] text-gray-400">
-																<span className="font-medium">{t("ref")}:</span>
-																<span className="font-mono bg-gray-50 px-1 rounded truncate max-w-[100px] cursor-pointer hover:bg-gray-100 transition-colors" title={`${o.client_orderNo} (${t("clickToCopy")})`} onClick={() => handleCopy(o.client_orderNo)}>
-																	{o.client_orderNo}
-																</span>
-															</div>
-														)}
+														<div className="text-xs text-gray-500 truncate">{o.comment || t("untitledChannel")}</div>
 													</div>
-												</td>
+													<div className="flex-shrink-0">{renderOrderStatus(o, t, false)}</div>
+												</div>
 
-												{/* User Info */}
-												<td className="p-3 align-top">
-													<div className="flex flex-col gap-1">
-														<div className="font-medium text-gray-800">
-															{o.first_name} {o.last_name}
-														</div>
-														<div className="text-gray-500">{o.email}</div>
-														{o.phone && <div className="text-gray-400 text-[10px]">{o.phone}</div>}
-														{o.country && (
-															<div className="text-gray-400 text-[10px]">
-																{o.country} {o.ip ? `(${o.ip})` : ""}
-															</div>
-														)}
+												{/* Amount & Customer */}
+												<div className="flex justify-between items-center mb-2">
+													<div className="font-bold text-gray-900 text-sm">
+														{o.amount} <span className="text-xs font-normal text-gray-500">{o.currency}</span>
 													</div>
-												</td>
-
-												{/* Amount */}
-												<td className="p-3 align-top">
-													<div className="flex flex-col gap-1">
-														<div className="font-bold text-gray-900 text-sm">
-															{o.amount} <span className="text-xs font-normal text-gray-500">{o.currency}</span>
-														</div>
-														{(o.jine || o.bizhong) && (
-															<div className="text-gray-500">
-																≈ {o.jine} <span className="text-[10px]">{o.bizhong}</span>
-															</div>
-														)}
+													<div className="text-xs text-gray-700 font-medium">
+														{o.first_name} {o.last_name}
 													</div>
-												</td>
+												</div>
 
-												{/* Status */}
-												<td className="p-3 align-middle">{renderOrderStatus(o, t, false)}</td>
+												{/* Footer: Date & Expand */}
+												<div className="flex justify-between items-center pt-2 border-t border-gray-200/50">
+													<div className="text-[10px] text-gray-400">{updateDate.split(" ")[0]}</div>
+													<button onClick={() => setExpandedOrderId(isExpanded ? null : i)} className={`flex items-center gap-1 text-xs font-medium transition-colors ${isExpanded ? "text-brand" : "text-gray-500 hover:text-gray-700"}`}>
+														{isExpanded ? t("collapse") || "Collapse" : t("details") || "Details"}
+														<FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} className="text-[10px]" />
+													</button>
+												</div>
 
-												{/* Timeline - Hidden on Tablet */}
-												{!isTablet && (
-													<td className="p-3 align-middle">
-														<div className="flex flex-col gap-1 text-gray-500">
-															<div title={`Updated: ${updateDate}`}>
-																<span className="text-gray-400 text-[10px]">{t("upd")}:</span> {updateDate.split(" ")[0]}
-																<div className="text-[10px] pl-5">{updateDate.split(" ")[1]}</div>
+												{/* Expanded Content */}
+												<div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0"}`}>
+													<div className="overflow-hidden">
+														<div className="space-y-2 text-xs text-gray-600 bg-white p-3 rounded border border-gray-100">
+															{/* Ref No */}
+															{o.client_orderNo && (
+																<div className="flex flex-col gap-0.5">
+																	<span className="text-[10px] text-gray-400">{t("ref")}</span>
+																	<div className="font-mono bg-gray-50 px-1.5 py-0.5 rounded flex items-center justify-between cursor-pointer active:bg-gray-100" onClick={() => handleCopy(o.client_orderNo)}>
+																		<span className="truncate">{o.client_orderNo}</span>
+																		<FontAwesomeIcon icon={faCopy} className="text-gray-400 text-[10px]" />
+																	</div>
+																</div>
+															)}
+
+															{/* Customer Details */}
+															<div className="flex flex-col gap-0.5">
+																<span className="text-[10px] text-gray-400">{t("customer")}</span>
+																<div className="truncate">{o.email}</div>
+																{o.phone && <div className="truncate text-gray-500">{o.phone}</div>}
+																{o.country && (
+																	<div className="truncate text-gray-500">
+																		{o.country} {o.ip ? `(${o.ip})` : ""}
+																	</div>
+																)}
+															</div>
+
+															{/* Amount Details */}
+															{(o.jine || o.bizhong) && (
+																<div className="flex flex-col gap-0.5">
+																	<span className="text-[10px] text-gray-400">{t("amount")}</span>
+																	<div>
+																		≈ {o.jine} {o.bizhong}
+																	</div>
+																</div>
+															)}
+
+															{/* Timeline */}
+															<div className="flex flex-col gap-0.5">
+																<span className="text-[10px] text-gray-400">{t("timeline")}</span>
+																<div className="flex justify-between">
+																	<span>{t("upd")}:</span>
+																	<span>{updateDate}</span>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										);
+									})}
+								</div>
+							) : (
+								<div className="overflow-x-auto">
+									<table className="w-full text-left border-collapse">
+										<thead>
+											<tr className="text-gray-400 text-xs border-b border-gray-100">
+												<th className="p-3 font-medium">{t("orderDetailsAndChannel")}</th>
+												<th className="p-3 font-medium">{t("customer")}</th>
+												<th className="p-3 font-medium">{t("amount")}</th>
+												<th className="p-3 font-medium">{t("status")}</th>
+												{!isTablet && <th className="p-3 font-medium">{t("timeline")}</th>}
+											</tr>
+										</thead>
+										<tbody className="text-xs">
+											{recentOrders.map((o, i) => {
+												const createDate = o.createtime || "-";
+												const updateDate = o.updatetime || "-";
+
+												return (
+													<tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+														{/* Order Info */}
+														<td className="p-3 align-top">
+															<div className="flex flex-col gap-1">
+																<div className="font-bold text-gray-900 text-sm truncate max-w-[140px]" title={o.url}>
+																	<span className="font-medium text-gray-600">{t("site")}: </span> {o.url || "-"}
+																</div>
+																<div className="text-gray-500 truncate text-xs max-w-[140px]" title={`Channel: ${o.comment || "-"}`}>
+																	<span className="font-medium">{t("paymentChannel") || "Payment Channel"}:</span> {o.comment || t("untitledChannel")}
+																</div>
+
+																{o.client_orderNo && (
+																	<div className="flex items-center gap-1 text-[10px] text-gray-400">
+																		<span className="font-medium">{t("ref")}:</span>
+																		<span className="font-mono bg-gray-50 px-1 rounded truncate max-w-[100px] cursor-pointer hover:bg-gray-100 transition-colors" title={`${o.client_orderNo} (${t("clickToCopy")})`} onClick={() => handleCopy(o.client_orderNo)}>
+																			{o.client_orderNo}
+																		</span>
+																	</div>
+																)}
+															</div>
+														</td>
+
+														{/* User Info */}
+														<td className="p-3 align-top">
+															<div className="flex flex-col gap-1">
+																<div className="font-medium text-gray-800">
+																	{o.first_name} {o.last_name}
+																</div>
+																<div className="text-gray-500 truncate max-w-[120px]" title={o.email}>
+																	{o.email}
+																</div>
+																{o.phone && <div className="text-gray-400 text-[10px]">{o.phone}</div>}
+																{o.country && (
+																	<div className="text-gray-400 text-[10px]">
+																		{o.country} {o.ip ? `(${o.ip})` : ""}
+																	</div>
+																)}
+															</div>
+														</td>
+
+														{/* Amount */}
+														<td className="p-3 align-top">
+															<div className="flex flex-col gap-1">
+																<div className="font-bold text-gray-900 text-sm">
+																	{o.amount} <span className="text-xs font-normal text-gray-500">{o.currency}</span>
+																</div>
+																{(o.jine || o.bizhong) && (
+																	<div className="text-gray-500">
+																		≈ {o.jine} <span className="text-[10px]">{o.bizhong}</span>
+																	</div>
+																)}
+															</div>
+														</td>
+
+														{/* Status */}
+														<td className="p-3 align-middle">{renderOrderStatus(o, t, false)}</td>
+
+														{/* Timeline - Hidden on Tablet */}
+														{!isTablet && (
+															<td className="p-3 align-middle">
+																<div className="flex flex-col gap-1 text-gray-500">
+																	<div title={`Updated: ${updateDate}`}>
+																		<span className="text-gray-400 text-[10px]">{t("upd")}:</span> {updateDate.split(" ")[0]}
+																		<div className="text-[10px] pl-5">{updateDate.split(" ")[1]}</div>
+																	</div>
+																</div>
+															</td>
+														)}
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								</div>
+							)
+						) : (
+							<div className="py-10 text-center text-gray-500 text-sm">{t("noData")}</div>
+						)}
+					</Card>
+				</div>
+				{canViewStats && (
+					<div className="lg:col-span-1">
+						<Card className="bg-white p-0 rounded-xl h-full flex flex-col overflow-hidden shadow-sm border border-gray-100" title={null}>
+							<div className="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+							<div className="flex items-center gap-2">
+								<div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+									<FontAwesomeIcon icon={faTrophy} className="text-sm" />
+								</div>
+								<h3 className="font-bold text-gray-900">{t("userStats")}</h3>
+							</div>
+							<div className="text-xs text-gray-400 font-medium px-2 py-1 bg-gray-50 rounded-md">Top {userStats.length}</div>
+						</div>
+
+						<div className="overflow-y-auto custom-scrollbar flex-1">
+							<table className="w-full text-left border-collapse">
+								<thead className="bg-gray-50/50 sticky top-0 z-10 backdrop-blur-sm">
+									<tr className="text-gray-400 text-xs border-b border-gray-100">
+										<th className="p-3 pl-5 font-medium w-[45%]">{t("username")}</th>
+										<th className="p-3 font-medium text-right w-[25%]">{t("ordersCount")}</th>
+										<th className="p-3 pr-5 font-medium text-right w-[30%]">{t("amount")}</th>
+									</tr>
+								</thead>
+								<tbody className="text-xs">
+									{userStats.length > 0 ? (
+										userStats.map((u, i) => {
+											const orders = parseInt(u.sl) || 0;
+											const amount = parseFloat(u.jine) || 0;
+											// Calculate totals inside render or memoize if expensive (here it's cheap)
+											const totalOrders = userStats.reduce((acc, curr) => acc + (parseInt(curr.sl) || 0), 0) || 1;
+											const totalAmount = userStats.reduce((acc, curr) => acc + (parseFloat(curr.jine) || 0), 0) || 1;
+
+											const orderPercent = Math.min((orders / totalOrders) * 100, 100);
+											const amountPercent = Math.min((amount / totalAmount) * 100, 100);
+
+											// Generate avatar color
+											const colors = ["bg-red-50 text-red-600 ring-red-100", "bg-orange-50 text-orange-600 ring-orange-100", "bg-amber-50 text-amber-600 ring-amber-100", "bg-green-50 text-green-600 ring-green-100", "bg-emerald-50 text-emerald-600 ring-emerald-100", "bg-teal-50 text-teal-600 ring-teal-100", "bg-cyan-50 text-cyan-600 ring-cyan-100", "bg-sky-50 text-sky-600 ring-sky-100", "bg-blue-50 text-blue-600 ring-blue-100", "bg-indigo-50 text-indigo-600 ring-indigo-100", "bg-violet-50 text-violet-600 ring-violet-100", "bg-purple-50 text-purple-600 ring-purple-100", "bg-fuchsia-50 text-fuchsia-600 ring-fuchsia-100", "bg-pink-50 text-pink-600 ring-pink-100", "bg-rose-50 text-rose-600 ring-rose-100"];
+											let hash = 0;
+											for (let j = 0; j < u.username.length; j++) hash = u.username.charCodeAt(j) + ((hash << 5) - hash);
+											const colorClass = colors[Math.abs(hash) % colors.length];
+
+											return (
+												<tr key={i} className="group hover:bg-gray-50 transition-all duration-200 border-b border-gray-50 last:border-0">
+													<td className="p-3 pl-5">
+														<div className="flex items-center gap-3">
+															<div className="relative">
+																<div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-offset-1 ${colorClass}`}>{u.username.charAt(0).toUpperCase()}</div>
+																{i < 3 && (
+																	<div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] border border-white text-white shadow-sm ${i === 0 ? "bg-yellow-400" : i === 1 ? "bg-gray-400" : "bg-orange-400"}`}>
+																		<FontAwesomeIcon icon={faCrown} />
+																	</div>
+																)}
+															</div>
+															<div className="flex flex-col min-w-0">
+																<div className="font-bold text-gray-900 truncate max-w-[100px]" title={u.username}>
+																	{u.username}
+																</div>
+																{i < 3 && (
+																	<div className="text-[10px] text-gray-400 font-medium">
+																		{t("rank")} #{i + 1}
+																	</div>
+																)}
 															</div>
 														</div>
 													</td>
-												)}
-											</tr>
-										);
-									})}
+													<td className="p-3 text-right align-middle">
+														<div className="flex flex-col items-end gap-1">
+															<span className="font-bold text-gray-700">{orders.toLocaleString()}</span>
+															{/* <div className="w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
+																<div className="h-full bg-blue-500 rounded-full" style={{ width: `${orderPercent}%` }}></div>
+															</div> */}
+														</div>
+													</td>
+													<td className="p-3 pr-5 text-right align-middle">
+														<div className="flex flex-col items-end gap-1">
+															<span className="font-bold text-gray-900">${amount.toLocaleString()}</span>
+															{/* <div className="w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
+																<div className="h-full bg-emerald-500 rounded-full" style={{ width: `${amountPercent}%` }}></div>
+															</div> */}
+														</div>
+													</td>
+												</tr>
+											);
+										})
+									) : (
+										<tr>
+											<td colSpan="3" className="p-8 text-center text-gray-400 flex flex-col items-center gap-2">
+												<div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-300">
+													<FontAwesomeIcon icon={faUserFriends} className="text-xl" />
+												</div>
+												<span>{t("noData")}</span>
+											</td>
+										</tr>
+									)}
 								</tbody>
 							</table>
 						</div>
-					)
-				) : (
-					<div className="py-10 text-center text-gray-500 text-sm">{t("noData")}</div>
+					</Card>
+				</div>
 				)}
-			</Card>
+			</div>
 		</div>
 	);
 }

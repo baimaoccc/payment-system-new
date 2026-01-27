@@ -11,7 +11,7 @@ export function Footer() {
 	const { t, lang, setLanguage } = useI18n();
 	const telegram = "@ACeo_Pay";
 	const telegramLink = "https://t.me/ACeo_Pay";
-	const icp = "ICP备 2025-000001";
+	const icp = "ICP备 2026-000001";
 
 	const languageOptions = [
 		{ value: "zh", label: "中文" },
@@ -27,7 +27,7 @@ export function Footer() {
 		<footer className="bg-white w-full border-t px-4 py-6 lg:px-6 lg:py-4 text-sm">
 			<div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4">
 				<div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-4 gap-y-2 text-gray-600">
-					<span className="text-gray-500 font-medium tracking-wide text-xs sm:text-sm">Copyright © 2025 {t("appTitle")}. All Rights Reserved.</span>
+					<span className="text-gray-500 font-medium tracking-wide text-xs sm:text-sm">Copyright © 2026 {t("appTitle")}. All Rights Reserved.</span>
 					{/* <NavLink to="#" className="hover:text-brand">
 						{t("privacyPolicy")}
 					</NavLink>

@@ -28,6 +28,7 @@ export async function fetchOrders({ dispatch, page = 1, pageSize = 20, filters =
 		phone: filters.phone || null,
 		comment: filters.comment || null,
 		url: filters.url || null,
+		payment_type: filters.paymentType !== undefined && filters.paymentType !== "" ? filters.paymentType : null,
 	};
 
 	const res = await apiRequest({ url: API_ORDER_LIST, method: "POST", data: payload });
@@ -184,6 +185,7 @@ export async function exportOrders({ filters = {} }) {
 		phone: filters.phone || null,
 		comment: filters.comment || null,
 		url: filters.url || null,
+		payment_type: filters.paymentType !== undefined && filters.paymentType !== "" ? filters.paymentType : null,
 	};
 
 	return apiRequest({ url: API_ORDER_EXPORT, method: "GET", params: payload });
@@ -208,6 +210,7 @@ export function getExportOrdersUrl({ filters = {}, token = "" }) {
 		phone: filters.phone || null,
 		comment: filters.comment || null,
 		url: filters.url || null,
+		payment_type: filters.paymentType !== undefined && filters.paymentType !== "" ? filters.paymentType : null,
 		token: token,
 	};
 

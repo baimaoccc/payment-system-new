@@ -12,6 +12,7 @@ import { fetchUserListN } from "../../controllers/usersController.js";
 import { getExportOrdersUrl, uploadOrderExcel } from "../../controllers/ordersController.js";
 import { API_BASE_URL, API_ORDER_EXPORT_TEMPLATE } from "../../constants/api.js";
 import { getOrderStatusOptions } from "../../utils/orderStatusRender.jsx";
+import { getPaymentTypeOptions } from "../../utils/paymentUtils.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
 import { db } from "../../utils/indexedDB.js";
 
@@ -93,6 +94,7 @@ export function OrdersFilters() {
 		shippingStatus: reduxFilters.shippingStatus || "all",
 		url: reduxFilters.url || "",
 		phone: reduxFilters.phone || "",
+		paymentType: reduxFilters.paymentType !== undefined ? reduxFilters.paymentType : "",
 	});
 
 	// Load filters from IndexedDB on mount
@@ -122,6 +124,9 @@ export function OrdersFilters() {
 					if (parsed.userId) {
 						parsed.userId = Number(parsed.userId);
 					}
+					if (parsed.paymentType !== undefined && parsed.paymentType !== "") {
+						parsed.paymentType = Number(parsed.paymentType);
+					}
 					if (parsed.startTime) {
 						parsed.startTime = Number(parsed.startTime);
 					}
@@ -137,7 +142,7 @@ export function OrdersFilters() {
 						setFilters({
 							...parsed,
 							range: parsed.startTime || parsed.endTime ? { start: parsed.startTime, end: parsed.endTime } : null,
-						})
+						}),
 					);
 				} catch (e) {
 					console.error("Failed to parse cached filters", e);
@@ -158,7 +163,7 @@ export function OrdersFilters() {
 						...reduxFilters,
 						...defaults,
 						range: { start: defaults.startTime, end: defaults.endTime },
-					})
+					}),
 				);
 
 				console.log("设定值----");
@@ -231,7 +236,7 @@ export function OrdersFilters() {
 			setFilters({
 				...localFilters,
 				range: localFilters.startTime || localFilters.endTime ? { start: localFilters.startTime, end: localFilters.endTime } : null,
-			})
+			}),
 		);
 		dispatch(setPage(1));
 		setIsExpanded(false);
@@ -256,6 +261,7 @@ export function OrdersFilters() {
 			shippingStatus: "all",
 			url: "",
 			phone: "",
+			paymentType: "",
 		};
 		setLocalFilters(resetState);
 		dispatch(setFilters({ ...resetState, range: null }));
@@ -300,8 +306,8 @@ export function OrdersFilters() {
 				}
 				const base64 = result.split(",")[1] || result;
 
-				const res = await uploadOrderExcel({ filename: file.name, filetype: file.type, filedata: base64 })
-				if (!res.ok) throw new Error(res.error?.message || "Upload failed")
+				const res = await uploadOrderExcel({ filename: file.name, filetype: file.type, filedata: base64 });
+				if (!res.ok) throw new Error(res.error?.message || "Upload failed");
 
 				dispatch(addToast({ type: "success", message: t("logisticsShipment") || "批量发货已提交" }));
 			} catch (error) {
@@ -317,6 +323,7 @@ export function OrdersFilters() {
 	};
 
 	const statusOptions = getOrderStatusOptions(t);
+	const paymentTypeOptions = getPaymentTypeOptions(t);
 
 	const shippingStatusOptions = [
 		{ value: "all", label: t("all") },
@@ -366,6 +373,10 @@ export function OrdersFilters() {
 		const shippingLabel = shippingStatusOptions.find((o) => String(o.value) === String(reduxFilters.shippingStatus))?.label || reduxFilters.shippingStatus;
 		activeFiltersList.push({ key: "shippingStatus", label: t("logisticsStatus"), value: shippingLabel });
 	}
+	if (reduxFilters.paymentType !== undefined && reduxFilters.paymentType !== null && reduxFilters.paymentType !== "") {
+		const label = paymentTypeOptions.find((o) => String(o.value) === String(reduxFilters.paymentType))?.label || reduxFilters.paymentType;
+		activeFiltersList.push({ key: "paymentType", label: t("paymentType"), value: label });
+	}
 	if (reduxFilters.range?.start) {
 		activeFiltersList.push({ key: "startTime", label: t("startTime"), value: timestampToDateValue(reduxFilters.range.start) });
 	}
@@ -384,7 +395,7 @@ export function OrdersFilters() {
 		} else {
 			// Reset to default values
 			if (key === "status" || key === "shippingStatus") newFilters[key] = "all";
-			else if (key === "userId" || key === "country") newFilters[key] = null; // or "" depending on logic
+			else if (key === "userId" || key === "country" || key === "paymentType") newFilters[key] = "";
 			else newFilters[key] = "";
 		}
 
@@ -531,6 +542,11 @@ export function OrdersFilters() {
 						<InputField label={t("phone")} value={localFilters.phone} onChange={(e) => setLocalFilters({ ...localFilters, phone: e.target.value })} placeholder={t("enterPhone") || "Enter phone"} />
 						<InputField label={t("url")} value={localFilters.url} onChange={(e) => setLocalFilters({ ...localFilters, url: e.target.value })} placeholder={t("url") || "Enter URL"} />
 						<InputField label={t("paymentChannel")} value={localFilters.comment} onChange={(e) => setLocalFilters({ ...localFilters, comment: e.target.value })} placeholder={t("enterPaymentChannel") || "Enter Payment Channel"} />
+
+						<div className="flex flex-col gap-1">
+							<label className="text-[11px] font-medium text-gray-500">{t("paymentType")}</label>
+							<Select options={[{ value: "", label: t("all") }, ...paymentTypeOptions]} value={localFilters.paymentType === "" ? { value: "", label: t("all") } : paymentTypeOptions.find((o) => String(o.value) === String(localFilters.paymentType)) || { value: "", label: t("all") }} onChange={(opt) => setLocalFilters({ ...localFilters, paymentType: opt?.value ?? "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
+						</div>
 
 						<div className="flex flex-col gap-1">
 							<label className="text-[11px] font-medium text-gray-500">{t("paymentStatus")}</label>

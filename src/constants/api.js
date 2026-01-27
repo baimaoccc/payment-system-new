@@ -92,3 +92,7 @@ export const API_WEBSITE_DELETE = "/index.php/Api/Website/delWebsite";
 export const API_WEBSITE_EXPORT_TEMPLATE = "/index.php/Api/Website/exportTemplate";
 export const API_WEBSITE_UPLOAD_EXCEL = "/index.php/api/Website/uploadExcel";
 export const API_WEBSITE_BATCH_UPDATE = "/index.php/Api/Website/plWebsite";
+
+// Log Management APIs
+export const API_LOG_LIST = "/index.php/api/Log/getLogList";
+export const API_LOG_GET = "/index.php/api/Log/getLog";

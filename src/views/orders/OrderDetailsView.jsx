@@ -6,8 +6,9 @@ import { addToast } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { isAdmin } from "../../components/layout/menuConfig.js";
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
+import { LogDetailModal } from "../../components/logs/LogDetailModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faUser, faCreditCard, faDesktop, faList } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faUser, faCreditCard, faDesktop, faList, faHistory, faEye } from "@fortawesome/free-solid-svg-icons";
 
 export default function OrderDetailsView() {
 	const { id } = useParams();
@@ -19,6 +20,8 @@ export default function OrderDetailsView() {
 	const [loading, setLoading] = useState(true);
 	const [charges, setCharges] = useState([]);
 	const [loadingCharges, setLoadingCharges] = useState(false);
+	const [detailId, setDetailId] = useState(null);
+	const [modalOpen, setModalOpen] = useState(false);
 
 	const extraData = useMemo(() => {
 		if (!order?.data) return {};
@@ -63,6 +66,11 @@ export default function OrderDetailsView() {
 		setLoadingCharges(false);
 	};
 
+	const openDetails = (id) => {
+		setDetailId(id);
+		setModalOpen(true);
+	};
+
 	const handleCopy = (text) => {
 		if (!text || text === "-") return;
 		navigator.clipboard
@@ -80,6 +88,8 @@ export default function OrderDetailsView() {
 
 	return (
 		<div className="p-4 md:py-6 w-full mx-auto animate-in fade-in duration-300">
+			<LogDetailModal open={modalOpen} logId={detailId} onClose={() => setModalOpen(false)} t={t} />
+
 			{/* Header */}
 			<div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-6">
 				<div className="flex items-center">
@@ -362,6 +372,81 @@ export default function OrderDetailsView() {
 								</div>
 							</>
 						)}
+					</div>
+				)}
+
+				{/* Logs List Card */}
+				{isAdmin(authRole) && order?.logList && order.logList.length > 0 && (
+					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:col-span-2">
+						<div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+							<div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+								<FontAwesomeIcon icon={faHistory} className="text-xl" />
+							</div>
+							<div>
+								<h2 className="text-lg font-bold text-gray-900">{t("orderLogs") || "Order Logs"}</h2>
+								<p className="text-xs text-gray-500">{t("orderLogsSub") || "System logs related to this order"}</p>
+							</div>
+						</div>
+
+						{/* Desktop/Tablet Table View */}
+						<div className="hidden md:block overflow-x-auto">
+							<table className="w-full text-sm text-left text-xs">
+								<thead className="bg-gray-50 text-gray-500">
+									<tr>
+										<th className="px-4 py-3 font-medium rounded-l-lg">{t("log_id") || "Log ID"}</th>
+										<th className="px-4 py-3 font-medium">{t("user_id") || "User ID"}</th>
+										<th className="px-4 py-3 font-medium">{t("log_title") || "Title"}</th>
+										<th className="px-4 py-3 font-medium">{t("log_link") || "Link"}</th>
+										<th className="px-4 py-3 font-medium">{t("log_ip") || "IP"}</th>
+										<th className="px-4 py-3 font-medium">{t("log_createtime") || "Time"}</th>
+										<th className="px-4 py-3 font-medium rounded-r-lg text-right">{t("actions") || "Actions"}</th>
+									</tr>
+								</thead>
+								<tbody className="divide-y divide-gray-100">
+									{order.logList.map((log, idx) => (
+										<tr key={log.id || idx} className="hover:bg-gray-50 transition-colors">
+											<td className="px-4 py-3 font-mono text-gray-500">#{log.id}</td>
+											<td className="px-4 py-3 text-gray-900">{log.user_id}</td>
+											<td className="px-4 py-3 text-gray-900">{log.title}</td>
+											<td className="px-4 py-3 text-blue-600 max-w-[200px] truncate" title={log.link}>
+												{log.link}
+											</td>
+											<td className="px-4 py-3 text-gray-500 font-mono">{log.ip}</td>
+											<td className="px-4 py-3 text-gray-500 whitespace-nowrap">{log.createtime ? new Date(log.createtime * 1000).toLocaleString() : "-"}</td>
+											<td className="px-4 py-3 text-right">
+												<button onClick={() => openDetails(log.id)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("viewDetails")}>
+													<FontAwesomeIcon icon={faEye} />
+												</button>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+
+						{/* Mobile Card View */}
+						<div className="md:hidden space-y-4">
+							{order.logList.map((log, idx) => (
+								<div key={log.id || idx} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+									<div className="flex justify-between items-start mb-2">
+										<span className="text-xs font-mono text-gray-400">#{log.id}</span>
+										<span className="text-xs text-gray-500">{log.createtime ? new Date(log.createtime * 1000).toLocaleString() : "-"}</span>
+									</div>
+									<div className="font-medium text-gray-900 mb-1">{log.title}</div>
+									<div className="text-xs text-blue-600 break-all mb-2">{log.link}</div>
+									<div className="flex justify-between items-center text-xs text-gray-500 border-t border-gray-200 pt-2 mt-2">
+										<div className="flex flex-col gap-1">
+											<div>User: {log.username || log.user_id}</div>
+											<div className="font-mono">{log.ip}</div>
+										</div>
+										<button onClick={() => openDetails(log.id)} className="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 transition-colors">
+											<FontAwesomeIcon icon={faEye} />
+											<span>{t("view") || "View"}</span>
+										</button>
+									</div>
+								</div>
+							))}
+						</div>
 					</div>
 				)}
 			</div>

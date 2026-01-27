@@ -25,6 +25,7 @@ import { BlacklistView } from "../views/blacklist/BlacklistView.jsx";
 import { ProductCategoryView } from "../views/bSite/ProductCategoryView.jsx";
 import { ProductView } from "../views/bSite/ProductView.jsx";
 import { WebsiteView } from "../views/bSite/WebsiteView.jsx";
+import { LogsView } from "../views/logs/LogsView.jsx";
 
 /**
  * 中文：应用路由配置；受保护路由需登录与权限
@@ -70,6 +71,7 @@ export function AppRouter() {
 					<Route path="email/templates" element={<EmailTemplateView />} />
 					<Route path="email/tasks" element={<EmailTaskView />} />
 					<Route path="email/smtp" element={<SmtpServerView />} />
+					<Route path="logs" element={<LogsView />} />
 				</Route>
 
 				{/* Redirect unknown routes to home */}
@@ -114,6 +116,7 @@ export function AppRouter() {
 					<Route path="email/templates" element={<EmailTemplateView />} />
 					<Route path="email/tasks" element={<EmailTaskView />} />
 					<Route path="email/smtp" element={<SmtpServerView />} />
+					<Route path="logs" element={<LogsView />} />
 				</Route>
 
 				<Route path="*" element={<Navigate to="/dashboard" replace />} />
