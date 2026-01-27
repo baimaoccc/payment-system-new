@@ -13,6 +13,7 @@ import { fetchOrderGraphData, fetchOrderData, fetchRecentOrders } from "../../co
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
 import dashboardImg from "../../assets/dashboard-1.png";
 import { setAllUsers } from "../../store/slices/users.js";
+import { isAdmin } from "../../components/layout/menuConfig.js";
 
 /**
  * 首页仪表盘视图：采用抽象组件拼装，便于复用与维护
@@ -22,14 +23,14 @@ export function DashboardView() {
 	const dispatch = useDispatch();
 	const { isMobile, isTablet } = useResponsive();
 	const user = useSelector((s) => s.auth.user);
-	const role = useSelector((s) => s.auth.role);
+	const { role: authRole } = useSelector((state) => state.auth);
 	const allUsers = useSelector((s) => s.users.allUsers);
 	const [showFilters, setShowFilters] = useState(false);
 	const filterRef = useRef(null);
 	const [userOptions, setUserOptions] = useState([]);
 	const [expandedOrderId, setExpandedOrderId] = useState(null);
 
-	const canViewStats = ["admin", "superadmin"].includes(role);
+	const canViewStats = isAdmin(authRole);
 
 	const handleCopy = (text) => {
 		if (navigator.clipboard && text) {
