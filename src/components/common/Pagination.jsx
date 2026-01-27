@@ -35,7 +35,7 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
     };
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2 select-none">
+        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2 select-none">
             {/* Left: Page Size Selector */}
             <div className="flex items-center gap-2">
                 <Select

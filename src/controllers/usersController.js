@@ -85,9 +85,11 @@ export async function createUser({ dispatch, user }) {
 	// User provided setYonghu for "新增和修改". Usually update needs ID.
 	// We will pass the user object as is.
 
-	if (user.api_token.trim() === "") {
-		user.api_token = null;
-	}
+	Object.keys(user).forEach((key) => {
+		if (typeof user[key] === "string" && user[key].trim() === "") {
+			user[key] = null;
+		}
+	});
 	const res = await apiRequest({ url: API_USER_CREATE, method: "POST", data: user });
 
 	if (!res.ok) return res;

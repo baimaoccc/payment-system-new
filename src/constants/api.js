@@ -89,3 +89,6 @@ export const API_WEBSITE_SET = "/index.php/Api/Website/setWebsite";
 export const API_WEBSITE_LIST = "/index.php/Api/Website/getWebsiteList";
 export const API_WEBSITE_GET = "/index.php/Api/Website/getWebsite";
 export const API_WEBSITE_DELETE = "/index.php/Api/Website/delWebsite";
+export const API_WEBSITE_EXPORT_TEMPLATE = "/index.php/Api/Website/exportTemplate";
+export const API_WEBSITE_UPLOAD_EXCEL = "/index.php/api/Website/uploadExcel";
+export const API_WEBSITE_BATCH_UPDATE = "/index.php/Api/Website/plWebsite";

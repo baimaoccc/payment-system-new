@@ -250,13 +250,13 @@ export function OfficialSiteLayout() {
 						<p>{t("footer.copyright")}</p>
 						<div className="w-full sm:w-auto flex justify-between items-center flex-wrap  sm:space-x-6 mt-4 md:mt-0">
 							<div className="w-full sm:w-auto sm:min-w-[300px] flex justify-between items-center">
-								<Link to="/website/privacy-policy" className="hover:text-white transition-colors">
+								<Link to="/privacy-policy" className="hover:text-white transition-colors">
 									{t("footer.privacyPolicy")}
 								</Link>
-								<Link to="/website/terms-of-service" className="hover:text-white transition-colors">
+								<Link to="/terms-of-service" className="hover:text-white transition-colors">
 									{t("footer.termsOfService")}
 								</Link>
-								<Link to="/website/cookie-policy" className="hover:text-white transition-colors">
+								<Link to="/cookie-policy" className="hover:text-white transition-colors">
 									{t("footer.cookies")}
 								</Link>
 							</div>
@@ -267,7 +267,7 @@ export function OfficialSiteLayout() {
 								<span>/</span>
 								<button onClick={() => setLanguage("zh")} className={`transition-colors ${lang === "zh" ? "text-white font-medium" : "hover:text-white"}`}>
 									中文
-								</button>
+								</button>5
 							</div>
 						</div>
 					</div>

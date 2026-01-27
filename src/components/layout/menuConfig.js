@@ -81,7 +81,7 @@ export const MENU_CONFIG = [
 		path: "/users",
 		icon: faUsers,
 		label: "users",
-		roles: ["super_admin", "admin"],
+		roles: ["super_admin", "admin", "adv"],
 	},
 	{
 		path: "/blacklist",
@@ -92,7 +92,7 @@ export const MENU_CONFIG = [
 	{
 		label: "bSiteManagement",
 		icon: faTv, // Using faTv as a placeholder for BSite, you might need to import it
-		roles: ["super_admin", "admin"],
+		roles: ["super_admin", "admin", "adv"],
 		children: [
 			{
 				path: "/bSite/categories",
@@ -110,7 +110,7 @@ export const MENU_CONFIG = [
 				path: "/bSite/websites",
 				label: "websiteManagement",
 				icon: faGlobe,
-				roles: ["super_admin", "admin"],
+				roles: ["super_admin", "admin", "adv"],
 			},
 		],
 	},

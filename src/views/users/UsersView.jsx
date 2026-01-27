@@ -10,7 +10,7 @@ import { getRoleInfo } from "../../utils/roleRender.js";
 import { Select } from "../../components/ui/Select.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faPen, faTrash, faTimes, faUser, faKey, faEnvelope, faPhone, faPaperPlane, faUsers, faShieldAlt, faCamera, faSpinner, faEye, faEyeSlash, faSitemap } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPen, faTrash, faTimes, faUser, faKey, faEnvelope, faPhone, faPaperPlane, faUsers, faShieldAlt, faCamera, faSpinner, faEye, faEyeSlash, faSitemap, faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const InputRow = ({ icon, label, children, className = "", noBorder = false }) => (
 	<div className={`flex items-start gap-4 ${className}`}>
@@ -31,19 +31,22 @@ const SectionHeader = ({ title, subtitle }) => (
 	</div>
 );
 
-function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentUser, allUsers = [], saving }) {
-	const [form, setForm] = useState(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "" });
+function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentUser, allUsers = [], saving, readonly = false }) {
+	const [form, setForm] = useState(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "", review_exempt: 0 });
 	const [uploading, setUploading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
+	const isAdvertiser = currentUser && Number(currentUser.juese_id) === 6;
+
 	useEffect(() => {
-		setForm(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: currentUser?.id || "", api_token: "" });
+		setForm(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: currentUser?.id || "", api_token: "", review_exempt: 0 });
 		setShowPassword(false);
 	}, [initial, currentUser]);
 
 	const save = () => onSave(form);
 
 	const handleFileChange = async (e) => {
+		if (readonly || isAdvertiser) return;
 		const file = e.target.files[0];
 		if (!file) return;
 
@@ -62,8 +65,22 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 	const isEdit = !!initial?.id;
 
 	const canEditApiToken = React.useMemo(() => {
+		if (readonly) return false;
 		if (!currentUser) return false;
 		// Superadmin (1) and Admin (4) can edit API Token
+		return [1, 4].includes(Number(currentUser.juese_id));
+	}, [currentUser, readonly]);
+
+	const canEditReviewExempt = React.useMemo(() => {
+		if (readonly) return false;
+		if (!currentUser) return false;
+		// Superadmin (1) and Admin (4) can edit Review Exempt
+		return [1, 4].includes(Number(currentUser.juese_id));
+	}, [currentUser, readonly]);
+
+	const canViewReviewExempt = React.useMemo(() => {
+		if (!currentUser) return false;
+		// Superadmin (1) and Admin (4) can view Review Exempt
 		return [1, 4].includes(Number(currentUser.juese_id));
 	}, [currentUser]);
 
@@ -87,10 +104,12 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 					{ value: 4, label: t("role_admin") },
 					{ value: 5, label: t("role_cs") },
 					{ value: 6, label: t("role_adv") },
-			  ]
+				]
 	).map((opt) => ({
 		...opt,
 		isDisabled:
+			readonly ||
+			isAdvertiser ||
 			(opt.value === 1 && (!isEdit || Number(initial?.juese_id) !== 1)) || // Super Admin: only editable if already Super Admin
 			(opt.value === 4 && Number(currentUser?.juese_id) !== 1), // Admin: only selectable by Super Admin
 	}));
@@ -122,6 +141,14 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 		}
 	}, [currentUser, form.pid]);
 
+	const copyToClipboard = (text) => {
+		if (!text) return;
+		navigator.clipboard.writeText(text).then(
+			() => alert(t("copySuccess") || "Copied to clipboard"),
+			() => alert(t("copyFailed") || "Failed to copy"),
+		);
+	};
+
 	if (!open) return null;
 
 	return (
@@ -131,7 +158,7 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 				{/* Header */}
 				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 bg-white z-10">
 					<div>
-						<h3 className="text-xl font-bold text-gray-900">{initial?.id ? t("editUser") : t("addUser")}</h3>
+						<h3 className="text-xl font-bold text-gray-900">{readonly ? t("viewUser") || "View User" : initial?.id ? t("editUser") : t("addUser")}</h3>
 						<p className="text-sm text-gray-500 mt-1">{t("userDetailsHint")}</p>
 					</div>
 					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50">
@@ -142,7 +169,7 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 				<div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
 					{/* Avatar Upload */}
 					<div className="flex flex-col items-center justify-center mb-8">
-						<div className="relative group cursor-pointer">
+						<div className={`relative group ${readonly || isAdvertiser ? "" : "cursor-pointer"}`}>
 							<div className="w-24 h-24 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden hover:border-blue-500 transition-colors">
 								{form.avatar ? <img src={form.avatar} alt="Avatar" className="w-full h-full object-cover" /> : <FontAwesomeIcon icon={faUser} className="text-gray-300 text-3xl" />}
 								{uploading && (
@@ -151,34 +178,53 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 									</div>
 								)}
 							</div>
-							<div className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-lg transform translate-x-1 translate-y-1">
-								<FontAwesomeIcon icon={faCamera} className="text-xs" />
-							</div>
-							<input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={uploading} />
+							{!readonly && !isAdvertiser && (
+								<div className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-lg transform translate-x-1 translate-y-1">
+									<FontAwesomeIcon icon={faCamera} className="text-xs" />
+								</div>
+							)}
+							<input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={uploading || readonly || isAdvertiser} />
 						</div>
-						<span className="text-xs text-gray-400 mt-2">{t("clickToUpload")}</span>
+						{!readonly && !isAdvertiser && <span className="text-xs text-gray-400 mt-2">{t("clickToUpload")}</span>}
 					</div>
 
 					<SectionHeader title={t("basicInfo")} subtitle={t("basicInfoHint")} />
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
 						<InputRow icon={faShieldAlt} label={t("role")} noBorder>
-							<Select value={form.juese_id} onChange={(val) => setForm((s) => ({ ...s, juese_id: Number(val), pid: "" }))} options={roleOptions} placeholder={t("selectRole")} className="w-full" />
+							<Select value={form.juese_id} onChange={(val) => setForm((s) => ({ ...s, juese_id: Number(val), pid: "" }))} options={roleOptions} placeholder={t("selectRole")} className="w-full" isDisabled={readonly || isAdvertiser} />
 						</InputRow>
 
 						{/* Parent Selector - Only for Super Admin */}
 						{currentUser && Number(currentUser.juese_id) === 1 && (
 							<InputRow icon={faSitemap} label={t("belongTo")} noBorder>
-								<Select value={form.pid} onChange={(val) => setForm((s) => ({ ...s, pid: val }))} options={parentOptions} placeholder={t("selectParent")} className="w-full" />
+								<Select value={form.pid} onChange={(val) => setForm((s) => ({ ...s, pid: val }))} options={parentOptions} placeholder={t("selectParent")} className="w-full" isDisabled={readonly || isAdvertiser} />
+							</InputRow>
+						)}
+
+						{/* Review Exempt - Only for Advertisers (6) and visible to Admin/SuperAdmin */}
+						{canViewReviewExempt && Number(form.juese_id) === 6 && (
+							<InputRow icon={faShieldAlt} label={t("reviewExempt") || "Review Exempt"} noBorder={true}>
+								<Select
+									value={form.review_exempt}
+									onChange={(val) => setForm((s) => ({ ...s, review_exempt: Number(val) }))}
+									options={[
+										{ value: 0, label: t("reviewRequired") || "需审核" },
+										{ value: 1, label: t("exempt") || "免审" },
+									]}
+									placeholder={t("select")}
+									className="w-full"
+									isDisabled={!canEditReviewExempt}
+								/>
 							</InputRow>
 						)}
 
 						<InputRow icon={faUser} label={t("username")}>
-							<input value={form.username} onChange={(e) => setForm((v) => ({ ...v, username: e.target.value }))} placeholder={t("username")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+							<input value={form.username} onChange={(e) => setForm((v) => ({ ...v, username: e.target.value }))} placeholder={t("username")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly || isAdvertiser} disabled={readonly || isAdvertiser} />
 						</InputRow>
 
 						<InputRow icon={faKey} label={t("password")}>
 							<div className="flex items-center">
-								<input type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))} placeholder={t("password")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+								<input type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))} placeholder={t("password")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly || isAdvertiser} disabled={readonly || isAdvertiser} />
 								<button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 focus:outline-none px-2">
 									<FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
 								</button>
@@ -186,18 +232,16 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 						</InputRow>
 
 						<InputRow icon={faEnvelope} label={t("email")}>
-							<input value={form.email} onChange={(e) => setForm((v) => ({ ...v, email: e.target.value }))} placeholder={t("email")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+							<input value={form.email} onChange={(e) => setForm((v) => ({ ...v, email: e.target.value }))} placeholder={t("email")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
 						</InputRow>
 
 						<InputRow icon={faKey} label={t("apiToken")}>
-							<input
-								type="text"
-								value={form.api_token || ""}
-								onChange={(e) => setForm((v) => ({ ...v, api_token: e.target.value }))}
-								placeholder={canEditApiToken ? t("apiToken") : ""}
-								className={`w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 ${!canEditApiToken ? "cursor-not-allowed text-gray-500" : ""}`}
-								disabled={!canEditApiToken}
-							/>
+							<div className="flex items-center gap-2 w-full">
+								<input type="text" value={form.api_token || ""} onChange={(e) => setForm((v) => ({ ...v, api_token: e.target.value }))} placeholder={canEditApiToken ? t("apiToken") : ""} className={`w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 ${!canEditApiToken ? "cursor-not-allowed text-gray-500" : ""}`} disabled={!canEditApiToken} />
+								<button type="button" onClick={() => copyToClipboard(form.api_token)} className="text-gray-400 hover:text-blue-600 transition-colors p-2" title={t("copy") || "Copy"}>
+									<FontAwesomeIcon icon={faCopy} />
+								</button>
+							</div>
 						</InputRow>
 					</div>
 
@@ -205,28 +249,34 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 						<SectionHeader title={t("contactInfo")} subtitle={t("contactInfoHint")} />
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
 							<InputRow icon={faPhone} label={t("mobile")}>
-								<input value={form.mobile} onChange={(e) => setForm((v) => ({ ...v, mobile: e.target.value }))} placeholder={t("mobile")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+								<input value={form.mobile} onChange={(e) => setForm((v) => ({ ...v, mobile: e.target.value }))} placeholder={t("mobile")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
 							</InputRow>
 
-							<InputRow icon={faPaperPlane} label={t("tgid")}>
-								<input value={form.tgid} onChange={(e) => setForm((v) => ({ ...v, tgid: e.target.value }))} placeholder={t("tgid")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
-							</InputRow>
+							{!isAdvertiser && (
+								<InputRow icon={faPaperPlane} label={t("tgid")}>
+									<input value={form.tgid} onChange={(e) => setForm((v) => ({ ...v, tgid: e.target.value }))} placeholder={t("tgid")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
+								</InputRow>
+							)}
 
-							<InputRow icon={faUsers} label={t("qunid")}>
-								<input value={form.qunid} onChange={(e) => setForm((v) => ({ ...v, qunid: e.target.value }))} placeholder={t("qunid")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
-							</InputRow>
+							{!isAdvertiser && (
+								<InputRow icon={faUsers} label={t("qunid")}>
+									<input value={form.qunid} onChange={(e) => setForm((v) => ({ ...v, qunid: e.target.value }))} placeholder={t("qunid")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
+								</InputRow>
+							)}
 						</div>
 					</div>
 				</div>
 
 				<div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
 					<button type="button" onClick={onClose} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-						{t("cancel")}
+						{readonly ? t("close") || "Close" : t("cancel")}
 					</button>
-					<button onClick={save} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-						{saving && <FontAwesomeIcon icon={faSpinner} spin />}
-						{t("save")}
-					</button>
+					{!readonly && (
+						<button onClick={save} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+							{saving && <FontAwesomeIcon icon={faSpinner} spin />}
+							{t("save")}
+						</button>
+					)}
 				</div>
 			</div>
 		</div>
@@ -242,10 +292,10 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 		if (open && user) {
 			let ids = [];
 			let initialOpts = [];
-			
+
 			let groupList = user.group_list;
 			// Handle case where group_list is a JSON string
-			if (typeof groupList === 'string') {
+			if (typeof groupList === "string") {
 				try {
 					groupList = JSON.parse(groupList);
 				} catch (e) {
@@ -256,13 +306,14 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 
 			if (Array.isArray(groupList)) {
 				// Ensure IDs are numbers for consistency
-				ids = groupList.map(g => (typeof g === 'object' ? Number(g.id) : Number(g)));
+				ids = groupList.map((g) => (typeof g === "object" ? Number(g.id) : Number(g)));
 				// Extract initial options from existing group_list to ensure they display correctly even if not in the fetched list
-				initialOpts = groupList
-					.filter(g => typeof g === 'object' && g.id)
-					.map(g => ({ value: Number(g.id), label: g.name || `Group #${g.id}` }));
+				initialOpts = groupList.filter((g) => typeof g === "object" && g.id).map((g) => ({ value: Number(g.id), label: g.name || `Group #${g.id}` }));
 			} else if (user.pay_group_id) {
-				ids = String(user.pay_group_id).split(",").map(Number).filter(n => !isNaN(n));
+				ids = String(user.pay_group_id)
+					.split(",")
+					.map(Number)
+					.filter((n) => !isNaN(n));
 			}
 			setPayGroupIds(ids);
 			loadPayGroups(initialOpts);
@@ -293,15 +344,15 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 				if (res.ok) {
 					const groups = Array.isArray(res.data) ? res.data : [];
 					const apiOptions = groups.map((g) => ({ value: Number(g.id), label: g.name || `Group #${g.id}` }));
-					
+
 					// Merge initial options with API options (deduplicate by value)
 					const mergedOptions = [...apiOptions];
-					initialOpts.forEach(opt => {
-						if (!mergedOptions.find(o => o.value === opt.value)) {
+					initialOpts.forEach((opt) => {
+						if (!mergedOptions.find((o) => o.value === opt.value)) {
 							mergedOptions.push(opt);
 						}
 					});
-					
+
 					setPayGroupOptions(mergedOptions);
 				} else {
 					// If fetch fails, at least show the initial options
@@ -351,19 +402,8 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 
 					<div className="space-y-2">
 						<label className="text-sm font-medium text-gray-700">{t("paymentGroup")}</label>
-						<Select
-							isMulti
-							value={payGroupIds}
-							onChange={setPayGroupIds}
-							options={payGroupOptions}
-							placeholder={t("selectPaymentGroup")}
-							className="w-full"
-						/>
-						{payGroupOptions.length === 0 && (
-							<p className="text-xs text-orange-500 mt-1">
-								{t("noGroupsFound")}
-							</p>
-						)}
+						<Select isMulti value={payGroupIds} onChange={setPayGroupIds} options={payGroupOptions} placeholder={t("selectPaymentGroup")} className="w-full" />
+						{payGroupOptions.length === 0 && <p className="text-xs text-orange-500 mt-1">{t("noGroupsFound")}</p>}
 					</div>
 				</div>
 
@@ -381,7 +421,7 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 	);
 }
 
-const MobileUserCard = ({ user, onEdit, onDelete, onAssignGroup, t }) => {
+const MobileUserCard = ({ user, onEdit, onDelete, onAssignGroup, t, canManage, isAdvertiser, canViewReviewExempt }) => {
 	const roleInfo = getRoleInfo(user.juese_id, t);
 
 	return (
@@ -407,29 +447,47 @@ const MobileUserCard = ({ user, onEdit, onDelete, onAssignGroup, t }) => {
 					<span className="text-gray-400 mb-0.5">{t("mobile")}</span>
 					<span className="font-medium text-gray-700">{user.mobile || "-"}</span>
 				</div>
-				<div className="flex flex-col">
-					<span className="text-gray-400 mb-0.5">{t("tgid")}</span>
-					<span className="font-medium text-gray-700">{user.tgid || "-"}</span>
-				</div>
-				<div className="flex flex-col col-span-2">
-					<span className="text-gray-400 mb-0.5">{t("qunid")}</span>
-					<span className="font-medium text-gray-700 break-all">{user.qunid || "-"}</span>
-				</div>
+
+				{canViewReviewExempt && Number(user.juese_id) === 6 && (
+					<div className="flex flex-col">
+						<span className="text-gray-400 mb-0.5">{t("reviewExempt") || "Review Exempt"}</span>
+						{Number(user.review_exempt) === 1 ? <span className="text-green-600 font-medium">{t("exempt") || "免审"}</span> : <span className="text-gray-400">{t("reviewRequired") || "需审核"}</span>}
+					</div>
+				)}
+
+				{!isAdvertiser && (
+					<>
+						<div className="flex flex-col">
+							<span className="text-gray-400 mb-0.5">{t("tgid")}</span>
+							<span className="font-medium text-gray-700">{user.tgid || "-"}</span>
+						</div>
+						<div className="flex flex-col col-span-2">
+							<span className="text-gray-400 mb-0.5">{t("qunid")}</span>
+							<span className="font-medium text-gray-700 break-all">{user.qunid || "-"}</span>
+						</div>
+					</>
+				)}
 			</div>
 
-			<div className="flex justify-end gap-2 pt-3 border-t border-gray-50">
-				{[1, 4, 6].includes(Number(user.juese_id)) && (
-					<button onClick={() => onAssignGroup(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors" title={t("assignGroup")}>
-						<FontAwesomeIcon icon={faSitemap} size="sm" />
-					</button>
-				)}
-				<button onClick={() => onEdit(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
-					<FontAwesomeIcon icon={faPen} size="sm" />
-				</button>
-				<button onClick={() => onDelete(user.id)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
-					<FontAwesomeIcon icon={faTrash} size="sm" />
-				</button>
-			</div>
+			{(canManage || isAdvertiser) && (
+				<div className="flex justify-end gap-2 pt-3 border-t border-gray-50">
+					{canManage && [1, 4, 6].includes(Number(user.juese_id)) && (
+						<button onClick={() => onAssignGroup(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors" title={t("assignGroup")}>
+							<FontAwesomeIcon icon={faSitemap} size="sm" />
+						</button>
+					)}
+					{(canManage || isAdvertiser) && (
+						<button onClick={() => onEdit(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
+							<FontAwesomeIcon icon={faPen} size="sm" />
+						</button>
+					)}
+					{canManage && (
+						<button onClick={() => onDelete(user.id)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
+							<FontAwesomeIcon icon={faTrash} size="sm" />
+						</button>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };
@@ -447,7 +505,7 @@ export function UsersView() {
 		allUsers: s.users.allUsers,
 	}));
 
-	const [form, setForm] = useState({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "" });
+	const [form, setForm] = useState({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "", review_exempt: 0 });
 	const [modalOpen, setModalOpen] = useState(false);
 	const [assignGroupModalOpen, setAssignGroupModalOpen] = useState(false);
 	const [assignTarget, setAssignTarget] = useState(null);
@@ -499,6 +557,7 @@ export function UsersView() {
 			avatar: user.avatar,
 			group_list: user.group_list || null,
 			api_token: user.api_token || "",
+			review_exempt: user.review_exempt || 0,
 			// pay_group_id handled in separate modal
 		});
 		setModalOpen(true);
@@ -519,7 +578,7 @@ export function UsersView() {
 				confirmText: t("delete") || "Delete",
 				cancelText: t("cancel") || "Cancel",
 				onConfirm: () => confirmDelete(id),
-			})
+			}),
 		);
 	};
 
@@ -579,6 +638,11 @@ export function UsersView() {
 
 	const safeList = Array.isArray(list) ? list : [];
 
+	// Advertiser (6) cannot perform any operations, only view
+	const isAdvertiser = currentUser && Number(currentUser.juese_id) === 6;
+	const canManage = !isAdvertiser;
+	const canViewReviewExempt = currentUser && [1, 4].includes(Number(currentUser.juese_id));
+
 	return (
 		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
 			<UserFormModal open={modalOpen} initial={form} onClose={() => setModalOpen(false)} onSave={onSave} t={t} roles={roles} currentUser={currentUser} allUsers={allUsers} saving={saving} />
@@ -588,12 +652,12 @@ export function UsersView() {
 				<div>
 					<h1 className="text-2xl font-bold text-gray-900">{t("users")}</h1>
 				</div>
-				<button
-					onClick={onAdd}
-					className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
-					<FontAwesomeIcon icon={faPlus} />
-					{t("addUser")}
-				</button>
+				{canManage && (
+					<button onClick={onAdd} className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+						<FontAwesomeIcon icon={faPlus} />
+						{t("addUser")}
+					</button>
+				)}
 			</div>
 
 			{/* Mobile/Tablet View (Cards) */}
@@ -604,11 +668,9 @@ export function UsersView() {
 						{t("loading")}
 					</div>
 				) : safeList.length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
-						{t("noData")}
-					</div>
+					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">{t("noData")}</div>
 				) : (
-					safeList.map((u) => <MobileUserCard key={u.id} user={u} onEdit={onEdit} onDelete={onDelete} onAssignGroup={onAssignGroup} t={t} />)
+					safeList.map((u) => <MobileUserCard key={u.id} user={u} onEdit={onEdit} onDelete={onDelete} onAssignGroup={onAssignGroup} t={t} canManage={canManage} isAdvertiser={isAdvertiser} canViewReviewExempt={canViewReviewExempt} />)
 				)}
 			</div>
 
@@ -625,8 +687,9 @@ export function UsersView() {
 									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("username")}</th>
 									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("role")}</th>
 									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("mobile")}</th>
-									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("tgid")}</th>
-									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("qunid")}</th>
+									{canViewReviewExempt && <th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("reviewExempt") || "Review Exempt"}</th>}
+									{!isAdvertiser && <th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("tgid")}</th>}
+									{!isAdvertiser && <th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("qunid")}</th>}
 									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">{t("actions")}</th>
 								</tr>
 							</thead>
@@ -649,28 +712,43 @@ export function UsersView() {
 											<span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${getRoleInfo(u.juese_id, t).className}`}>{getRoleInfo(u.juese_id, t).label}</span>
 										</td>
 										<td className="py-2 px-6 text-xs text-gray-500">{u.mobile || "-"}</td>
-										<td className="py-2 px-6 text-xs text-gray-500">{u.tgid || "-"}</td>
-										<td className="py-2 px-6 text-xs text-gray-500 max-w-xs truncate" title={u.qunid}>{u.qunid || "-"}</td>
+										{canViewReviewExempt && (
+											<td className="py-2 px-6 text-xs text-gray-500">
+												{Number(u.juese_id) === 6 ? Number(u.review_exempt) === 1 ? <span className="text-green-600 font-medium">{t("exempt") || "免审"}</span> : <span className="text-gray-400">{t("reviewRequired") || "需审核"}</span> : "-"}
+											</td>
+										)}
+										{!isAdvertiser && <td className="py-2 px-6 text-xs text-gray-500">{u.tgid || "-"}</td>}
+										{!isAdvertiser && (
+											<td className="py-2 px-6 text-xs text-gray-500 max-w-xs truncate" title={u.qunid}>
+												{u.qunid || "-"}
+											</td>
+										)}
 										<td className="py-2 px-6 text-right">
-											<div className="flex items-center justify-end gap-2">
-												{[1, 4, 6].includes(Number(u.juese_id)) && (
-													<button onClick={() => onAssignGroup(u)} className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title={t("assignGroup") || "Assign Group"}>
-														<FontAwesomeIcon icon={faSitemap} />
-													</button>
-												)}
-												<button onClick={() => onEdit(u)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("edit")}>
-													<FontAwesomeIcon icon={faPen} />
-												</button>
-												<button onClick={() => onDelete(u.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors" title={t("delete")}>
-													<FontAwesomeIcon icon={faTrash} />
-												</button>
-											</div>
+											{(canManage || isAdvertiser) && (
+												<div className="flex items-center justify-end gap-2">
+													{canManage && [1, 4, 6].includes(Number(u.juese_id)) && (
+														<button onClick={() => onAssignGroup(u)} className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title={t("assignGroup") || "Assign Group"}>
+															<FontAwesomeIcon icon={faSitemap} />
+														</button>
+													)}
+													{(canManage || isAdvertiser) && (
+														<button onClick={() => onEdit(u)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("edit")}>
+															<FontAwesomeIcon icon={faPen} />
+														</button>
+													)}
+													{canManage && (
+														<button onClick={() => onDelete(u.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors" title={t("delete")}>
+															<FontAwesomeIcon icon={faTrash} />
+														</button>
+													)}
+												</div>
+											)}
 										</td>
 									</tr>
 								))}
 								{safeList.length === 0 && (
 									<tr>
-										<td colSpan="7" className="py-8 text-center text-gray-400">
+										<td colSpan="8" className="py-8 text-center text-gray-400">
 											{t("noData")}
 										</td>
 									</tr>

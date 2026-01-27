@@ -1,35 +1,35 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import {
-    API_WEBSITE_SET,
-    API_WEBSITE_LIST,
-    API_WEBSITE_GET,
-    API_WEBSITE_DELETE,
-} from "../constants/api.js";
+import { API_WEBSITE_SET, API_WEBSITE_LIST, API_WEBSITE_GET, API_WEBSITE_DELETE, API_WEBSITE_UPLOAD_EXCEL, API_WEBSITE_BATCH_UPDATE } from "../constants/api.js";
 
 /**
  * Fetch Website List
- * @param {Object} params - { page, per_page }
+ * @param {Object} params - { page, per_page, status }
  */
-export async function fetchWebsiteList({ page = 1, per_page = 20 }) {
-    const res = await apiRequest({
-        url: API_WEBSITE_LIST,
-        method: "POST",
-        data: { page, per_page },
-    });
+export async function fetchWebsiteList({ page = 1, per_page = 20, status = "" }) {
+	const requestData = { page, per_page };
+	if (status !== "" && status !== undefined && status !== null) {
+		requestData.status = status;
+	}
 
-    if (!res.ok) return res;
+	const res = await apiRequest({
+		url: API_WEBSITE_LIST,
+		method: "POST",
+		data: requestData,
+	});
 
-    const data = res.data || {};
-    // Compatible with code 0 and code 1 as success
-    if (data.code !== undefined && data.code != 0 && data.code != 1) {
-        return { ok: false, error: { code: data.code, message: data.msg || "Error fetching website list" } };
-    }
+	if (!res.ok) return res;
 
-    const listData = data.data || {};
-    const list = listData.list || [];
-    const total = listData.total || 0;
+	const data = res.data || {};
+	// Compatible with code 0 and code 1 as success
+	if (data.code !== undefined && data.code != 0 && data.code != 1) {
+		return { ok: false, error: { code: data.code, message: data.msg || "Error fetching website list" } };
+	}
 
-    return { ok: true, data: { list, total } };
+	const listData = data.data || {};
+	const list = listData.list || [];
+	const total = listData.total || 0;
+
+	return { ok: true, data: { list, total } };
 }
 
 /**
@@ -37,21 +37,73 @@ export async function fetchWebsiteList({ page = 1, per_page = 20 }) {
  * @param {Object} params - { user_id, domain_name, url, status, website_system, id }
  */
 export async function createOrUpdateWebsite(params) {
-    const res = await apiRequest({
-        url: API_WEBSITE_SET,
-        method: "POST",
-        data: params,
-    });
+	if (params.user_id === undefined || params.user_id === null || params.user_id === "") {
+		params.user_id = null;
+	}
+	const res = await apiRequest({
+		url: API_WEBSITE_SET,
+		method: "POST",
+		data: params,
+	});
 
-    if (!res.ok) return res;
+	if (!res.ok) return res;
 
-    const data = res.data || {};
-    // Compatible with code 0 and code 1 as success
-    if (data.code !== undefined && data.code != 0 && data.code != 1) {
-        return { ok: false, error: { code: data.code, message: data.msg || "Error saving website" } };
-    }
+	const data = res.data || {};
+	// Compatible with code 0 and code 1 as success
+	if (data.code !== undefined && data.code != 0 && data.code != 1) {
+		return { ok: false, error: { code: data.code, message: data.msg || "Error saving website" } };
+	}
 
-    return { ok: true, data: data.data };
+	return { ok: true, data: data.data };
+}
+
+/**
+ * Upload Website Excel
+ * @param {Object} params - { filename, filetype, filedata }
+ */
+export async function uploadWebsiteExcel(params) {
+	const res = await apiRequest({
+		url: API_WEBSITE_UPLOAD_EXCEL,
+		method: "POST",
+		data: params,
+	});
+
+	if (!res.ok) return res;
+
+	const data = res.data || {};
+	// Compatible with code 0 and code 1 as success
+	if (data.code !== undefined && data.code != 0 && data.code != 1) {
+		return { ok: false, error: { code: data.code, message: data.msg || "Error uploading excel" } };
+	}
+
+	return { ok: true, data: data.data };
+}
+
+/**
+ * Batch Update Website Status
+ * @param {Array} ids - Array of website IDs
+ * @param {number|string} status - New status
+ */
+export async function batchUpdateWebsiteStatus(ids, status) {
+	const idlist = ids.map((id) => ({ id }));
+	const res = await apiRequest({
+		url: API_WEBSITE_BATCH_UPDATE,
+		method: "POST",
+		data: {
+			idlist,
+			status,
+		},
+	});
+
+	if (!res.ok) return res;
+
+	const data = res.data || {};
+	// Compatible with code 0 and code 1 as success
+	if (data.code !== undefined && data.code != 0 && data.code != 1) {
+		return { ok: false, error: { code: data.code, message: data.msg || "Batch operation failed" } };
+	}
+
+	return { ok: true, data: data.data };
 }
 
 /**
@@ -59,21 +111,21 @@ export async function createOrUpdateWebsite(params) {
  * @param {Object} params - { id }
  */
 export async function deleteWebsite(id) {
-    const res = await apiRequest({
-        url: API_WEBSITE_DELETE,
-        method: "POST",
-        data: { id },
-    });
+	const res = await apiRequest({
+		url: API_WEBSITE_DELETE,
+		method: "POST",
+		data: { id },
+	});
 
-    if (!res.ok) return res;
+	if (!res.ok) return res;
 
-    const data = res.data || {};
-    // Compatible with code 0 and code 1 as success
-    if (data.code !== undefined && data.code != 0 && data.code != 1) {
-        return { ok: false, error: { code: data.code, message: data.msg || "Error deleting website" } };
-    }
+	const data = res.data || {};
+	// Compatible with code 0 and code 1 as success
+	if (data.code !== undefined && data.code != 0 && data.code != 1) {
+		return { ok: false, error: { code: data.code, message: data.msg || "Error deleting website" } };
+	}
 
-    return { ok: true, data: data.data };
+	return { ok: true, data: data.data };
 }
 
 /**
@@ -81,19 +133,19 @@ export async function deleteWebsite(id) {
  * @param {Object} params - { id }
  */
 export async function getWebsite(id) {
-    const res = await apiRequest({
-        url: API_WEBSITE_GET,
-        method: "POST",
-        data: { id },
-    });
+	const res = await apiRequest({
+		url: API_WEBSITE_GET,
+		method: "POST",
+		data: { id },
+	});
 
-    if (!res.ok) return res;
+	if (!res.ok) return res;
 
-    const data = res.data || {};
-    // Compatible with code 0 and code 1 as success
-    if (data.code !== undefined && data.code != 0 && data.code != 1) {
-        return { ok: false, error: { code: data.code, message: data.msg || "Error getting website" } };
-    }
+	const data = res.data || {};
+	// Compatible with code 0 and code 1 as success
+	if (data.code !== undefined && data.code != 0 && data.code != 1) {
+		return { ok: false, error: { code: data.code, message: data.msg || "Error getting website" } };
+	}
 
-    return { ok: true, data: data.data };
+	return { ok: true, data: data.data };
 }

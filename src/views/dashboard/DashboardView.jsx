@@ -274,6 +274,36 @@ export function DashboardView() {
 			axisPointer: {
 				type: "shadow",
 			},
+			formatter: function (params) {
+				let result = `<div class="font-medium mb-1">${params[0].name}</div>`;
+				let success = 0;
+				let failed = 0;
+
+				params.forEach((item) => {
+					result += `<div class="flex items-center justify-between gap-4">
+						<div class="flex items-center gap-2">
+							${item.marker}
+							<span class="text-xs text-gray-600">${item.seriesName}</span>
+						</div>
+						<span class="font-bold text-gray-900">${item.value}</span>
+					</div>`;
+					if (item.seriesIndex === 0) success = Number(item.value) || 0;
+					if (item.seriesIndex === 1) failed = Number(item.value) || 0;
+				});
+
+				const total = success + failed;
+				const rate = total > 0 ? ((success / total) * 100).toFixed(2) : "0.00";
+
+				result += `<div class="flex items-center justify-between gap-4 mt-1 pt-1 border-t border-gray-100">
+					<div class="flex items-center gap-2">
+						<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#F59E0B;"></span>
+						<span class="text-xs text-gray-600">${t("successRate")}</span>
+					</div>
+					<span class="font-bold text-gray-900">${rate}%</span>
+				</div>`;
+
+				return result;
+			},
 		},
 		legend: {
 			data: [t("successOrder"), t("failedOrder")],
@@ -530,7 +560,7 @@ export function DashboardView() {
 							</div>
 						</div>
 
-						<div className="text-[10px] text-gray-400 mb-4">Measures the ratio of successful orders.</div>
+						<div className="text-[10px] text-gray-400 mb-4">{t("successOrderRatioDesc")}</div>
 					</Card>
 					<Card className="flex flex-col justify-center shadow-xl rounded-sm">
 						<div className="flex justify-between items-start mb-2">
@@ -544,7 +574,7 @@ export function DashboardView() {
 							</div>
 						</div>
 
-						<div className="text-[10px] text-gray-400 mb-4">Measures the ratio of failed orders.</div>
+						<div className="text-[10px] text-gray-400 mb-4">{t("failedOrderRatioDesc")}</div>
 					</Card>
 				</div>
 			</div>
