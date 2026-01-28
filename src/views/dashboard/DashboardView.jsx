@@ -592,7 +592,7 @@ export function DashboardView() {
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				{canViewStats && (
 					<div className="lg:col-span-1">
-						<Card className="bg-white p-0 rounded-xl h-full flex flex-col overflow-hidden shadow-sm border border-gray-100" title={null}>
+						<Card className="bg-white p-0 rounded-xl h-full flex flex-col overflow-hidden shadow-sm " title={null}>
 							<div className="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
 								<div className="flex items-center gap-2">
 									<div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
