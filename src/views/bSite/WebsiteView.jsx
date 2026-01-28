@@ -311,6 +311,8 @@ export function WebsiteView() {
 		setLoading(false);
 
 		if (res.ok) {
+			console.log('~~~~~~~~~~~~~')
+			console.log(res.data);
 			setList(res.data.list);
 			setPagination((p) => ({ ...p, page, total: res.data.total }));
 			// Clear selection on page change or reload if needed, or keep it?
@@ -600,7 +602,7 @@ export function WebsiteView() {
 							</div> */}
 							<Pagination
 								currentPage={pagination.page}
-								totalPages={Math.ceil(pagination.total / pagination.per_page)}
+								total={Math.ceil(pagination.total / pagination.per_page)}
 								onPageChange={(page) => loadData(page)}
 								pageSize={pagination.per_page}
 								onPageSizeChange={(size) => {
