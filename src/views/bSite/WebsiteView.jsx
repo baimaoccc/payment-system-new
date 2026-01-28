@@ -601,8 +601,8 @@ export function WebsiteView() {
 								<span className="font-medium text-gray-900">{pagination.total}</span> {t("results")}
 							</div> */}
 							<Pagination
-								currentPage={pagination.page}
-								total={Math.ceil(pagination.total / pagination.per_page)}
+								page={pagination.page}
+								total={pagination.total}
 								onPageChange={(page) => loadData(page)}
 								pageSize={pagination.per_page}
 								onPageSizeChange={(size) => {
