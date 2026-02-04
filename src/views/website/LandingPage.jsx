@@ -2,10 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCheckCircle, faGlobeAmericas, faShieldAlt, faBolt, faChartLine, faCreditCard, faMobileAlt, faCode, faTerminal, faMobile, faExchangeAlt, faFileInvoiceDollar, faEnvelopeOpenText, faIdCard, faGlobe } from "@fortawesome/free-solid-svg-icons";
-import { faTelegram } from "@fortawesome/free-brands-svg-icons";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import HeroDashboardMockup from "../../components/website/HeroDashboardMockup";
 import ConversationalCommerce from "../../components/website/ConversationalCommerce";
+import SunneversetsLogo from "../../assets/sunneversets-logo.png";
+import CeoPayLogo from "../../assets/ceopay-logo.png";
+import HsmailLogo from "../../assets/hsmail-logo.png";
+import PayPayLogo from "../../assets/paypay-logo.png";
 
 function RevealOnScroll({ children, className = "" }) {
 	const [isVisible, setIsVisible] = useState(false);
@@ -19,7 +22,7 @@ function RevealOnScroll({ children, className = "" }) {
 					observer.disconnect();
 				}
 			},
-			{ threshold: 0.1 }
+			{ threshold: 0.1 },
 		);
 
 		if (ref.current) {
@@ -174,10 +177,13 @@ export function LandingPage() {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 						{/* 1. Global Payment Gateway */}
 						<RevealOnScroll className="delay-0">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col">
+							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col" onClick={() => {
+								window.scrollTo({ top: 0, behavior: "smooth" });
+							}}>
 								<div className="flex items-center gap-4 mb-6">
-									<div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
-										<FontAwesomeIcon icon={faGlobe} />
+									<div className="text-blue-600 rounded-xl flex items-center justify-center text-2xl  transition-colors">
+										{/* <FontAwesomeIcon icon={faGlobe} /> */}
+										<img src={CeoPayLogo} alt="Globe" className="h-12" />
 									</div>
 									<h3 className="text-2xl font-bold text-slate-900">{t("landing.featured.gateway.title")}</h3>
 								</div>
@@ -194,10 +200,13 @@ export function LandingPage() {
 
 						{/* 2. Invoice & Billing Suite */}
 						<RevealOnScroll className="delay-100">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#5556fd]/30 h-full flex flex-col">
+							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#5556fd]/30 h-full flex flex-col" onClick={() => {
+								window.open("https://www.paypay.it.com", "_blank");
+							}}>
 								<div className="flex items-center gap-4 mb-6">
-									<div className="w-14 h-14 bg-[#5556fd]/10 text-[#5556fd] rounded-xl flex items-center justify-center text-2xl group-hover:bg-[#5556fd] group-hover:text-white transition-colors">
-										<FontAwesomeIcon icon={faFileInvoiceDollar} />
+									<div className=" text-[#5556fd] rounded-xl flex items-center justify-center text-2xl transition-colors">
+										{/* <FontAwesomeIcon icon={faFileInvoiceDollar} /> */}
+										<img src={PayPayLogo} alt="Globe" className="h-12" />
 									</div>
 									<h3 className="text-2xl font-bold text-slate-900">{t("landing.featured.invoice.title")}</h3>
 								</div>
@@ -214,10 +223,13 @@ export function LandingPage() {
 
 						{/* 3. Logistics & Mail System */}
 						<RevealOnScroll className="delay-200">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#4d2a8a]/30 h-full flex flex-col">
+							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#4d2a8a]/30 h-full flex flex-col" onClick={() => {
+								window.open("https://www.hsmail.vip/", "_blank");
+							}}>
 								<div className="flex items-center gap-4 mb-6">
-									<div className="w-14 h-14 bg-[#4d2a8a]/10 text-[#4d2a8a] rounded-xl flex items-center justify-center text-2xl group-hover:bg-[#4d2a8a] group-hover:text-white transition-colors">
-										<FontAwesomeIcon icon={faEnvelopeOpenText} />
+									<div className=" text-[#4d2a8a] rounded-xl flex items-center justify-center text-2xl transition-colors">
+										{/* <FontAwesomeIcon icon={faEnvelopeOpenText} /> */}
+										<img src={HsmailLogo} alt="Globe" className="h-12" />
 									</div>
 									<h3 className="text-2xl font-bold text-slate-900">{t("landing.featured.logistics.title")}</h3>
 								</div>
@@ -234,10 +246,13 @@ export function LandingPage() {
 
 						{/* 4. Global Account Solutions */}
 						<RevealOnScroll className="delay-300">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col">
+							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col" onClick={() => {
+								window.open("https://www.banksvip.com", "_blank");
+							}}>
 								<div className="flex items-center gap-4 mb-6">
-									<div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-purple-600 group-hover:text-white transition-colors">
-										<FontAwesomeIcon icon={faIdCard} />
+									<div className=" text-purple-600 rounded-xl flex items-center justify-center text-2xl transition-colors">
+										{/* <FontAwesomeIcon icon={faIdCard} /> */}
+										<img src={SunneversetsLogo} alt="Globe" className="h-12" />
 									</div>
 									<h3 className="text-2xl font-bold text-slate-900">{t("landing.featured.account.title")}</h3>
 								</div>
@@ -417,9 +432,24 @@ export function LandingPage() {
 							<div className="absolute inset-0 bg-blue-100 rounded-full filter blur-[100px] opacity-50"></div>
 							<div className="w-[340px] sm:w-auto relative bg-white/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-200 shadow-2xl">
 								<div className="grid grid-cols-2 gap-4">
-									{[1, 2, 3, 4].map((i) => (
-										<div key={i} className="h-24 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100">
-											<span className="text-slate-400 font-bold text-xl">LOGO {i}</span>
+									{[
+										{ logo: CeoPayLogo, title: "CeoPay", url: null },
+										{ logo: PayPayLogo, title: "PayPay", url: 'https://www.paypay.it.com' },
+										{ logo: SunneversetsLogo, title: "Sunneversets", url: 'https://www.banksvip.com/' },
+										{ logo: HsmailLogo, title: "Hsmail", url: 'https://www.hsmail.vip/' },
+										
+									].map((i) => (
+										<div
+											key={i.title}
+											className="h-24 bg-white rounded-lg flex items-center justify-center border border-slate-100 cursor-pointer hover:shadow-md transition-shadow"
+											onClick={() => {
+												if (i.url) {
+													window.open(i.url, "_blank");
+												} else {
+													window.scrollTo({ top: 0, behavior: "smooth" });
+												}
+											}}>
+											<img src={i.logo} alt={i.title} className="w-[200px] w-auto" />
 										</div>
 									))}
 								</div>
@@ -454,7 +484,7 @@ export function LandingPage() {
 						<h2 className="text-4xl md:text-6xl font-bold text-white mb-8">{t("landing.cta.title")}</h2>
 						<p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">{t("landing.cta.description")}</p>
 						<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-							<Link to="/" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-blue-900/50">
+							<Link to="/login" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-blue-900/50">
 								{t("landing.cta.getStart")}
 							</Link>
 							{/* <a href={telegramLink} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-8 py-4 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 group">

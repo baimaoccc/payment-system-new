@@ -112,7 +112,7 @@ export function DashboardView() {
 	const [loadingGraph, setLoadingGraph] = useState(false);
 	const [recentOrders, setRecentOrders] = useState([]);
 	const [loadingRecent, setLoadingRecent] = useState(false);
-	const [userStats, setUserStats] = useState([]);
+	const [detailedUserStats, setDetailedUserStats] = useState([]);
 
 	// Close filters when clicking outside
 	useEffect(() => {
@@ -218,11 +218,56 @@ export function DashboardView() {
 			// API returns { code: 0, data: { list: { date: count } } }
 			// baseAPI returns { ok: true, data: responseBody }
 			const successList = (resSuccess.ok && resSuccess.data?.data?.list) || {};
-			if (resSuccess.ok && resSuccess.data?.data?.groupUserList) {
-				setUserStats(resSuccess.data.data.groupUserList);
+
+			// Process groupUser data for Detailed Stats Table
+			if (resSuccess.ok) {
+				const groupUser = resSuccess.data?.data?.groupUser || resSuccess.data?.data?.groupUserList || [];
+
+				const finalStats = groupUser.map((item) => {
+					// Helper to safely parse string/number
+					const parseVal = (val) => parseFloat(val) || 0;
+					const parseIntVal = (val) => parseInt(val) || 0;
+
+					// Today Stats from groupUser fields
+					const tOrders = parseIntVal(item.today_total_orders);
+					const tSuccessRate = parseVal(item.today_total_success_rate);
+					const tPaymentRate = parseVal(item.today_payment_rate);
+					const tPaidSuccessRate = parseVal(item.today_paid_success_rate);
+					const tAmount = parseVal(item.today_paid_amount);
+
+					// Yesterday Stats from groupUser fields
+					const yOrders = parseIntVal(item.yesterday_total_orders);
+					const ySuccessRate = parseVal(item.yesterday_total_success_rate);
+					const yPaymentRate = parseVal(item.yesterday_payment_rate);
+					const yPaidSuccessRate = parseVal(item.yesterday_paid_success_rate);
+					const yAmount = parseVal(item.yesterday_paid_amount);
+
+					return {
+						username: item.username,
+						today: {
+							amount: tAmount,
+							orders: tOrders,
+							totalSuccessRate: tSuccessRate,
+							paymentSuccessRate: tPaidSuccessRate,
+							paymentRate: tPaymentRate,
+						},
+						yesterday: {
+							amount: yAmount,
+							orders: yOrders,
+							totalSuccessRate: ySuccessRate,
+							paymentSuccessRate: yPaidSuccessRate,
+							paymentRate: yPaymentRate,
+						},
+					};
+				});
+
+				// Sort by Today Amount desc
+				finalStats.sort((a, b) => b.today.amount - a.today.amount);
+				setDetailedUserStats(finalStats);
 			} else {
-				setUserStats([]);
+				setDetailedUserStats([]);
 			}
+
 			const failedList = (resFailed.ok && resFailed.data?.data?.list) || {};
 
 			// Merge keys and sort
@@ -256,6 +301,8 @@ export function DashboardView() {
 			isFetching.current = false;
 		}
 	};
+
+	// Fetch User Stats Data Removed - Integrated into fetchGraphData
 
 	// Load data on mount
 	useEffect(() => {
@@ -397,78 +444,81 @@ export function DashboardView() {
 	);
 
 	return (
-		<div className="space-y-6 p-6">
-			{/* Grid container: Auto height on mobile, fixed 200px on desktop */}
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:h-[200px]">
+		<div className="space-y-4 md:space-y-6 p-3 md:p-6">
+			{/* Grid container: Auto height on mobile, fixed height on desktop */}
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:h-[200px]">
 				{/* Card 1: Total Sales (Redesigned) */}
-				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-full rounded-lg ">
+				<Card className="col-span-1 md:col-span-2 lg:col-span-1 bg-white !p-0 overflow-hidden relative h-[180px] lg:h-full rounded-lg shadow-sm border border-gray-100">
 					<div className="flex justify-between items-center p-6 h-full relative z-10">
-						<div className="flex-0 flex flex-col justify-center h-full min-h-[140px]">
+						<div className="flex-0 flex flex-col justify-center h-full">
 							<h3 className="text-gray-500 text-sm font-medium mb-1 font-knewave break-all">Congratulation {user?.username || "User"}!</h3>
 							<div className="flex items-baseline gap-2">
-								<span className="text-2xl font-bold text-gray-900">${stats.paid_order_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-								{/* <span className="text-green-500 text-xs font-semibold">+9%</span> */}
+								<span className="text-2xl md:text-3xl font-bold text-gray-900">${stats.paid_order_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
 							</div>
 						</div>
-						<div className="flex-1 w-32 h-32 md:w-40 md:h-40 pointer-events-none">
+						<div className="flex-1 w-32 h-32 md:w-40 md:h-40 pointer-events-none absolute right-0 bottom-0 opacity-80 md:opacity-100">
 							<img src={dashboardImg} alt="Illustration" className="w-full h-full object-contain object-bottom" />
 						</div>
 					</div>
 				</Card>
 
 				{/* Card 2: Stats Grid */}
-				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-full">
-					<div className="grid grid-cols-2 gap-2 h-full">
+				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-auto lg:h-full shadow-sm border border-gray-100 rounded-lg">
+					<div className="grid grid-cols-2 gap-2 h-full p-2">
 						{[
 							{ label: t("todayOrders"), value: stats.paid_today_order_num, icon: faCalendarCheck, color: "text-blue-600", bg: "bg-blue-50" },
 							{ label: t("todaySales"), value: `$${stats.paid_today_order_amount.toLocaleString()}`, icon: faMoneyBillWave, color: "text-green-600", bg: "bg-green-50" },
 							{ label: t("yesterdayOrders"), value: stats.paid_yesterday_order_num, icon: faHistory, color: "text-orange-600", bg: "bg-orange-50" },
 							{ label: t("yesterdaySales"), value: `$${stats.paid_yesterday_order_amount.toLocaleString()}`, icon: faMoneyBillWave, color: "text-purple-600", bg: "bg-purple-50" },
 						].map((item, i) => (
-							<div key={i} className="flex flex-col justify-center gap-1 p-4 rounded-lg shadow-xl transition-shadow">
+							<div key={i} className="flex flex-col justify-center gap-1 p-3 rounded-lg hover:bg-gray-50 transition-colors">
 								<div className="flex items-center gap-2">
-									<div className={`w-6 h-6 rounded-full ${item.bg} flex items-center justify-center ${item.color} text-sm`}>
+									<div className={`w-6 h-6 rounded-full ${item.bg} flex items-center justify-center ${item.color} text-xs`}>
 										<FontAwesomeIcon icon={item.icon} />
 									</div>
-									<div className="text-xs text-gray-500 font-medium">{item.label}</div>
+									<div className="text-[10px] md:text-xs text-gray-500 font-medium truncate">{item.label}</div>
 								</div>
-								<div className="text-lg font-bold text-gray-900 pl-1">{item.value}</div>
+								<div className="text-base md:text-lg font-bold text-gray-900 pl-1 truncate" title={item.value}>
+									{item.value}
+								</div>
 							</div>
 						))}
 					</div>
 				</Card>
 
 				{/* Card 3: Donut Chart (Success vs Failed Today) */}
-				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-full rounded-lg">
-					<div className="flex items-center gap-4 justify-center h-full p-4">
-						<DonutChart
-							size={80}
-							thickness={12}
-							segments={
-								stats.paid_today_order_num + stats.failed_today_order_num > 0
-									? [
-											{ value: stats.paid_today_order_num, color: "#10B981" }, // Green for success
-											{ value: stats.failed_today_order_num, color: "#EF4444" }, // Red for failed
-										]
-									: [{ value: 1, color: "#E5E7EB" }]
-							}
-						/>
-						<div className="flex-1">
-							<div className="text-xs text-gray-600 font-medium mb-6 text-center">{t("orderRatio")}</div>
+				<Card className="col-span-1 bg-white !p-0 overflow-hidden relative h-[180px] lg:h-full rounded-lg shadow-sm border border-gray-100">
+					<div className="flex items-center gap-2 md:gap-4 justify-center h-full p-4">
+						<div className="flex-shrink-0">
+							<DonutChart
+								size={isMobile ? 70 : 80}
+								thickness={isMobile ? 10 : 12}
+								segments={
+									stats.paid_today_order_num + stats.failed_today_order_num > 0
+										? [
+												{ value: stats.paid_today_order_num, color: "#10B981" }, // Green for success
+												{ value: stats.failed_today_order_num, color: "#EF4444" }, // Red for failed
+											]
+										: [{ value: 1, color: "#E5E7EB" }]
+								}
+							/>
+						</div>
+						<div className="flex-1 min-w-0">
+							<div className="text-xs text-gray-600 font-medium mb-3 md:mb-6 text-center">{t("orderRatio")}</div>
 							<ul className="space-y-2">
 								<li className="flex items-center justify-between">
 									<div className="flex items-center text-xs text-gray-600">
-										<span className="w-2.5 h-2.5 rounded-full bg-[#10B981] mr-2" />
-										{t("successOrder")}
+										<span className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#10B981] mr-1.5 md:mr-2" />
+										<span className="truncate">{t("successOrder")}</span>
 									</div>
-									<span className="text-sm font-bold text-gray-900">{stats.paid_today_order_num}</span>
+									<span className="text-xs md:text-sm font-bold text-gray-900">{stats.paid_today_order_num}</span>
 								</li>
 								<li className="flex items-center justify-between">
 									<div className="flex items-center text-xs text-gray-600">
-										<span className="w-2.5 h-2.5 rounded-full bg-[#EF4444] mr-2" />
-										{t("failedOrder")}
+										<span className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#EF4444] mr-1.5 md:mr-2" />
+										<span className="truncate">{t("failedOrder")}</span>
 									</div>
-									<span className="text-sm font-bold text-gray-900">{stats.failed_today_order_num}</span>
+									<span className="text-xs md:text-sm font-bold text-gray-900">{stats.failed_today_order_num}</span>
 								</li>
 							</ul>
 						</div>
@@ -476,154 +526,160 @@ export function DashboardView() {
 				</Card>
 			</div>
 
-			<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 bg-white rounded-xl">
-				<div className="lg:col-span-3 relative">
+			<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+				<div className="lg:col-span-3 relative border-b lg:border-b-0 lg:border-r border-gray-100">
 					<Card
 						title={t("orders")}
+						className="shadow-none border-0 h-full"
 						action={
-							<div className="flex items-center gap-3">
+							<div className="flex items-center gap-2 md:gap-3">
 								<div className="hidden md:flex items-center gap-2">
 									{(filters.startTime || filters.endTime) && (
 										<span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200">
 											<FontAwesomeIcon icon={faCalendarCheck} className="text-gray-400" />
-											{filters.startTime} - {filters.endTime}
+											<span className="hidden xl:inline">
+												{filters.startTime} - {filters.endTime}
+											</span>
+											<span className="xl:hidden">Date</span>
 										</span>
 									)}
 									{filters.user && (
-										<span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-indigo-50 text-indigo-600 border border-indigo-100">
+										<span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-indigo-50 text-indigo-600 border border-indigo-100 max-w-[120px]">
 											<FontAwesomeIcon icon={faUserFriends} className="text-indigo-400" />
-											{userOptions.find((u) => u.value === filters.user)?.label || filters.user}
+											<span className="truncate">{userOptions.find((u) => u.value === filters.user)?.label || filters.user}</span>
 										</span>
 									)}
 								</div>
 								<button onClick={() => setShowFilters(!showFilters)} className={`px-3 py-1.5 rounded text-sm flex items-center gap-2 transition-colors ${showFilters ? "bg-blue-50 text-blue-600" : "bg-gray-50 text-gray-600 hover:bg-gray-100"}`}>
 									<FontAwesomeIcon icon={faFilter} className="text-xs" />
-									<span className="text-xs font-medium">{t("filters")}</span>
+									<span className="text-xs font-medium hidden md:inline">{t("filters")}</span>
 									<FontAwesomeIcon icon={faChevronDown} className={`text-[10px] transition-transform ${showFilters ? "rotate-180" : ""}`} />
 								</button>
 							</div>
-						}
-						className="overflow-visible h-full">
+						}>
 						{/* Absolute Filter Popup */}
 						{showFilters && (
-							<div ref={filterRef} className="absolute top-14 right-4 z-50 w-72 bg-white rounded-lg shadow-xl border border-gray-100 p-4 animate-in fade-in zoom-in-95 duration-200">
-								<div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-50">
-									<h3 className="text-xs font-semibold text-gray-700">{t("moreFilters")}</h3>
-									<button onClick={() => setShowFilters(false)} className="text-gray-400 hover:text-gray-600">
-										<FontAwesomeIcon icon={faTimes} />
-									</button>
-								</div>
-								<div className="space-y-3">
-									<InputField label={t("startTime")} type="date" value={filters.startTime} onChange={(e) => setFilters({ ...filters, startTime: e.target.value })} />
-									<InputField label={t("endTime")} type="date" value={filters.endTime} onChange={(e) => setFilters({ ...filters, endTime: e.target.value })} />
-									{/* <div className="flex flex-col gap-1">
-									<label className="text-[11px] font-medium text-gray-500">{t("orderCurrency")}</label>
-									<Select value={filters.currency} options={currencyOptions} onChange={(val) => setFilters({ ...filters, currency: val })} placeholder={t("pleaseSelect")} isClearable />
-								</div> */}
-									<div className="flex flex-col gap-1">
-										<label className="text-[11px] font-medium text-gray-500">{t("orderUser")}</label>
-										<Select
-											className="hs-custom-select"
-											value={filters.user}
-											options={userOptions}
-											onChange={(val) => {
-												console.log(val);
-												setFilters({ ...filters, user: val });
-											}}
-											placeholder={t("pleaseSelect")}
-											isClearable
-										/>
-									</div>
-									<div className="pt-2 flex gap-2">
-										<button onClick={handleSearch} disabled={loadingGraph} className="flex-1 bg-brand text-white py-1.5 rounded text-xs font-medium hover:bg-brand-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-											{loadingGraph && <FontAwesomeIcon icon={faSpinner} spin />}
-											{t("search")}
-										</button>
-										<button onClick={handleResetClick} disabled={loadingGraph} className="flex-1 bg-gray-100 text-gray-600 py-1.5 rounded text-xs font-medium hover:bg-gray-200 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
-											{t("reset")}
+							<>
+								<div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={() => setShowFilters(false)} />
+								<div ref={filterRef} className="absolute top-14 right-4 md:right-4 z-50 w-[calc(100%-2rem)] md:w-72 bg-white rounded-lg shadow-xl border border-gray-100 p-4 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+									<div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-50">
+										<h3 className="text-xs font-semibold text-gray-700">{t("moreFilters")}</h3>
+										<button onClick={() => setShowFilters(false)} className="text-gray-400 hover:text-gray-600">
+											<FontAwesomeIcon icon={faTimes} />
 										</button>
 									</div>
+									<div className="space-y-3">
+										<div className="grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-3">
+											<InputField label={t("startTime")} type="date" value={filters.startTime} onChange={(e) => setFilters({ ...filters, startTime: e.target.value })} />
+											<InputField label={t("endTime")} type="date" value={filters.endTime} onChange={(e) => setFilters({ ...filters, endTime: e.target.value })} />
+										</div>
+										<div className="flex flex-col gap-1">
+											<label className="text-[11px] font-medium text-gray-500">{t("orderUser")}</label>
+											<Select
+												className="hs-custom-select"
+												value={filters.user}
+												options={userOptions}
+												onChange={(val) => {
+													setFilters({ ...filters, user: val });
+												}}
+												placeholder={t("pleaseSelect")}
+												isClearable
+											/>
+										</div>
+										<div className="pt-2 flex gap-2">
+											<button onClick={handleSearch} disabled={loadingGraph} className="flex-1 bg-brand text-white py-2 md:py-1.5 rounded text-xs font-medium hover:bg-brand-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+												{loadingGraph && <FontAwesomeIcon icon={faSpinner} spin />}
+												{t("search")}
+											</button>
+											<button onClick={handleResetClick} disabled={loadingGraph} className="flex-1 bg-gray-100 text-gray-600 py-2 md:py-1.5 rounded text-xs font-medium hover:bg-gray-200 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
+												{t("reset")}
+											</button>
+										</div>
+									</div>
 								</div>
-							</div>
+							</>
 						)}
 
-						<div className="mt-2 relative w-full">
+						<div className="mt-2 relative w-full min-h-[250px] md:min-h-[300px]">
 							{loadingGraph && (
 								<div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center">
 									<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
 								</div>
 							)}
-							<ReactECharts option={option} className="!h-[300px]" />
+							<ReactECharts option={option} className="!h-[250px] md:!h-[300px]" />
 						</div>
 					</Card>
 				</div>
-				<div className="flex flex-col gap-6 h-full justify-center p-4">
-					<Card className="flex flex-col justify-center shadow-xl rounded-sm">
+				<div className="flex flex-col gap-4 md:gap-6 h-full justify-center p-4 lg:p-6 bg-gray-50/50">
+					<Card className="flex flex-col justify-center shadow-sm border border-gray-100 rounded-lg bg-white p-4">
 						<div className="flex justify-between items-start mb-2">
-							<div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("successOrder")}</div>
+							<div className="text-[10px] md:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("successOrder")}</div>
 							<div className="text-xs font-bold text-indigo-600">{successPct}%</div>
 						</div>
 						<div className="flex items-center">
-							<div className="text-2xl font-bold mr-6 text-gray-900">{stats.success}</div>
-							<div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-								<div className="h-full rounded-full bg-indigo-500" style={{ width: `${successPct}%` }} />
+							<div className="text-xl md:text-2xl font-bold mr-4 md:mr-6 text-gray-900">{stats.success}</div>
+							<div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+								<div className="h-full rounded-full bg-indigo-500 transition-all duration-500" style={{ width: `${successPct}%` }} />
 							</div>
 						</div>
 
-						<div className="text-[10px] text-gray-400 mb-4">{t("successOrderRatioDesc")}</div>
+						<div className="text-[10px] text-gray-400 mt-2">{t("successOrderRatioDesc")}</div>
 					</Card>
-					<Card className="flex flex-col justify-center shadow-xl rounded-sm">
+					<Card className="flex flex-col justify-center shadow-sm border border-gray-100 rounded-lg bg-white p-4">
 						<div className="flex justify-between items-start mb-2">
-							<div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("failedOrder")}</div>
+							<div className="text-[10px] md:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("failedOrder")}</div>
 							<div className="text-xs font-bold text-red-500">{failedPct}%</div>
 						</div>
 						<div className="flex items-center">
-							<div className="text-2xl font-bold mr-6 text-gray-900">{stats.failed}</div>
+							<div className="text-xl md:text-2xl font-bold mr-4 md:mr-6 text-gray-900">{stats.failed}</div>
 							<div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-								<div className="h-full rounded-full bg-red-400" style={{ width: `${failedPct}%` }} />
+								<div className="h-full rounded-full bg-red-400 transition-all duration-500" style={{ width: `${failedPct}%` }} />
 							</div>
 						</div>
 
-						<div className="text-[10px] text-gray-400 mb-4">{t("failedOrderRatioDesc")}</div>
+						<div className="text-[10px] text-gray-400 mt-2">{t("failedOrderRatioDesc")}</div>
 					</Card>
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+			<div className="flex flex-col gap-6">
 				{canViewStats && (
-					<div className="lg:col-span-1">
-						<Card className="bg-white p-0 rounded-xl h-full flex flex-col overflow-hidden shadow-sm " title={null}>
-							<div className="p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+					<div className="w-full">
+						<Card className="bg-white p-0 rounded-xl flex flex-col overflow-hidden shadow-sm border border-gray-100" title={null}>
+							<div className="p-4 md:p-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-20">
 								<div className="flex items-center gap-2">
 									<div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
 										<FontAwesomeIcon icon={faTrophy} className="text-sm" />
 									</div>
-									<h3 className="font-bold text-gray-900">{t("userStats")}</h3>
+									<h3 className="font-bold text-gray-900 text-sm md:text-base">{t("userStats")}</h3>
 								</div>
-								<div className="text-xs text-gray-400 font-medium px-2 py-1 bg-gray-50 rounded-md">Top {userStats.length}</div>
+								<div className="text-xs text-gray-400 font-medium px-2 py-1 bg-gray-50 rounded-md">
+									{t("top")} {detailedUserStats.length}
+								</div>
 							</div>
 
-							<div className="overflow-y-auto custom-scrollbar flex-1">
-								<table className="w-full text-left border-collapse">
+							<div className="hidden xl:block overflow-x-auto custom-scrollbar">
+								<table className="w-full text-left border-collapse whitespace-nowrap">
 									<thead className="bg-gray-50/50 sticky top-0 z-10 backdrop-blur-sm">
-										<tr className="text-gray-400 text-xs border-b border-gray-100">
-											<th className="p-3 pl-5 font-medium w-[45%]">{t("username")}</th>
-											<th className="p-3 font-medium text-right w-[25%]">{t("ordersCount")}</th>
-											<th className="p-3 pr-5 font-medium text-right w-[30%]">{t("amount")}</th>
+										<tr className="text-gray-500 text-xs border-b border-gray-100 font-semibold">
+											<th className="p-3 md:p-4 pl-4 md:pl-5 sticky left-0 bg-gray-50 z-20 min-w-[120px] md:min-w-[150px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">{t("username")}</th>
+											{/* Today Columns */}
+											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[90px] md:min-w-[100px]">{t("todayAmount")}</th>
+											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[70px] md:min-w-[80px]">{t("ordersCount")}</th>
+											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[90px] md:min-w-[100px]">{t("totalSuccessRate")}</th>
+											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[90px] md:min-w-[100px]">{t("paidSuccessRate")}</th>
+											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[70px] md:min-w-[80px] border-r border-gray-100">{t("paymentRate")}</th>
+											{/* Yesterday Columns */}
+											<th className="p-3 md:p-4 text-right min-w-[90px] md:min-w-[100px]">{t("yesterdayAmount")}</th>
+											<th className="p-3 md:p-4 text-right min-w-[70px] md:min-w-[80px]">{t("ordersCount")}</th>
+											<th className="p-3 md:p-4 text-right min-w-[90px] md:min-w-[100px]">{t("totalSuccessRate")}</th>
+											<th className="p-3 md:p-4 text-right min-w-[90px] md:min-w-[100px]">{t("paidSuccessRate")}</th>
+											<th className="p-3 md:p-4 text-right min-w-[70px] md:min-w-[80px]">{t("paymentRate")}</th>
 										</tr>
 									</thead>
 									<tbody className="text-xs">
-										{userStats.length > 0 ? (
-											userStats.map((u, i) => {
-												const orders = parseInt(u.sl) || 0;
-												const amount = parseFloat(u.jine) || 0;
-												// Calculate totals inside render or memoize if expensive (here it's cheap)
-												const totalOrders = userStats.reduce((acc, curr) => acc + (parseInt(curr.sl) || 0), 0) || 1;
-												const totalAmount = userStats.reduce((acc, curr) => acc + (parseFloat(curr.jine) || 0), 0) || 1;
-
-												const orderPercent = Math.min((orders / totalOrders) * 100, 100);
-												const amountPercent = Math.min((amount / totalAmount) * 100, 100);
-
+										{detailedUserStats.length > 0 ? (
+											detailedUserStats.map((u, i) => {
 												// Generate avatar color
 												const colors = ["bg-red-50 text-red-600 ring-red-100", "bg-orange-50 text-orange-600 ring-orange-100", "bg-amber-50 text-amber-600 ring-amber-100", "bg-green-50 text-green-600 ring-green-100", "bg-emerald-50 text-emerald-600 ring-emerald-100", "bg-teal-50 text-teal-600 ring-teal-100", "bg-cyan-50 text-cyan-600 ring-cyan-100", "bg-sky-50 text-sky-600 ring-sky-100", "bg-blue-50 text-blue-600 ring-blue-100", "bg-indigo-50 text-indigo-600 ring-indigo-100", "bg-violet-50 text-violet-600 ring-violet-100", "bg-purple-50 text-purple-600 ring-purple-100", "bg-fuchsia-50 text-fuchsia-600 ring-fuchsia-100", "bg-pink-50 text-pink-600 ring-pink-100", "bg-rose-50 text-rose-600 ring-rose-100"];
 												let hash = 0;
@@ -632,50 +688,52 @@ export function DashboardView() {
 
 												return (
 													<tr key={i} className="group hover:bg-gray-50 transition-all duration-200 border-b border-gray-50 last:border-0">
-														<td className="p-3 pl-5">
-															<div className="flex items-center gap-3">
-																<div className="relative">
-																	<div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-offset-1 ${colorClass}`}>{u.username.charAt(0).toUpperCase()}</div>
+														<td className="p-3 md:p-3 pl-4 md:pl-5 sticky left-0 bg-white group-hover:bg-gray-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] border-r border-transparent group-hover:border-gray-100">
+															<div className="flex items-center gap-2 md:gap-3">
+																<div className="relative flex-shrink-0">
+																	<div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[10px] md:text-xs font-bold ring-2 ring-offset-1 ${colorClass}`}>{u.username.charAt(0).toUpperCase()}</div>
 																	{i < 3 && (
-																		<div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] border border-white text-white shadow-sm ${i === 0 ? "bg-yellow-400" : i === 1 ? "bg-gray-400" : "bg-orange-400"}`}>
+																		<div className={`absolute -top-1 -right-1 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center text-[6px] md:text-[8px] border border-white text-white shadow-sm ${i === 0 ? "bg-yellow-400" : i === 1 ? "bg-gray-400" : "bg-orange-400"}`}>
 																			<FontAwesomeIcon icon={faCrown} />
 																		</div>
 																	)}
 																</div>
 																<div className="flex flex-col min-w-0">
-																	<div className="font-bold text-gray-900 truncate max-w-[100px]" title={u.username}>
+																	<div className="font-bold text-gray-900 truncate max-w-[80px] md:max-w-[120px]" title={u.username}>
 																		{u.username}
 																	</div>
 																	{i < 3 && (
-																		<div className="text-[10px] text-gray-400 font-medium">
+																		<div className="text-[9px] md:text-[10px] text-gray-400 font-medium">
 																			{t("rank")} #{i + 1}
 																		</div>
 																	)}
 																</div>
 															</div>
 														</td>
-														<td className="p-3 text-right align-middle">
-															<div className="flex flex-col items-end gap-1">
-																<span className="font-bold text-gray-700">{orders.toLocaleString()}</span>
-																{/* <div className="w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
-																<div className="h-full bg-blue-500 rounded-full" style={{ width: `${orderPercent}%` }}></div>
-															</div> */}
-															</div>
+
+														{/* Today Data */}
+														<td className="p-3 md:p-3 text-right font-bold text-gray-800 bg-blue-50/10 group-hover:bg-blue-50/30">${u.today.amount?.toLocaleString()}</td>
+														<td className="p-3 md:p-3 text-right font-medium text-gray-600 bg-blue-50/10 group-hover:bg-blue-50/30">{u.today.orders?.toLocaleString()}</td>
+														<td className="p-3 md:p-3 text-right font-medium bg-blue-50/10 group-hover:bg-blue-50/30">
+															<span className={`${u.today.totalSuccessRate >= 50 ? "text-emerald-600" : "text-gray-600"}`}>{u.today.totalSuccessRate}%</span>
 														</td>
-														<td className="p-3 pr-5 text-right align-middle">
-															<div className="flex flex-col items-end gap-1">
-																<span className="font-bold text-gray-900">${amount.toLocaleString()}</span>
-																{/* <div className="w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
-																<div className="h-full bg-emerald-500 rounded-full" style={{ width: `${amountPercent}%` }}></div>
-															</div> */}
-															</div>
+														<td className="p-3 md:p-3 text-right font-medium bg-blue-50/10 group-hover:bg-blue-50/30">
+															<span className={`${u.today.paymentSuccessRate >= 50 ? "text-emerald-600" : "text-gray-600"}`}>{u.today.paymentSuccessRate}%</span>
 														</td>
+														<td className="p-3 md:p-3 text-right font-medium bg-blue-50/10 group-hover:bg-blue-50/30 border-r border-gray-50 group-hover:border-gray-200">{u.today.paymentRate}%</td>
+
+														{/* Yesterday Data */}
+														<td className="p-3 md:p-3 text-right font-bold text-gray-400">${u.yesterday.amount?.toLocaleString()}</td>
+														<td className="p-3 md:p-3 text-right font-medium text-gray-400">{u.yesterday.orders?.toLocaleString()}</td>
+														<td className="p-3 md:p-3 text-right font-medium text-gray-400">{u.yesterday.totalSuccessRate}%</td>
+														<td className="p-3 md:p-3 text-right font-medium text-gray-400">{u.yesterday.paymentSuccessRate}%</td>
+														<td className="p-3 md:p-3 text-right font-medium text-gray-400">{u.yesterday.paymentRate}%</td>
 													</tr>
 												);
 											})
 										) : (
 											<tr>
-												<td colSpan="3" className="p-8 text-center text-gray-400 flex flex-col items-center gap-2">
+												<td colSpan="11" className="p-8 text-center text-gray-400 flex flex-col items-center gap-2">
 													<div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-300">
 														<FontAwesomeIcon icon={faUserFriends} className="text-xl" />
 													</div>
@@ -686,10 +744,116 @@ export function DashboardView() {
 									</tbody>
 								</table>
 							</div>
+
+							{/* Mobile/Tablet Card View */}
+							<div className="xl:hidden p-4 bg-gray-50/50 min-h-[200px]">
+								{detailedUserStats.length > 0 ? (
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+										{detailedUserStats.map((u, i) => {
+											// Generate avatar color
+											const colors = ["bg-red-50 text-red-600 ring-red-100", "bg-orange-50 text-orange-600 ring-orange-100", "bg-amber-50 text-amber-600 ring-amber-100", "bg-green-50 text-green-600 ring-green-100", "bg-emerald-50 text-emerald-600 ring-emerald-100", "bg-teal-50 text-teal-600 ring-teal-100", "bg-cyan-50 text-cyan-600 ring-cyan-100", "bg-sky-50 text-sky-600 ring-sky-100", "bg-blue-50 text-blue-600 ring-blue-100", "bg-indigo-50 text-indigo-600 ring-indigo-100", "bg-violet-50 text-violet-600 ring-violet-100", "bg-purple-50 text-purple-600 ring-purple-100", "bg-fuchsia-50 text-fuchsia-600 ring-fuchsia-100", "bg-pink-50 text-pink-600 ring-pink-100", "bg-rose-50 text-rose-600 ring-rose-100"];
+											let hash = 0;
+											for (let j = 0; j < u.username.length; j++) hash = u.username.charCodeAt(j) + ((hash << 5) - hash);
+											const colorClass = colors[Math.abs(hash) % colors.length];
+
+											return (
+												<div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 relative overflow-hidden hover:shadow-md transition-shadow">
+													{/* Rank Badge */}
+													{i < 3 && (
+														<div className={`absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-bl-xl text-white text-xs shadow-sm ${i === 0 ? "bg-yellow-400" : i === 1 ? "bg-gray-400" : "bg-orange-400"}`}>
+															<FontAwesomeIcon icon={faCrown} />
+														</div>
+													)}
+
+													{/* User Info */}
+													<div className="flex items-center gap-3 mb-4">
+														<div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ring-2 ring-offset-1 ${colorClass}`}>{u.username.charAt(0).toUpperCase()}</div>
+														<div className="flex flex-col">
+															<div className="font-bold text-gray-900">{u.username}</div>
+															<div className="text-xs text-gray-400 font-medium">Rank #{i + 1}</div>
+														</div>
+													</div>
+
+													{/* Stats Grid */}
+													<div className="space-y-3">
+														{/* Today Section */}
+														<div className="space-y-2">
+															<div className="flex items-center gap-2">
+																<div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
+																<span className="text-xs font-bold text-gray-900">{t("today")}</span>
+															</div>
+															<div className="grid grid-cols-3 gap-2">
+																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-blue-600/70 mb-1">{t("amount")}</span>
+																	<span className="text-sm font-bold text-blue-900">${u.today.amount?.toLocaleString()}</span>
+																</div>
+																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-blue-600/70 mb-1">{t("ordersCount")}</span>
+																	<span className="text-sm font-bold text-blue-900">{u.today.orders?.toLocaleString()}</span>
+																</div>
+																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-blue-600/70 mb-1">{t("totalSuccessRate")}</span>
+																	<span className={`text-sm font-bold ${u.today.totalSuccessRate >= 50 ? "text-emerald-600" : "text-blue-900"}`}>{u.today.totalSuccessRate}%</span>
+																</div>
+																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-blue-600/70 mb-1">{t("paidSuccessRate")}</span>
+																	<span className={`text-sm font-bold ${u.today.paymentSuccessRate >= 50 ? "text-emerald-600" : "text-blue-900"}`}>{u.today.paymentSuccessRate}%</span>
+																</div>
+																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-blue-600/70 mb-1">{t("paymentRate")}</span>
+																	<span className="text-sm font-bold text-blue-900">{u.today.paymentRate}%</span>
+																</div>
+															</div>
+														</div>
+
+														{/* Yesterday Section */}
+														<div className="space-y-2 pt-1">
+															<div className="flex items-center gap-2">
+																<div className="w-1.5 h-4 bg-gray-300 rounded-full"></div>
+																<span className="text-xs font-bold text-gray-500">{t("yesterday")}</span>
+															</div>
+															<div className="grid grid-cols-3 gap-2">
+																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-gray-400 mb-1">{t("amount")}</span>
+																	<span className="text-xs font-semibold text-gray-700">${u.yesterday.amount?.toLocaleString()}</span>
+																</div>
+																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-gray-400 mb-1">{t("ordersCount")}</span>
+																	<span className="text-xs font-semibold text-gray-700">{u.yesterday.orders?.toLocaleString()}</span>
+																</div>
+																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-gray-400 mb-1">{t("totalSuccessRate")}</span>
+																	<span className="text-xs font-semibold text-gray-700">{u.yesterday.totalSuccessRate}%</span>
+																</div>
+																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-gray-400 mb-1">{t("paidSuccessRate")}</span>
+																	<span className="text-xs font-semibold text-gray-700">{u.yesterday.paymentSuccessRate}%</span>
+																</div>
+																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
+																	<span className="text-[10px] text-gray-400 mb-1">{t("paymentRate")}</span>
+																	<span className="text-xs font-semibold text-gray-700">{u.yesterday.paymentRate}%</span>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											);
+										})}
+									</div>
+								) : (
+									<div className="flex flex-col items-center justify-center py-10 text-gray-400 gap-3">
+										<div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-300">
+											<FontAwesomeIcon icon={faUserFriends} className="text-2xl" />
+										</div>
+										<span className="text-sm font-medium">{t("noData")}</span>
+									</div>
+								)}
+							</div>
 						</Card>
 					</div>
 				)}
-				<div className={canViewStats ? "lg:col-span-2" : "lg:col-span-3"}>
+
+				<div className="w-full">
 					<Card
 						className="bg-white p-4 rounded-xl h-full"
 						title={t("recentOrders")}

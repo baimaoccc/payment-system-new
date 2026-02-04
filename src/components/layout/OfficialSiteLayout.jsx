@@ -27,7 +27,7 @@ export function OfficialSiteLayout() {
 
 	// Determine base path: if we are at /website, use /website, otherwise use root /
 	const isWebsiteSubpath = location.pathname.startsWith("/website");
-	const basePath = isWebsiteSubpath ? "/website" : "";
+	const basePath = isWebsiteSubpath ? "/website" : "/";
 
 	const navLinks = [
 		{ name: t("nav.solutions"), path: `${basePath}#solutions` },
@@ -114,7 +114,7 @@ export function OfficialSiteLayout() {
 	return (
 		<div className="min-h-screen font-sans text-slate-900 bg-white selection:bg-blue-100">
 			{/* Navigation */}
-			<nav className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${scrolled || mobileMenuOpen ? "bg-slate-900/95 backdrop-blur-md shadow-lg py-4" : "bg-transparent py-6"}`}>
+			<nav className={`fixed w-full z-[10000] transition-all duration-500 ease-in-out ${scrolled || mobileMenuOpen ? "bg-slate-900/95 backdrop-blur-md shadow-lg py-4" : "bg-transparent py-6"}`}>
 				<div className="container mx-auto px-6 flex items-center justify-between">
 					<Link to="/website" className={`text-2xl font-bold tracking-tighter flex items-center gap-2 transition-colors duration-300 ${scrolled || mobileMenuOpen ? "text-white" : "text-blue-900"}`}>
 						<img src={BrandLogo} alt="logo" className="h-12" />
@@ -129,7 +129,8 @@ export function OfficialSiteLayout() {
 								to={link.path}
 								className={`text-sm font-medium transition-colors duration-300 ${activeSection === link.path ? "text-blue-500" : scrolled || mobileMenuOpen ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-blue-600"}`}
 								onClick={(e) => {
-									if (location.pathname === "/website" && link.path.includes("#")) {
+									const targetPath = link.path.split("#")[0];
+									if (location.pathname === targetPath && link.path.includes("#")) {
 										e.preventDefault();
 										const id = link.path.split("#")[1];
 										document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -165,7 +166,8 @@ export function OfficialSiteLayout() {
 								className={`text-base font-medium py-2 border-b border-slate-800 transition-colors ${activeSection === link.path ? "text-blue-500" : "text-slate-300 hover:text-white"}`}
 								onClick={(e) => {
 									setMobileMenuOpen(false);
-									if (location.pathname === "/website" && link.path.includes("#")) {
+									const targetPath = link.path.split("#")[0];
+									if (location.pathname === targetPath && link.path.includes("#")) {
 										e.preventDefault();
 										const id = link.path.split("#")[1];
 										document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -250,13 +252,13 @@ export function OfficialSiteLayout() {
 						<p>{t("footer.copyright")}</p>
 						<div className="w-full sm:w-auto flex justify-between items-center flex-wrap  sm:space-x-6 mt-4 md:mt-0">
 							<div className="w-full sm:w-auto sm:min-w-[300px] flex justify-between items-center">
-								<Link to="/privacy-policy" className="hover:text-white transition-colors">
+								<Link to={`${basePath === "/" ? "" : basePath}/privacy-policy`} className="hover:text-white transition-colors">
 									{t("footer.privacyPolicy")}
 								</Link>
-								<Link to="/terms-of-service" className="hover:text-white transition-colors">
+								<Link to={`${basePath === "/" ? "" : basePath}/terms-of-service`} className="hover:text-white transition-colors">
 									{t("footer.termsOfService")}
 								</Link>
-								<Link to="/cookie-policy" className="hover:text-white transition-colors">
+								<Link to={`${basePath === "/" ? "" : basePath}/cookie-policy`} className="hover:text-white transition-colors">
 									{t("footer.cookies")}
 								</Link>
 							</div>
@@ -267,7 +269,7 @@ export function OfficialSiteLayout() {
 								<span>/</span>
 								<button onClick={() => setLanguage("zh")} className={`transition-colors ${lang === "zh" ? "text-white font-medium" : "hover:text-white"}`}>
 									中文
-								</button>5
+								</button>
 							</div>
 						</div>
 					</div>
