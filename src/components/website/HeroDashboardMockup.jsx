@@ -52,7 +52,7 @@ export default function HeroDashboardMockup() {
 					</div>
 					<div className="bg-slate-50 px-4 py-1.5 rounded-md text-xs font-mono text-slate-400 flex items-center gap-2 border border-slate-100">
 						<span className="w-2 h-2 rounded-full bg-green-500"></span>
-						https://www.pay.ceo
+						https://www.paypay.it.com
 					</div>
 					{!isMobile && <div className="w-16"></div>}
 				</div>

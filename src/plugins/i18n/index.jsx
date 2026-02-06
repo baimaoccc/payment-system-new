@@ -122,9 +122,13 @@ const messages = {
 		todayOrders: "今日订单",
 		todaySales: "今日销售额",
 		todayAmount: "今日金额",
+		todaySuccessAmount: "今日成功金额",
 		yesterdayOrders: "昨日订单",
 		yesterdaySales: "昨日销售额",
 		yesterdayAmount: "昨日金额",
+		yesterdaySuccessAmount: "昨日成功金额",
+		todaySuccessOrders: "今日成功订单数",
+		yesterdaySuccessOrders: "昨日成功订单数",
 		orderRatio: "今日订单比例",
 		successOrderRatioDesc: "衡量成功订单的比例。",
 		failedOrderRatioDesc: "衡量失败订单的比例。",
@@ -613,89 +617,89 @@ const messages = {
 				customers: "全球客户",
 			},
 			solutions: {
-				subtitle: "核心解决方案",
-				title: "全方位的支付服务",
-				description: "从全球网关到专业企业工具，我们提供扩展业务所需的一切。",
+				subtitle: "全栈解决方案",
+				title: "重塑商业支付体验",
+				description: "深度整合全球收单、智能账单、物流追踪与虚拟账户，为您的跨境业务提供一站式金融科技引擎。",
 			},
 			products: {
 				gateway: {
-					title: "支付网关",
-					desc: "强大的在线支付引擎，提供极高的授权成功率。",
-					feat1: "全球收单",
-					feat2: "智能路由",
-					feat3: "循环计费",
+					title: "Payments 网关",
+					desc: "专为高转化率设计的在线支付解决方案，支持卡支付、电子钱包及本地支付方式。",
+					feat1: "预构建 UI 组件",
+					feat2: "40+ 本地支付方式",
+					feat3: "智能重试机制",
 				},
 				risk: {
-					title: "风险与欺诈",
-					desc: "利用 AI 驱动的风控套件，防患于未然。",
-					feat1: "3D 安全验证 2.0",
-					feat2: "行为分析",
-					feat3: "自定义规则",
+					title: "Radar 智能风控",
+					desc: "利用数十亿级数据点训练的机器学习模型，精准识别并拦截欺诈交易，保护您的收入。",
+					feat1: "动态 3DS 验证",
+					feat2: "设备指纹识别",
+					feat3: "自定义风控规则",
 				},
 				connect: {
-					title: "平台连接",
-					desc: "将支付功能集成到您的软件平台或市场的最简单方式。",
-					feat1: "入驻界面",
-					feat2: "分账支付",
-					feat3: "合规处理",
+					title: "Connect 平台支付",
+					desc: "为平台型企业和市场设计的资金路由与分润系统，轻松管理多方资金流。",
+					feat1: "自动资金分账",
+					feat2: "子商户入驻流程",
+					feat3: "合规性即服务",
 				},
 				terminal: {
-					title: "线下支付",
-					desc: "面向实体零售商的统一商务解决方案。",
-					feat1: "EMV 认证",
-					feat2: "P2PE 加密",
-					feat3: "云端管理",
+					title: "Terminal 线下终端",
+					desc: "将线上优势延伸至线下，打造统一的全渠道支付体验，通过 API 轻松管理实体设备。",
+					feat1: "预认证读卡器",
+					feat2: "云端设备管理",
+					feat3: "统一对账平台",
 				},
 				mobile: {
-					title: "移动端 SDK",
-					desc: "为 iOS 和 Android 应用提供原生移动体验。",
-					feat1: "Apple Pay",
-					feat2: "Google Pay",
-					feat3: "一键结账",
+					title: "Mobile 移动支付",
+					desc: "原生的 iOS 和 Android SDK，为移动应用提供极致流畅的支付体验，提升移动端转化。",
+					feat1: "Apple/Google Pay",
+					feat2: "一键快捷支付",
+					feat3: "卡号扫描识别",
 				},
 				payouts: {
-					title: "全球代付",
-					desc: "向全球卖家、自由职业者和供应商发送资金。",
-					feat1: "即时转账",
-					feat2: "多币种支持",
-					feat3: "低费率",
+					title: "Payouts 资金分发",
+					desc: "通过 API 编程化地向全球供应商、合作伙伴或员工发送资金，支持多币种即时到账。",
+					feat1: "全球即时转账",
+					feat2: "批量付款处理",
+					feat3: "自动税务申报",
 				},
 			},
 			featured: {
 				gateway: {
 					title: "企业级支付编排",
-					desc: "强大的多合一支付基础设施，具备原生 Stripe 集成和动态路由功能。配备智能风险雷达、自动拒付防御和全球多币种支持，最大化授权率和安全性。",
-					feat1: "原生 Stripe 集成",
-					feat2: "高级风险雷达",
-					feat3: "全球货币结算",
+					desc: "连接全球消费者的支付网关。通过智能路由与本地化支付方式，显著提升支付成功率，强大的多合一支付基础设施，配备智能风险雷达、自动拒付防御和全球多币种支持，最大化授权率和安全性。",
+					feat1: "覆盖 135+ 国家/地区",
+					feat2: "99.99% 系统稳定性",
+					feat3: "多层级风控防护",
 				},
 				invoice: {
 					title: "统一计费基础设施",
-					desc: "通过我们的集成发票套件简化 B2B 和 B2C 收款。支持通过 Stripe、PayPal 和 CashApp 进行无缝支付，具有自动计费周期、实时对账和智能支付跟踪功能，以改善现金流。",
-					feat1: "多渠道支付",
-					feat2: "自动对账",
-					feat3: "智能发票逻辑",
+					desc: "重新定义企业级收单体验。基于订单信息智能生成动态 Invoice，无缝对接 Stripe、PayPal、CashApp 等主流渠道，融合 Apple Pay、Google Pay 等数字钱包，智能路由每一笔交易。",
+					feat1: "全渠道聚合收单",
+					feat2: "智能 Invoice 分发",
+					feat3: "全球钱包无缝集成",
 				},
 				logistics: {
 					title: "自动化售后套件",
-					desc: "利用全面的邮件和物流系统优化客户生命周期。自动处理订单确认、实时物流跟踪和交付通知，确保专业透明的售后体验。",
+					desc: "交易后的客户体验闭环。集成全球物流追踪与即时通讯，大幅降低拒付风险，提升买家信任度。",
 					feat1: "生命周期自动化",
-					feat2: "实时物流",
+					feat2: "交易状态通知",
 					feat3: "品牌化沟通",
 				},
 				account: {
 					title: "跨境商户解决方案",
 					desc: "面向全球市场（Stripe CA/JP/EUR, eBay UK/JP）的战略账户获取和合规服务。提供专家级风险管理框架、验证账户配置和专属支持，确保长期稳定的运营连续性。",
-					feat1: "验证商户账户",
+					feat1: "多币种虚拟 IBAN",
 					feat2: "合规框架",
-					feat3: "运营连续性",
+					feat3: "全球极速分发",
 				},
 			},
 			ecosystem: {
-				subtitle: "我们的生态系统",
-				title1: "满足",
-				title2: "各种支付需求的完整套件",
-				description: "模块化解决方案，无缝协同工作。按需选择，随业务增长而扩展。",
+				subtitle: "完整生态系统",
+				title1: "构建您的",
+				title2: "金融科技堆栈",
+				description: "模块化组件设计，无论是简单的在线结账还是复杂的资金分发，都能灵活组合，满足您独特的业务场景需求。",
 				learnMore: "了解更多",
 			},
 			analytics: {
@@ -742,7 +746,7 @@ const messages = {
 			},
 			trust: {
 				title: "深受全球行业领导者信赖",
-				item1: "银行级安全标准 (PCI-DSS Level 1)",
+				item1: "银行级安全标准",
 				item2: "销售高峰期 99% 的历史正常运行时间",
 				item3: "面向企业客户的 24/7 专属支持",
 				item4: "直连卡组织网络",
@@ -880,11 +884,6 @@ const messages = {
 		yesterdayOrders: "昨日订单数",
 		refresh: "刷新",
 		top: "前",
-		totalSuccessRate: "总成功率",
-		paidSuccessRate: "支付成功率",
-		paymentRate: "付款率",
-		todayAmount: "今日金额",
-		yesterdayAmount: "昨日金额",
 		today: "今日",
 		yesterday: "昨日",
 	},
@@ -1007,9 +1006,13 @@ const messages = {
 		todayOrders: "Today's Orders",
 		todaySales: "Today's Sales",
 		todayAmount: "Today Amount",
+		todaySuccessAmount: "Today Success Amount",
 		yesterdayOrders: "Yesterday's Orders",
 		yesterdaySales: "Yesterday's Sales",
 		yesterdayAmount: "Yesterday Amount",
+		yesterdaySuccessAmount: "Yesterday Success Amount",
+		todaySuccessOrders: "Today Success Orders",
+		yesterdaySuccessOrders: "Yesterday Success Orders",
 		orderRatio: "Order Ratio (Today)",
 		successOrderRatioDesc: "Measures the ratio of successful orders.",
 		failedOrderRatioDesc: "Measures the ratio of failed orders.",
@@ -1204,7 +1207,7 @@ const messages = {
 		content: "Content",
 		close: "Close",
 		whitelistGroupsTitle: "Whitelist Groups",
-		whitelistGroupsSub: "Configure reusable country whitelist groups",
+		whitelistGroupsSub: "Configure country whitelist groups for Stripe accounts",
 		createGroup: "Create Group",
 		noGroupsConfigured: "No groups configured",
 		whitelistGroupFeatureDesc: "This feature allows you to create reusable country whitelist groups.",
@@ -1216,17 +1219,17 @@ const messages = {
 		searchCountries: "Search countries...",
 		pleaseEnterName: "Please enter group name",
 		pleaseSelectCountries: "Please select at least one country",
-		createSuccess: "Create Success",
+		createSuccess: "Created Successfully",
 		createFailed: "Create Failed",
 		editGroup: "Edit Group",
-		updateSuccess: "Update Success",
+		updateSuccess: "Updated Successfully",
 		updateFailed: "Update Failed",
 		deleteGroup: "Delete Group",
 		deleteGroupConfirm: "Are you sure to delete group {name}?",
 		countriesSelected: "countries selected",
 		emailManagement: "Email Management",
-		emailTypeManagement: "Email Types",
-		emailTemplateManagement: "Email Templates",
+		emailTypeManagement: "Email Type Management",
+		emailTemplateManagement: "Email Template Management",
 		templateName: "Template Name",
 		emailType: "Email Type",
 		templateNamePlaceholder: "Enter template name",
@@ -1234,19 +1237,19 @@ const messages = {
 		templateContentPlaceholder: "Enter template content",
 		templatePreview: "Template Preview",
 		variables: "Variables",
-		variableCopied: "Variable copied",
-		variableCopyFailed: "Copy failed",
+		variableCopied: "Variable Copied",
+		variableCopyFailed: "Copy Failed",
 		deleteEmailTemplate: "Delete Email Template",
 		viewEmailTemplate: "View Email Template",
 		editEmailTemplate: "Edit Email Template",
-		clickToCollapse: "Click to collapse",
+		clickToCollapse: "Click to Collapse",
 		serviceEmail: "Service Email",
 		serviceEmailPlaceholder: "Enter service email",
 		description: "Description",
-		smtpServerManagement: "SMTP Servers",
-		smtpServerManagementDesc: "Configure SMTP servers for sending emails",
-		emailTaskManagement: "Email Tasks",
-		emailTaskManagementDesc: "Manage system email tasks",
+		smtpServerManagement: "SMTP Server",
+		smtpServerManagementDesc: "Configure SMTP server for sending emails",
+		emailTaskManagement: "Email Task Management",
+		emailTaskManagementDesc: "Manage email tasks in the system",
 		addSmtpServer: "Add SMTP Server",
 		editSmtpServer: "Edit SMTP Server",
 		viewSmtpServer: "View SMTP Server",
@@ -1254,14 +1257,14 @@ const messages = {
 		smtpPort: "Port",
 		smtpUsername: "Username",
 		smtpPassword: "Password",
-		smtpFromName: "From Name",
-		smtpFromEmail: "From Email",
+		smtpFromName: "Sender Name",
+		smtpFromEmail: "Sender Email",
 		smtpSecure: "Encryption",
 		sendEmail: "Send Email",
 		sendEmailConfirmIntro: "Please confirm email target info:",
 		sendEmailConfirm: "Are you sure to send {templateName} to order {orderNo}?",
-		sendEmailSuccess: "Email sent successfully",
-		sendEmailFailed: "Email sending failed",
+		sendEmailSuccess: "Email Sent",
+		sendEmailFailed: "Email Send Failed",
 		selectEmailTemplate: "Select Email Template",
 		selectEmailType: "Select Email Type",
 		emailTypeName: "Type Name",
@@ -1281,7 +1284,7 @@ const messages = {
 		addGroup: "Add Group",
 		groupName: "Group Name",
 		belongTo: "Belong To",
-		enterRemark: "Enter remark",
+		enterRemark: "Enter Remark",
 		selectStripeAccounts: "Select Stripe Accounts",
 		nameRequired: "Name is required",
 		yes: "Yes",
@@ -1292,6 +1295,17 @@ const messages = {
 		dispute_status_needs_response: "Needs Response",
 		dispute_status_warning_closed: "Warning Closed",
 		dispute_status_under_review: "Under Review",
+		// Order Logs
+		orderLogs: "Order Logs",
+		orderLogsSub: "System logs associated with this order",
+		log_id: "Log ID",
+		log_title: "Log Title",
+		log_link: "Log Link",
+		log_ip: "IP Address",
+		log_createtime: "Created Time",
+		log_user_agent: "User Agent",
+		log_information: "Information",
+		user_id: "User ID",
 		dispute_reason_fraudulent: "Fraudulent",
 		dispute_reason_unrecognized: "Unrecognized",
 		dispute_reason_product_not_received: "Product Not Received",
@@ -1307,7 +1321,13 @@ const messages = {
 		exporting: "Exporting...",
 		exportSuccess: "Export Success",
 		exportFailed: "Export Failed",
-		// Filters
+		domainPlaceholder: "e.g. example.com",
+		urlPlaceholder: "e.g. https://example.com",
+		system_wordpress: "WordPress",
+		system_shopify: "Shopify",
+		system_magento: "Magento",
+		system_opencart: "OpenCart",
+		system_other: "Other",
 		paymentStatus: "Payment Status",
 		paymentChannel: "Payment Channel",
 		reset: "Reset",
@@ -1339,7 +1359,7 @@ const messages = {
 		user: "User",
 		contactInfo: "Contact Info",
 		basicInfoHint: "User identity and role settings",
-		goTo: "Go to",
+		goTo: "Go To",
 		contactInfoHint: "Contact channel settings",
 		pleaseEnterCaptcha: "Please enter captcha",
 		receipt: "Receipt",
@@ -1347,12 +1367,12 @@ const messages = {
 		stTypePhishing: "Phishing",
 		st_level: "Account Level",
 		st_type: "Account Type",
-		st_risk_title: "Risk Controls & Limits",
+		st_risk_title: "Risk & Limits",
 		st_risk_subtitle: "Set transaction limits and geographical restrictions",
 		st_modal_desc_view: "View detailed information for this account.",
 		st_modal_desc_edit: "Fill in the details below to manage the Stripe account.",
-		st_info_title: "Account Information",
-		st_info_subtitle: "Basic details and configuration for this account",
+		st_info_title: "Account Info",
+		st_info_subtitle: "Basic details and configuration",
 		st_api_title: "API Credentials",
 		st_api_subtitle: "Secure keys for Stripe integration",
 		st_warnings: "Warnings",
@@ -1364,27 +1384,22 @@ const messages = {
 		st_evidence_due_by: "Evidence Due By",
 		st_warning_list: "Warning List",
 		st_dispute_list: "Dispute List",
-		st_today_order_amount_sum: "Today Total Order Amount",
-		orderBelong: "Order ownership",
-		accountOwnership: "Account ownership",
-		isRequired: "is required",
+		st_today_order_amount_sum: "Today Order Amount Sum",
+		orderBelong: "Order Belong",
+		accountOwnership: "Account Ownership",
 		emailTaskHistory: "Email Task History",
-		emailTemplate: "Email Template",
-		stripeCustomEmbeddedForms: "Stripe Custom embedded forms",
+		stripeCustomEmbeddedForms: "Stripe Custom Embedded Forms",
 		stripeCheckout: "Stripe Checkout",
-		paymentType: "Payment Type",
-		selectPaymentType: "Select payment type",
+		selectPaymentType: "Select Payment Type",
 		owner: "Owner",
-		remark: "Remark",
 		warning: "Warning",
 		dispute: "Dispute",
 		collapse: "Collapse",
-		selectStatus: "Select status",
+		selectStatus: "Select Status",
 		taskStatus_failed: "Failed",
 		taskStatus_pending: "Pending",
 		confirmUpdateOrderToSuccess: "Are you sure to update order status to success?",
-		logisticsInfo: "Logistics Information",
-		emailTemplateManagementDesc: "Manage email templates for sending emails",
+		logisticsInfo: "Logistics Info",
 		addEmailTemplate: "Add Email Template",
 		accessDenied: "Access Denied",
 		logisticsShipment: "Logistics Shipment",
@@ -1396,61 +1411,56 @@ const messages = {
 		editEmailTask: "Edit Email Task",
 		addEmailTask: "Add Email Task",
 		addEmailType: "Add Email Type",
-		emailTypeManagementDesc: "Manage email types for email templates",
 		taskStatus_sent: "Sent",
 		taskStatus_cancelled: "Cancelled",
 		uploadFailed: "Upload Failed",
 		selectRole: "Select Role",
 		selectParent: "Select Parent",
 		assignPaymentGroup: "Assign Payment Group",
-		assignGroupHint: "Select a payment group for this user",
+		assignGroupHint: "Select payment group for this user",
 		paymentGroup: "Payment Group",
 		selectPaymentGroup: "Select Payment Group",
 		noGroupsFound: "No payment groups found",
-		roleRequired: "Role is required",
-		parentRequired: "Belong To is required",
+		roleRequired: "Please select role",
+		parentRequired: "Please select parent",
 		additionalDetails: "Additional details...",
 		orderCallback: "Order Callback",
 		// BSite Management
-		bSiteManagement: "BSite Management",
+		bSiteManagement: "B-Site Management",
 		websiteManagement: "Website Management",
 		websiteList: "Website List",
 		addWebsite: "Add Website",
 		editWebsite: "Edit Website",
 		domainName: "Domain Name",
-		websiteUrl: "URL",
+		websiteUrl: "Website URL",
 		websiteSystem: "Website System",
-		deleteWebsiteConfirm: "Are you sure you want to delete website {name}?",
+		deleteWebsiteConfirm: "Are you sure to delete website {name}?",
 		productCategory: "Product Category",
-		bSiteProduct: "BSite Product",
+		bSiteProduct: "B-Site Product",
 		categoryName: "Category Name",
 		addCategory: "Add Category",
 		editCategory: "Edit Category",
-		deleteCategoryConfirm: "Are you sure you want to delete category {name}?",
+		deleteCategoryConfirm: "Are you sure to delete category {name}?",
 		productName: "Product Name",
 		productNameZh: "Chinese Name",
 		addProduct: "Add Product",
 		editProduct: "Edit Product",
-		deleteProductConfirm: "Are you sure you want to delete product {name}?",
+		deleteProductConfirm: "Are you sure to delete product {name}?",
 		selectCategory: "Select Category",
 		exportTemplate: "Export Template",
 		importData: "Import Data",
 		uploadSuccess: "Upload Success",
+		exportFailed: "Export Failed",
 		pendingReview: "Pending Review",
+		downloadTemplate: "Download Template",
+		batchUpload: "Batch Upload",
 		batchAudit: "Batch Audit",
 		batchApprove: "Batch Approve",
 		batchReject: "Batch Reject",
 		selected: "Selected",
 		cancelBatch: "Cancel Batch",
 		pleaseSelectItems: "Please select items",
-		edit: "Edit",
-		domainPlaceholder: "e.g. example.com",
-		urlPlaceholder: "e.g. https://example.com",
-		system_wordpress: "WordPress",
-		system_shopify: "Shopify",
-		system_magento: "Magento",
-		system_opencart: "OpenCart",
-		system_other: "Other",
+
 		// Website Navigation
 		nav: {
 			solutions: "Solutions",
@@ -1463,11 +1473,11 @@ const messages = {
 		},
 		// Website Footer
 		footer: {
-			description: "Powering the world's payments with secure, reliable, and scalable infrastructure. Connecting businesses to customers globally.",
+			description: "Building secure, reliable, and scalable global payment infrastructure connecting businesses and consumers worldwide.",
 			copyright: "© 2026 CeoPay Inc. All rights reserved.",
 			privacyPolicy: "Privacy Policy",
 			termsOfService: "Terms of Service",
-			cookies: "Cookies",
+			cookies: "Cookie Policy",
 		},
 		// Landing Page
 		landing: {
@@ -1479,112 +1489,112 @@ const messages = {
 				exploreProducts: "Explore Products",
 			},
 			stats: {
-				transactions: "Transactions / Year",
-				uptime: "Uptime Reliability",
-				currencies: "Currencies Supported",
+				transactions: "Annual Volume",
+				uptime: "Uptime",
+				currencies: "Currencies",
 				customers: "Global Customers",
 			},
 			solutions: {
-				subtitle: "Our Core Solutions",
-				title: "Comprehensive Payment Services",
-				description: "From global gateways to specialized enterprise tools, we provide everything you need to scale.",
+				subtitle: "Full-stack Solutions",
+				title: "Reshape Business Payment Experience",
+				description: "Deeply integrate global acquiring, smart billing, logistics tracking, and virtual accounts to provide a one-stop fintech engine for your cross-border business.",
 			},
 			products: {
 				gateway: {
-					title: "Payment Gateway",
-					desc: "A powerful engine to accept payments online with high authorization rates.",
-					feat1: "Global acquiring",
-					feat2: "Smart routing",
-					feat3: "Recurring billing",
+					title: "Payments Gateway",
+					desc: "High-conversion online payment solution supporting card payments, e-wallets, and local payment methods.",
+					feat1: "Pre-built UI Components",
+					feat2: "40+ Local Payment Methods",
+					feat3: "Smart Retry Mechanism",
 				},
 				risk: {
-					title: "Risk & Fraud",
-					desc: "Stop fraud before it happens with our AI-powered risk management suite.",
-					feat1: "3D Secure 2",
-					feat2: "Behavioral analysis",
-					feat3: "Custom rules",
+					title: "Radar Smart Risk Control",
+					desc: "Machine learning models trained on billions of data points to precisely identify and block fraudulent transactions, protecting your revenue.",
+					feat1: "Dynamic 3DS Verification",
+					feat2: "Device Fingerprinting",
+					feat3: "Custom Risk Rules",
 				},
 				connect: {
-					title: "Platform Connect",
-					desc: "The easiest way to integrate payments into your software platform or marketplace.",
-					feat1: "Onboarding UI",
-					feat2: "Split payments",
-					feat3: "Compliance handling",
+					title: "Connect Platform Payments",
+					desc: "Fund routing and splitting system designed for platforms and marketplaces, easily managing multi-party fund flows.",
+					feat1: "Automatic Fund Splitting",
+					feat2: "Sub-merchant Onboarding",
+					feat3: "Compliance as a Service",
 				},
 				terminal: {
-					title: "In-Person Payments",
-					desc: "Unified commerce solution for brick-and-mortar retailers.",
-					feat1: "EMV certified",
-					feat2: "P2PE encryption",
-					feat3: "Cloud management",
+					title: "Terminal Offline Terminals",
+					desc: "Extend online advantages to offline, creating a unified omni-channel payment experience, easily managing physical devices via API.",
+					feat1: "Pre-certified Card Readers",
+					feat2: "Cloud Device Management",
+					feat3: "Unified Reconciliation Platform",
 				},
 				mobile: {
-					title: "Mobile SDK",
-					desc: "Native mobile experiences for iOS and Android apps.",
-					feat1: "Apple Pay",
-					feat2: "Google Pay",
-					feat3: "One-tap checkout",
+					title: "Mobile Payments",
+					desc: "Native iOS and Android SDKs providing an extremely smooth payment experience for mobile apps, boosting mobile conversion.",
+					feat1: "Apple/Google Pay",
+					feat2: "One-click Quick Payment",
+					feat3: "Card Scanning Recognition",
 				},
 				payouts: {
-					title: "Global Payouts",
-					desc: "Send money to sellers, freelancers, and suppliers worldwide.",
-					feat1: "Instant transfers",
-					feat2: "Multi-currency",
-					feat3: "Low fees",
+					title: "Payouts Fund Distribution",
+					desc: "Programmatically send funds to global suppliers, partners, or employees via API, supporting multi-currency instant arrival.",
+					feat1: "Global Instant Transfers",
+					feat2: "Batch Payment Processing",
+					feat3: "Automated Tax Reporting",
 				},
 			},
 			featured: {
 				gateway: {
 					title: "Enterprise Payment Orchestration",
-					desc: "A robust, all-in-one payment infrastructure featuring native Stripe integration and dynamic routing. Equipped with intelligent risk radar, automated chargeback defense, and global multi-currency support to maximize authorization rates and security.",
-					feat1: "Native Stripe Integration",
-					feat2: "Advanced Risk Radar",
-					feat3: "Global Currency Settlement",
+					desc: "Payment gateway connecting global consumers. Significantly improve payment success rates through intelligent routing and localized payment methods. Powerful all-in-one payment infrastructure equipped with smart risk radar, automated chargeback defense, and global multi-currency support to maximize authorization rates and security.",
+					feat1: "Covering 135+ Countries/Regions",
+					feat2: "99.99% System Uptime",
+					feat3: "Multi-level Risk Protection",
 				},
 				invoice: {
 					title: "Unified Billing Infrastructure",
-					desc: "Streamline B2B and B2C collections with our integrated invoicing suite. Supports seamless payments via Stripe, PayPal, and CashApp, featuring automated billing cycles, real-time reconciliation, and smart payment tracking for improved cash flow.",
-					feat1: "Multi-Channel Payments",
-					feat2: "Automated Reconciliation",
-					feat3: "Smart Invoicing Logic",
+					desc: "Redefine the enterprise acquiring experience. Intelligently generate dynamic Invoices based on order information, seamlessly connect with mainstream channels such as Stripe, PayPal, and CashApp, integrate digital wallets such as Apple Pay and Google Pay, and intelligently route every transaction.",
+					feat1: "Omni-channel Aggregated Acquiring",
+					feat2: "Smart Invoice Distribution",
+					feat3: "Seamless Global Wallet Integration",
 				},
 				logistics: {
 					title: "Automated Post-Purchase Suite",
-					desc: "Optimize your customer lifecycle with a comprehensive mail and logistics system. Automates order confirmations, real-time shipping tracking, and delivery notifications, ensuring a professional and transparent after-sales experience.",
+					desc: "Closed loop of post-transaction customer experience. Integrated global logistics tracking and instant messaging to significantly reduce chargeback risks and increase buyer trust.",
 					feat1: "Lifecycle Automation",
-					feat2: "Real-Time Logistics",
+					feat2: "Transaction Status Notifications",
 					feat3: "Branded Communication",
 				},
 				account: {
 					title: "Cross-Border Merchant Solutions",
-					desc: "Strategic account acquisition and compliance services for global markets (Stripe CA/JP/EUR, eBay UK/JP). Provides expert risk management frameworks, verified account provisioning, and dedicated support to ensure stable, long-term operational continuity.",
-					feat1: "Verified Merchant Accounts",
+					desc: "Strategic account acquisition and compliance services for global markets (Stripe CA/JP/EUR, eBay UK/JP). Providing expert risk management frameworks, verified account configurations, and dedicated support to ensure long-term operational continuity.",
+					feat1: "Multi-currency Virtual IBAN",
 					feat2: "Compliance Frameworks",
-					feat3: "Operational Continuity",
+					feat3: "Global Instant Payouts",
 				},
 			},
 			ecosystem: {
-				subtitle: "Our Ecosystem",
-				title1: "A complete suite for",
-				title2: "every payment need",
-				description: "Modular solutions that work together seamlessly. Choose what you need now and expand as you grow.",
-				learnMore: "Learn more",
+				subtitle: "Complete Ecosystem",
+				title1: "Build Your",
+				title2: "Fintech Stack",
+				description: "Modular component design, whether it's simple online checkout or complex fund distribution, can be flexibly combined to meet your unique business scenario needs.",
+				learnMore: "Learn More",
 			},
 			analytics: {
-				badge: "REAL-TIME ANALYTICS",
+				badge: "Real-time Analytics",
 				title1: "Complete control over",
-				title2: "your finances.",
-				description: "Monitor your revenue, track transactions, and manage payouts in real-time. Our powerful dashboard gives you the insights you need to grow.",
-				feat1: "Instant revenue reporting",
-				feat2: "Detailed transaction logs",
-				feat3: "One-click refunds & dispute management",
-				feat4: "Multi-currency support",
-				explore: "Explore the Dashboard",
+				title2: "your financials.",
+				description: "Monitor revenue, track transactions, and manage payouts in real-time. Our powerful dashboard gives you the insights needed for growth.",
+				feat1: "Instant Revenue Reports",
+				feat2: "Detailed Transaction Logs",
+				feat3: "One-click Refunds & Disputes",
+				feat4: "Multi-currency Support",
+				explore: "Explore Dashboard",
 			},
 			features: {
 				subtitle: "Why Choose Us",
-				title: "Built for modern commerce",
-				description: "Everything you need to build your payment flow, manage risk, and grow your revenue.",
+				title: "Built for Modern Business",
+				description: "Everything you need to build payment flows, manage risk, and increase revenue.",
 				grid: {
 					global: {
 						title: "Global Reach",
@@ -1592,39 +1602,39 @@ const messages = {
 					},
 					fraud: {
 						title: "Fraud Protection",
-						desc: "Advanced AI-driven fraud detection to keep your transactions secure and approved.",
+						desc: "Advanced AI-driven fraud detection to keep your transactions safe and approved.",
 					},
 					payouts: {
 						title: "Instant Payouts",
-						desc: "Get access to your funds faster with real-time settlement options.",
+						desc: "Get your funds faster with real-time settlement options available.",
 					},
 					analytics: {
 						title: "Real-time Analytics",
-						desc: "Deep insights into your revenue, conversion rates, and customer behavior.",
+						desc: "Gain deep insights into your revenue, conversion rates, and customer behavior.",
 					},
 					local: {
-						title: "Local Payment Methods",
+						title: "Local Methods",
 						desc: "Support for 100+ local payment methods including wallets and bank transfers.",
 					},
 					mobile: {
 						title: "Mobile Optimized",
-						desc: "Seamless checkout experiences on any device, fully responsive and fast.",
+						desc: "Seamless checkout experience on any device, fully responsive and fast.",
 					},
 				},
 			},
 			trust: {
-				title: "Trusted by industry leaders worldwide",
-				item1: "Bank-grade security standards (PCI-DSS Level 1)",
-				item2: "99% historical uptime during peak sales",
-				item3: "24/7 dedicated support for enterprise clients",
-				item4: "Direct connections to card networks",
-				volume: "Volume Processed",
-				transactions: "Transactions / Day",
+				title: "Trusted by Global Industry Leaders",
+				item1: "Bank-Grade Security ",
+				item2: "99% Historical Uptime During Peak Sales",
+				item3: "24/7 Dedicated Support for Enterprise Clients",
+				item4: "Direct Card Network Connections",
+				volume: "Processed Volume",
+				transactions: "Daily Transactions",
 			},
 			cta: {
 				title: "Ready to get started?",
-				description: "Join thousands of businesses that trust us with their payments. Set up your account in minutes.",
-				getStart: "Get Start",
+				description: "Join thousands of businesses that trust our payment services. Set up your account in minutes.",
+				getStart: "Get Started",
 				contactSales: "Contact Sales",
 			},
 			mockup: {
@@ -1640,10 +1650,10 @@ const messages = {
 				chat: {
 					voiceNote: "Voice Note",
 					userMessage: "I need a dress for the weekend.",
-					botMessage: "I found these dresses in your size, shall I order one?",
+					botMessage: "I found these dresses in your size. Would you like to order?",
 					newArrival: "New Arrival",
-					productName: "Patterned dress",
-					collection: "Spring Collection 2026",
+					productName: "Floral Dress",
+					collection: "Spring 2026 Collection",
 					add: "Add",
 				},
 			},
@@ -1662,16 +1672,16 @@ const messages = {
 					content: "We use the information we collect in various ways, including to:\n\n• Provide, operate, and maintain our website\n• Improve, personalize, and expand our website\n• Understand and analyze how you use our website\n• Develop new products, services, features, and functionality\n• Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes\n• Send you emails\n• Find and prevent fraud",
 				},
 				sharing: {
-					title: "Sharing Information",
-					content: "We do not sell, trade, or otherwise transfer to outside parties your Personally Identifiable Information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.",
+					title: "Information Sharing",
+					content: "We do not sell, trade, or otherwise transfer to outside parties your Personally Identifiable Information unless we provide users with advance notice. This does not include website hosting partners and other parties who assist us in operating our website, conducting our business, or serving our users, so long as those parties agree to keep this information confidential.",
 				},
 				security: {
 					title: "Security",
-					content: "We adopt appropriate data collection, storage and processing practices and security measures to protect against unauthorized access, alteration, disclosure or destruction of your personal information, username, password, transaction information and data stored on our Site.",
+					content: "We take appropriate security measures to prevent unauthorized access, alteration, disclosure, or destruction of your personal information, username, password, transaction information, and data stored on our site.",
 				},
 				contact: {
 					title: "Contact Us",
-					content: "If you have any other questions about our privacy policy or need more information, please feel free to contact us at any time",
+					content: "If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.",
 				},
 			},
 			termsOfService: {
@@ -1688,11 +1698,11 @@ const messages = {
 				},
 				account: {
 					title: "User Account",
-					content: "If you create an account on the Website, you are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer, and you agree to accept responsibility for all activities that occur under your account or password.",
+					content: "If you create an account on this website, you are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer, and you agree to accept responsibility for all activities that occur under your account or password.",
 				},
 				prohibited: {
 					title: "Prohibited Activities",
-					content: "You may not use the Site or Services for any purpose that is unlawful or prohibited by these Terms. You may not use the Services in violation of any laws in your jurisdiction (including but not limited to copyright laws).",
+					content: "You may not use the site or services for any illegal or unauthorized purpose. You must not, in the use of the Service, violate any laws in your jurisdiction (including but not limited to copyright laws).",
 				},
 				termination: {
 					title: "Termination",
@@ -1700,7 +1710,7 @@ const messages = {
 				},
 				liability: {
 					title: "Limitation of Liability",
-					content: "In no event shall CeoPay, nor any of its officers, directors, and employees, be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract. CeoPay, including its officers, directors, and employees shall not be held liable for any indirect, consequential, or special liability arising out of or in any way related to your use of this Website.",
+					content: "In no event shall CeoPay, nor any of its officers, directors and employees, be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract. CeoPay, including its officers, directors and employees shall not be held liable for any indirect, consequential or special liability arising out of or in any way related to your use of this Website.",
 				},
 			},
 			cookiePolicy: {
@@ -1721,114 +1731,96 @@ const messages = {
 				},
 			},
 		},
-		downloadTemplate: "Download Template",
-		batchUpload: "Batch Upload",
+		downloadTemplate: "Download Site Template",
+		batchUpload: "Batch Upload Sites",
 		viewUser: "View User",
-		copySuccess: "Copy Success",
+		copySuccess: "Copied Successfully",
 		copyFailed: "Copy Failed",
-		reviewExempt: "Review Exempt",
+		reviewExempt: "Exempt",
 		exempt: "Exempt",
 		reviewRequired: "Review Required",
-		// Order Logs
-		orderLogs: "Order Logs",
-		orderLogsSub: "System logs associated with this order",
-		log_id: "Log ID",
-		log_title: "Log Title",
-		log_link: "Log Link",
-		log_ip: "IP Address",
-		log_createtime: "Create Time",
-		log_user_agent: "User Agent",
-		log_information: "Details",
-		user_id: "User ID",
 		// Logs
 		logManagement: "Log Management",
 		logManagementHint: "View and search system logs",
 		searchLogByEmail: "Search logs by email",
 		viewDetails: "View Details",
-		// Overwrite keys for log management context if needed, matching zh behavior
 		log_id: "ID",
 		log_user_id: "User ID",
 		log_title: "Title",
 		log_link: "Link",
 		log_ip: "IP Address",
-		log_createtime: "Create Time",
+		log_createtime: "Created Time",
 		log_user_agent: "User Agent",
-		log_information: "Details",
+		log_information: "Information",
 		// Dashboard User Stats
 		todayAmount: "Today Amount",
 		todayOrders: "Today Orders",
 		totalSuccessRate: "Total Success Rate",
-		paySuccessRate: "Pay Success Rate",
-		payRate: "Pay Rate",
+		paySuccessRate: "Payment Success Rate",
+		payRate: "Payment Rate",
 		yesterdayAmount: "Yesterday Amount",
 		yesterdayOrders: "Yesterday Orders",
 		refresh: "Refresh",
 		top: "Top",
-		totalSuccessRate: "Total Success Rate",
-		paidSuccessRate: "Paid Success Rate",
-		paymentRate: "Payment Rate",
-		todayAmount: "Today Amount",
-		yesterdayAmount: "Yesterday Amount",
 		today: "Today",
 		yesterday: "Yesterday",
 	},
 };
 
-export const I18nContext = createContext({
-	t: (key) => key,
-	lang: "en",
-	setLanguage: () => {},
-});
+const I18nContext = createContext();
 
 export function I18nProvider({ children }) {
-	const lang = useSelector((s) => s.ui.lang);
 	const dispatch = useDispatch();
-	const setLanguage = (l) => {
-		dispatch(setLang(l));
-		db.set("lang", l);
-	};
-	const dict = messages[lang] || messages.en;
+	const lang = useSelector((state) => state.ui.lang);
 
+	// 初始化时从 IndexedDB 读取语言设置
 	useEffect(() => {
-		db.get("lang").then((savedLang) => {
-			if (savedLang && messages[savedLang]) {
-				dispatch(setLang(savedLang));
-			} else {
-				// No saved language, detect browser language
-				const browserLang = navigator.language || navigator.userLanguage;
-				// Only use 'zh' if browser language starts with 'zh', otherwise default to 'en'
-				const defaultLang = browserLang && browserLang.toLowerCase().startsWith("zh") ? "zh" : "en";
-				dispatch(setLang(defaultLang));
+		const initLang = async () => {
+			try {
+				const savedLang = await db.settings.get("language");
+				if (savedLang) {
+					dispatch(setLang(savedLang));
+				}
+			} catch (error) {
+				console.error("Failed to load language from IndexedDB:", error);
 			}
-		});
+		};
+		initLang();
 	}, [dispatch]);
 
-	const value = useMemo(
-		() => ({
-			t: (k, params) => {
-				const keys = k.split(".");
-				let value = dict;
-				for (const key of keys) {
-					if (value && value[key]) {
-						value = value[key];
-					} else {
-						return k;
-					}
+	const value = useMemo(() => {
+		const t = (key) => {
+			const keys = key.split(".");
+			let value = messages[lang];
+			for (const k of keys) {
+				if (value && value[k]) {
+					value = value[k];
+				} else {
+					return key;
 				}
-				if (params && typeof value === "string") {
-					Object.keys(params).forEach((key) => {
-						value = value.replace(`{${key}}`, params[key]);
-					});
-				}
-				return value;
-			},
-			lang,
-			setLanguage,
-		}),
-		[dict, lang],
-	);
+			}
+			return value;
+		};
+
+		const setLanguage = async (newLang) => {
+			dispatch(setLang(newLang));
+			try {
+				await db.settings.put({ id: "language", value: newLang });
+			} catch (error) {
+				console.error("Failed to save language to IndexedDB:", error);
+			}
+		};
+
+		return { t, lang, setLanguage };
+	}, [lang, dispatch]);
 
 	return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
-export const useI18n = () => useContext(I18nContext);
+export function useI18n() {
+	const context = useContext(I18nContext);
+	if (!context) {
+		throw new Error("useI18n must be used within an I18nProvider");
+	}
+	return context;
+}

@@ -326,7 +326,7 @@ export function LandingPage() {
 			</section>
 
 			{/* Feature Highlight Section (formerly Conversational Commerce) */}
-			<section id="analytics" className="py-20 bg-white relative overflow-hidden">
+			<section id="analytics" className="py-20 bg-white relative overflow-hidden mb-[10px]">
 				<div className="absolute top-0 right-0 w-1/3 h-full bg-blue-50/50 blur-3xl rounded-l-full"></div>
 				<div className="container mx-auto px-6 relative z-10">
 					<div className="flex flex-col md:flex-row items-center gap-16">
@@ -449,7 +449,7 @@ export function LandingPage() {
 													window.scrollTo({ top: 0, behavior: "smooth" });
 												}
 											}}>
-											<img src={i.logo} alt={i.title} className="w-[200px] w-auto" />
+											<img src={i.logo} alt={i.title} className="w-[180px]" />
 										</div>
 									))}
 								</div>

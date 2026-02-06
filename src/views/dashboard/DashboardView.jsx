@@ -229,18 +229,18 @@ export function DashboardView() {
 					const parseIntVal = (val) => parseInt(val) || 0;
 
 					// Today Stats from groupUser fields
-					const tOrders = parseIntVal(item.today_total_orders);
+					const tOrders = parseIntVal(item.today_success_orders);
 					const tSuccessRate = parseVal(item.today_total_success_rate);
 					const tPaymentRate = parseVal(item.today_payment_rate);
 					const tPaidSuccessRate = parseVal(item.today_paid_success_rate);
-					const tAmount = parseVal(item.today_paid_amount);
+					const tAmount = parseVal(item.today_success_amount);
 
 					// Yesterday Stats from groupUser fields
-					const yOrders = parseIntVal(item.yesterday_total_orders);
+					const yOrders = parseIntVal(item.yesterday_success_orders);
 					const ySuccessRate = parseVal(item.yesterday_total_success_rate);
 					const yPaymentRate = parseVal(item.yesterday_payment_rate);
 					const yPaidSuccessRate = parseVal(item.yesterday_paid_success_rate);
-					const yAmount = parseVal(item.yesterday_paid_amount);
+					const yAmount = parseVal(item.yesterday_success_amount);
 
 					return {
 						username: item.username,
@@ -584,6 +584,7 @@ export function DashboardView() {
 												}}
 												placeholder={t("pleaseSelect")}
 												isClearable
+												menuPortalTarget={typeof document !== "undefined" ? document.body : null}
 											/>
 										</div>
 										<div className="pt-2 flex gap-2">
@@ -664,14 +665,14 @@ export function DashboardView() {
 										<tr className="text-gray-500 text-xs border-b border-gray-100 font-semibold">
 											<th className="p-3 md:p-4 pl-4 md:pl-5 sticky left-0 bg-gray-50 z-20 min-w-[120px] md:min-w-[150px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">{t("username")}</th>
 											{/* Today Columns */}
-											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[90px] md:min-w-[100px]">{t("todayAmount")}</th>
-											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[70px] md:min-w-[80px]">{t("ordersCount")}</th>
+											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[90px] md:min-w-[100px]">{t("todaySuccessAmount")}</th>
+											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[70px] md:min-w-[80px]">{t("todaySuccessOrders")}</th>
 											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[90px] md:min-w-[100px]">{t("totalSuccessRate")}</th>
 											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[90px] md:min-w-[100px]">{t("paidSuccessRate")}</th>
 											<th className="p-3 md:p-4 text-right bg-blue-50/30 text-blue-700 min-w-[70px] md:min-w-[80px] border-r border-gray-100">{t("paymentRate")}</th>
 											{/* Yesterday Columns */}
-											<th className="p-3 md:p-4 text-right min-w-[90px] md:min-w-[100px]">{t("yesterdayAmount")}</th>
-											<th className="p-3 md:p-4 text-right min-w-[70px] md:min-w-[80px]">{t("ordersCount")}</th>
+											<th className="p-3 md:p-4 text-right min-w-[90px] md:min-w-[100px]">{t("yesterdaySuccessAmount")}</th>
+											<th className="p-3 md:p-4 text-right min-w-[70px] md:min-w-[80px]">{t("yesterdaySuccessOrders")}</th>
 											<th className="p-3 md:p-4 text-right min-w-[90px] md:min-w-[100px]">{t("totalSuccessRate")}</th>
 											<th className="p-3 md:p-4 text-right min-w-[90px] md:min-w-[100px]">{t("paidSuccessRate")}</th>
 											<th className="p-3 md:p-4 text-right min-w-[70px] md:min-w-[80px]">{t("paymentRate")}</th>
@@ -784,11 +785,11 @@ export function DashboardView() {
 															</div>
 															<div className="grid grid-cols-3 gap-2">
 																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
-																	<span className="text-[10px] text-blue-600/70 mb-1">{t("amount")}</span>
+																	<span className="text-[10px] text-blue-600/70 mb-1">{t("todaySuccessAmount")}</span>
 																	<span className="text-sm font-bold text-blue-900">${u.today.amount?.toLocaleString()}</span>
 																</div>
 																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
-																	<span className="text-[10px] text-blue-600/70 mb-1">{t("ordersCount")}</span>
+																	<span className="text-[10px] text-blue-600/70 mb-1">{t("todaySuccessOrders")}</span>
 																	<span className="text-sm font-bold text-blue-900">{u.today.orders?.toLocaleString()}</span>
 																</div>
 																<div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-50 flex flex-col items-center justify-center text-center">
@@ -814,11 +815,11 @@ export function DashboardView() {
 															</div>
 															<div className="grid grid-cols-3 gap-2">
 																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
-																	<span className="text-[10px] text-gray-400 mb-1">{t("amount")}</span>
+																	<span className="text-[10px] text-gray-400 mb-1">{t("yesterdaySuccessAmount")}</span>
 																	<span className="text-xs font-semibold text-gray-700">${u.yesterday.amount?.toLocaleString()}</span>
 																</div>
 																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
-																	<span className="text-[10px] text-gray-400 mb-1">{t("ordersCount")}</span>
+																	<span className="text-[10px] text-gray-400 mb-1">{t("yesterdaySuccessOrders")}</span>
 																	<span className="text-xs font-semibold text-gray-700">{u.yesterday.orders?.toLocaleString()}</span>
 																</div>
 																<div className="bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">

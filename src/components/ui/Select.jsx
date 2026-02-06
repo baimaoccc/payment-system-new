@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactSelect from 'react-select'
 
-export function Select({ value, options, onChange, placeholder, isClearable=false, isDisabled=false, className, isMulti=false, menuPlacement = 'bottom' }) {
+export function Select({ value, options, onChange, placeholder, isClearable=false, isDisabled=false, className, isMulti=false, menuPlacement = 'bottom', menuPortalTarget }) {
   const list = options.map(o => typeof o === 'object' ? o : { value: o, label: String(o) })
   
   let current;
@@ -29,6 +29,7 @@ export function Select({ value, options, onChange, placeholder, isClearable=fals
       '&:hover': { borderColor: '#1E4DB7' },
     }),
     menu: base => ({ ...base, borderRadius: 8, overflow: 'hidden' }),
+    menuPortal: base => ({ ...base, zIndex: 9999 }),
     option: (base, state) => ({
       ...base,
       fontSize: 13,
@@ -56,6 +57,7 @@ export function Select({ value, options, onChange, placeholder, isClearable=fals
       isSearchable={false}
       isMulti={isMulti}
       menuPlacement={menuPlacement}
+      menuPortalTarget={menuPortalTarget}
     />
   )
 }
