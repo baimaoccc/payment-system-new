@@ -96,3 +96,10 @@ export const API_WEBSITE_BATCH_UPDATE = "/index.php/Api/Website/plWebsite";
 // Log Management APIs
 export const API_LOG_LIST = "/index.php/api/Log/getLogList";
 export const API_LOG_GET = "/index.php/api/Log/getLog";
+
+// Country Transfer (Zhuandian) APIs
+export const API_COUNTRY_TRANSFER_SET = "/api/Zhuandian/setZhuandian";
+export const API_COUNTRY_TRANSFER_GET = "/api/Zhuandian/getZhuandian";
+export const API_COUNTRY_TRANSFER_LIST = "/api/Zhuandian/getZhuandianlist";
+export const API_COUNTRY_TRANSFER_LIST_T = "/api/Zhuandian/getZhuandianlistT";
+export const API_COUNTRY_TRANSFER_DEL = "/api/Zhuandian/delZhuandian";

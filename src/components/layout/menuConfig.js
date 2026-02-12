@@ -79,6 +79,12 @@ export const MENU_CONFIG = [
 		roles: ["super_admin", "admin"],
 	},
 	{
+		path: "/country-transfers",
+		icon: faGlobe,
+		label: "countryTransferManagement",
+		roles: ["super_admin"],
+	},
+	{
 		label: "bSiteManagement",
 		icon: faTv, // Using faTv as a placeholder for BSite, you might need to import it
 		roles: ["super_admin", "admin", "adv"],

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactSelect from 'react-select'
 
-export function Select({ value, options, onChange, placeholder, isClearable=false, isDisabled=false, className, isMulti=false, menuPlacement = 'bottom', menuPortalTarget }) {
+export function Select({ value, options, onChange, placeholder, isClearable=false, isDisabled=false, className, isMulti=false, menuPlacement = 'bottom', menuPortalTarget, isSearchable = false, ...props }) {
   const list = options.map(o => typeof o === 'object' ? o : { value: o, label: String(o) })
   
   let current;
@@ -54,10 +54,11 @@ export function Select({ value, options, onChange, placeholder, isClearable=fals
       isClearable={isClearable}
       isDisabled={isDisabled}
       styles={styles}
-      isSearchable={false}
+      isSearchable={isSearchable}
       isMulti={isMulti}
       menuPlacement={menuPlacement}
       menuPortalTarget={menuPortalTarget}
+      {...props}
     />
   )
 }

@@ -5,12 +5,13 @@ import { useI18n } from "../../plugins/i18n/index.jsx";
 import { isSuperAdmin as checkIsSuperAdmin } from "../../components/layout/menuConfig.js";
 import { createStripeAccount, updateStripeAccount } from "../../controllers/stripeController.js";
 import { fetchCountryGroupsN } from "../../controllers/countryController.js";
+import { fetchCountryTransferListAll } from "../../controllers/countryTransferController.js";
 import { fetchUserListNII } from "../../controllers/usersController.js";
 import { fetchAccountTypesAll } from "../../controllers/bSiteProductController.js";
 import { getPaymentTypeOptions } from "../../utils/paymentUtils.js";
 import { getStripeAccountStatusOptions, StripeAccountStatus } from "../../utils/stripeStatusUtils.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLayerGroup, faToggleOn, faCommentAlt, faGlobe, faKey, faShieldAlt, faMoneyBillWave, faShoppingCart, faCreditCard, faAlignLeft, faGlobeAmericas, faTimes, faCheck, faSearch, faUser, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faLayerGroup, faToggleOn, faCommentAlt, faGlobe, faKey, faShieldAlt, faMoneyBillWave, faShoppingCart, faCreditCard, faAlignLeft, faGlobeAmericas, faTimes, faCheck, faSearch, faUser, faSpinner, faChartLine, faExchangeAlt } from "@fortawesome/free-solid-svg-icons";
 import { Select } from "../../components/ui/Select.jsx";
 
 const InputRow = ({ icon, label, children, className = "", noBorder = false }) => (
@@ -134,6 +135,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 	const [groups, setGroups] = useState([]);
 	const [adminUsers, setAdminUsers] = useState([]);
 	const [accountTypes, setAccountTypes] = useState([]);
+	const [transferPoints, setTransferPoints] = useState([]);
 
 	const { user: currentUser, role: authRole } = useSelector((state) => state.auth);
 	const isSuperAdmin = checkIsSuperAdmin(authRole);
@@ -179,6 +181,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		loadGroups();
 		loadAccountTypes();
 		if (isSuperAdmin) {
+			loadTransferPoints();
 			if (adminUsersRef.current && adminUsersRef.current.length > 0) {
 				setAdminUsers(adminUsersRef.current);
 			} else {
@@ -215,6 +218,19 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		}
 	};
 
+	const loadTransferPoints = async () => {
+		const res = await fetchCountryTransferListAll();
+		if (res.ok) {
+			const list = res.data.list || res.data || [];
+			setTransferPoints(
+				list.map((tp) => ({
+					value: tp.id,
+					label: tp.country_code ? `${tp.country_code} (${tp.time_country})` : `ID: ${tp.id}`,
+				}))
+			);
+		}
+	};
+
 	useEffect(() => {
 		if (isOpen) {
 			if (initialData) {
@@ -242,6 +258,8 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					user_id: initialData.user_id || null,
 					paymentType: initialData.paymentType || 0,
 					account_type_id: initialData.account_type_id || null,
+					jishu: initialData.jishu ?? "",
+					zhuandianId: initialData.zhuandianId ?? "",
 				});
 			} else {
 				// Reset form
@@ -264,6 +282,8 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					user_id: null,
 					paymentType: 0,
 					account_type_id: null,
+					jishu: "",
+					zhuandianId: "",
 				});
 			}
 			setError(null);
@@ -494,9 +514,29 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 								<input type="number" name="maximum_purchase_amount" value={formData.maximum_purchase_amount} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
 							</InputRow>
 
-							<InputRow icon={faGlobeAmericas} label={t("st_whitelist_group")}>
+							<InputRow icon={faGlobeAmericas} label={t("st_whitelist_group")} noBorder={true}>
 								<MultiSelect options={groups} value={formData.country_group} onChange={handleCountryGroupChange} placeholder={t("st_whitelist_group_placeholder")} disabled={readOnly} />
 							</InputRow>
+
+							{isSuperAdmin && (
+								<>
+									<InputRow icon={faChartLine} label={t("st_jishu")}>
+										<input type="number" name="jishu" value={formData.jishu} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0" disabled={readOnly} />
+									</InputRow>
+
+									<InputRow icon={faExchangeAlt} label={t("st_zhuandian")} noBorder={true}>
+										<Select
+											value={formData.zhuandianId}
+											onChange={(val) => setFormData((prev) => ({ ...prev, zhuandianId: val }))}
+											options={transferPoints}
+											placeholder={t("st_zhuandian_placeholder")}
+											isDisabled={readOnly}
+											className="w-full"
+											isClearable={true}
+										/>
+									</InputRow>
+								</>
+							)}
 						</div>
 					</div>
 
