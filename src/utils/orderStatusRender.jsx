@@ -11,6 +11,7 @@ export const getOrderStatusOptions = (t) => [
     { value: 6, label: t("failed") },
     { value: 0, label: t("noPay") },
     { value: 2, label: t("testSucceed") },
+    { value: 5, label: t("fiveDayRefund") },
     // { value: 8, label: t("pendingWithdrawal") },
     // { value: 9, label: t("refunded") },
     // { value: 120, label: t("120-day-delay") },
@@ -35,6 +36,7 @@ export function renderOrderStatus(order, t, showDetails = true) {
     const isPendingWithdrawal = status === "8";
     const isRefunded = status === "9";
     const isDelayed = status === "120";
+    const isFiveDayRefund = status === "5";
 
     if (isPaid) {
         label = t("succeed");
@@ -56,6 +58,9 @@ export function renderOrderStatus(order, t, showDetails = true) {
         badgeCls = "bg-purple-500 text-white";
     } else if (isDelayed) {
         label = t("120-day-delay") || "120-Day Delay";
+        badgeCls = "bg-orange-500 text-white";
+    } else if (isFiveDayRefund) {
+        label = t("fiveDayRefund") || "5-Day Refund";
         badgeCls = "bg-orange-500 text-white";
     }
 

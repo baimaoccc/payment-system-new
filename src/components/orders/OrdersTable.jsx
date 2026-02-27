@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlaneDeparture, faCheckSquare, faEnvelope, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faPlaneDeparture, faCheckSquare, faEnvelope, faSpinner, faUndoAlt } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
@@ -12,7 +12,7 @@ import { fetchEmailTypesN } from "../../controllers/emailController.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
 import { ActionDropdown } from "../ui/ActionDropdown.jsx";
 import { setSidebarCollapsed } from "../../store/slices/ui.js";
-import { isAdmin, isCS, isAdv } from "../layout/menuConfig.js";
+import { isAdmin, isCS, isAdv, isSuperAdmin } from "../layout/menuConfig.js";
 
 export function OrdersTable({ rows = [] }) {
 	const { t } = useI18n();
@@ -60,11 +60,11 @@ export function OrdersTable({ rows = [] }) {
 
 		setSendingEmail(true);
 		const orderNo = selectedOrderForTemplate.orderNo || selectedOrderForTemplate.client_orderNo || selectedOrderForTemplate.id;
-		
+
 		// Use createOrUpdateEmailTask as requested
 		const res = await createOrUpdateEmailTask({
 			template_id: template.id,
-			orderNo: orderNo
+			orderNo: orderNo,
 		});
 		setSendingEmail(false);
 
@@ -163,6 +163,30 @@ export function OrdersTable({ rows = [] }) {
 				cancelText: t("cancel") || "Cancel",
 				onConfirm: async () => {
 					const res = await updateOrderLogistics({ id: order.id, status: 1 });
+					if (res.ok) {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "success", message: t("saveSuccess") } });
+						fetchOrders({ dispatch, page, pageSize, filters });
+					} else {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("saveFailed") } });
+					}
+				},
+			},
+		});
+		setActiveUpdateOrderId(null);
+	};
+
+	const handleOrderFiveDayRefund = (order) => {
+		dispatch({
+			type: "ui/setModal",
+			payload: {
+				title: t("fiveDayRefund") || "5-day refund",
+				message: t("confirmUpdateOrderToFiveDayRefund") || "Are you sure to mark this order as 5-day refund?",
+				variant: "danger",
+				showCancel: true,
+				confirmText: t("confirm") || "Confirm",
+				cancelText: t("cancel") || "Cancel",
+				onConfirm: async () => {
+					const res = await updateOrderLogistics({ id: order.id, status: 5 });
 					if (res.ok) {
 						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "success", message: t("saveSuccess") } });
 						fetchOrders({ dispatch, page, pageSize, filters });
@@ -319,6 +343,12 @@ export function OrdersTable({ rows = [] }) {
 				onClick: () => handleOrderCallback(o),
 				className: "text-green-600",
 			},
+			refund5d: {
+				label: t("fiveDayRefund"),
+				icon: <FontAwesomeIcon icon={faUndoAlt} />,
+				onClick: () => handleOrderFiveDayRefund(o),
+				className: "text-orange-600",
+			},
 		};
 
 		const actions = [];
@@ -344,6 +374,11 @@ export function OrdersTable({ rows = [] }) {
 		// 5. Callback: Super Admin, Admin
 		if (isAdmin(authRole)) {
 			actions.push(allActions.callback);
+		}
+
+		// 6. 5-Day Refund: Super Admin only
+		if (isSuperAdmin(authRole)) {
+			actions.push(allActions.refund5d);
 		}
 
 		return actions;
@@ -457,11 +492,7 @@ export function OrdersTable({ rows = [] }) {
 													{o.shipping_status && (
 														<div className="flex items-center mb-2">
 															<div className="font-medium text-gray-800 mr-2">{t("logisticsInfo") || "Logistics"}:</div>
-															{o.shipping_status == "未发货" ? (
-																<span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] border border-yellow-200">{t("notShipped")}</span>
-															) : (
-																<span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200 shadow-sm">{t("shipped")}</span>
-															)}
+															{o.shipping_status == "未发货" ? <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] border border-yellow-200">{t("notShipped")}</span> : <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200 shadow-sm">{t("shipped")}</span>}
 
 															{/* {t("status")}: {o.shipping_status} */}
 															{/* logisticsInfo */}
@@ -611,15 +642,11 @@ export function OrdersTable({ rows = [] }) {
 												{(o.shipping_status || o.logistics_mode || o.tracking_number) && (
 													<div className="mt-1 space-y-0.5 text-[11px]">
 														{o.shipping_status && (
-														<div className="flex items-center gap-1 mb-1">
-															<span>{t("status")}:</span>
-															{o.shipping_status == "未发货" ? (
-																<span className="bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded border border-yellow-200">{t("notShipped")}</span>
-															) : (
-																<span className="bg-green-50 text-green-700 px-1.5 py-0.5 rounded font-bold border border-green-200">{t("shipped")}</span>
-															)}
-														</div>
-													)}
+															<div className="flex items-center gap-1 mb-1">
+																<span>{t("status")}:</span>
+																{o.shipping_status == "未发货" ? <span className="bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded border border-yellow-200">{t("notShipped")}</span> : <span className="bg-green-50 text-green-700 px-1.5 py-0.5 rounded font-bold border border-green-200">{t("shipped")}</span>}
+															</div>
+														)}
 														{o.tracking_number && (
 															<div className="flex items-center gap-1">
 																<span>{o.tracking_number}</span>
@@ -685,14 +712,7 @@ export function OrdersTable({ rows = [] }) {
 				</div>
 			)}
 			<EmailTasksModal t={t} isOpen={emailTasksModalOpen} onClose={() => setEmailTasksModalOpen(false)} orderNo={selectedOrderNo} />
-			<EmailTemplateSelectorModal
-				isOpen={templateSelectorOpen}
-				onClose={() => setTemplateSelectorOpen(false)}
-				onSelect={handleTemplateSelected}
-				t={t}
-				order={selectedOrderForTemplate}
-				sending={sendingEmail}
-			/>
+			<EmailTemplateSelectorModal isOpen={templateSelectorOpen} onClose={() => setTemplateSelectorOpen(false)} onSelect={handleTemplateSelected} t={t} order={selectedOrderForTemplate} sending={sendingEmail} />
 		</div>
 	);
 }
@@ -743,9 +763,9 @@ function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sendi
 		if (tpl.type_name === "订单确认") {
 			const isPaid = String(order.status) === "1";
 			if (!isPaid) {
-				return { 
-					disabled: true, 
-					reason: t("noPay") || "Unpaid" 
+				return {
+					disabled: true,
+					reason: t("noPay") || "Unpaid",
 				};
 			}
 		}
@@ -754,9 +774,9 @@ function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sendi
 		if (tpl.type_name === "发货通知") {
 			const isShipped = order.shipping_status === "已发货";
 			if (!isShipped) {
-				return { 
-					disabled: true, 
-					reason: t("notShipped") || "Not Shipped" 
+				return {
+					disabled: true,
+					reason: t("notShipped") || "Not Shipped",
 				};
 			}
 		}
@@ -777,7 +797,7 @@ function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sendi
 						</div>
 					</div>
 				)}
-				
+
 				<div className="p-4 border-b flex justify-between items-center">
 					<h3 className="font-bold text-gray-800">{t("selectEmailTemplate") || "Select Email Template"}</h3>
 					<button onClick={onClose} className="text-gray-400 hover:text-gray-600" disabled={sending}>
@@ -801,27 +821,14 @@ function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sendi
 										onClick={() => !disabled && onSelect(tpl)}
 										disabled={disabled || sending}
 										className={`w-full text-left p-3 border rounded-lg transition-all flex flex-col gap-1 group relative
-											${disabled 
-												? "bg-gray-50 border-gray-100 opacity-70 cursor-not-allowed" 
-												: "hover:bg-blue-50 hover:border-blue-200 border-gray-200 cursor-pointer"
-											}
+											${disabled ? "bg-gray-50 border-gray-100 opacity-70 cursor-not-allowed" : "hover:bg-blue-50 hover:border-blue-200 border-gray-200 cursor-pointer"}
 										`}>
 										<div className="flex justify-between items-start w-full">
-											<span className={`font-medium ${disabled ? "text-gray-500" : "text-gray-800 group-hover:text-blue-700"}`}>
-												{tpl.name || tpl.title || tpl.template_name}
-											</span>
-											{tpl.type_name && (
-												<span className={`text-[10px] px-1.5 py-0.5 rounded border ${
-													disabled 
-														? "bg-gray-100 text-gray-500 border-gray-200" 
-														: "bg-blue-50 text-blue-600 border-blue-100"
-												}`}>
-													{tpl.type_name}
-												</span>
-											)}
+											<span className={`font-medium ${disabled ? "text-gray-500" : "text-gray-800 group-hover:text-blue-700"}`}>{tpl.name || tpl.title || tpl.template_name}</span>
+											{tpl.type_name && <span className={`text-[10px] px-1.5 py-0.5 rounded border ${disabled ? "bg-gray-100 text-gray-500 border-gray-200" : "bg-blue-50 text-blue-600 border-blue-100"}`}>{tpl.type_name}</span>}
 										</div>
 										{tpl.description && <span className="text-xs text-gray-500 line-clamp-2">{tpl.description}</span>}
-										
+
 										{disabled && reason && (
 											<div className="mt-1 flex items-center gap-1 text-[10px] text-red-500 font-medium">
 												<span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span>
