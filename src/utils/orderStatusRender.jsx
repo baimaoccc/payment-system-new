@@ -14,7 +14,7 @@ export const getOrderStatusOptions = (t) => [
     { value: 5, label: t("fiveDayRefund") },
     // { value: 8, label: t("pendingWithdrawal") },
     // { value: 9, label: t("refunded") },
-    // { value: 120, label: t("120-day-delay") },
+    { value: 120, label: t("120-day-delay") },
 ];
 
 /**
@@ -30,7 +30,7 @@ export function renderOrderStatus(order, t, showDetails = true) {
 
     // Check status
     const isPaid = status === "1" || status === "paid";
-    const isTestSucceed = status === "2";
+    const isTestSucceed = status === "2";        
     const isFailed = status === "6" || status === "failed";
     const isNoPay = status === "0" || status === "pending";
     const isPendingWithdrawal = status === "8";

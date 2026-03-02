@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlaneDeparture, faCheckSquare, faEnvelope, faSpinner, faUndoAlt } from "@fortawesome/free-solid-svg-icons";
+import { faPlaneDeparture, faCheckSquare, faEnvelope, faSpinner, faUndoAlt, faHourglass } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
@@ -49,6 +49,7 @@ export function OrdersTable({ rows = [] }) {
 	const [templateSelectorOpen, setTemplateSelectorOpen] = useState(false);
 	const [selectedOrderForTemplate, setSelectedOrderForTemplate] = useState(null);
 	const [sendingEmail, setSendingEmail] = useState(false);
+	const [refundMenuOpenId, setRefundMenuOpenId] = useState(null);
 
 	const handleOpenTemplateSelector = (order) => {
 		setSelectedOrderForTemplate(order);
@@ -199,6 +200,30 @@ export function OrdersTable({ rows = [] }) {
 		setActiveUpdateOrderId(null);
 	};
 
+	const handleOrderOneTwentyDayRefund = (order) => {
+		dispatch({
+			type: "ui/setModal",
+			payload: {
+				title: t("120-day-delay") || "120-day refund",
+				message: t("confirmUpdateOrderTo120DayRefund") || "Are you sure to mark this order as 120-day refund?",
+				variant: "danger",
+				showCancel: true,
+				confirmText: t("confirm") || "Confirm",
+				cancelText: t("cancel") || "Cancel",
+				onConfirm: async () => {
+					const res = await updateOrderLogistics({ id: order.id, status: 120 });
+					if (res.ok) {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "success", message: t("saveSuccess") } });
+						fetchOrders({ dispatch, page, pageSize, filters });
+					} else {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("saveFailed") } });
+					}
+				},
+			},
+		});
+		setActiveUpdateOrderId(null);
+	};
+
 	const handleLogisticsSubmit = async (e) => {
 		e.preventDefault();
 		if (!logisticsForm.id || !logisticsForm.logistics_mode || !logisticsForm.tracking_number) return;
@@ -305,6 +330,14 @@ export function OrdersTable({ rows = [] }) {
 				onClick: () => navigate(`/orders/${o.id}`),
 				className: "text-blue-600",
 			},
+			refundMenu: {
+				label: t("refundsCount") || "Refund",
+				icon: <FontAwesomeIcon icon={faUndoAlt} />,
+				onClick: () => {
+					setRefundMenuOpenId(refundMenuOpenId === o.id ? null : o.id)
+				},
+				className: "text-orange-600",
+			},
 			radar: {
 				label: loadingRiskOrderId === o.id ? t("loading") : t("radar"),
 				icon:
@@ -349,6 +382,12 @@ export function OrdersTable({ rows = [] }) {
 				onClick: () => handleOrderFiveDayRefund(o),
 				className: "text-orange-600",
 			},
+			refund120d: {
+				label: t("120-day-delay"),
+				icon: <FontAwesomeIcon icon={faHourglass} />,
+				onClick: () => handleOrderOneTwentyDayRefund(o),
+				className: "text-orange-700",
+			},
 		};
 
 		const actions = [];
@@ -376,9 +415,16 @@ export function OrdersTable({ rows = [] }) {
 			actions.push(allActions.callback);
 		}
 
-		// 6. 5-Day Refund: Super Admin only
+		// Refund status menu/button
 		if (isSuperAdmin(authRole)) {
-			actions.push(allActions.refund5d);
+			if (isMobile) {
+				// Mobile uses dropdown: show as two separate items
+				actions.push(allActions.refund5d);
+				actions.push(allActions.refund120d);
+			} else {
+				// Desktop/tablet: single button opens sub-menu
+				actions.push(allActions.refundMenu);
+			}
 		}
 
 		return actions;
@@ -659,7 +705,7 @@ export function OrdersTable({ rows = [] }) {
 									)}
 
 									{/* Operations */}
-									<td className="p-3 align-top">
+									<td className="p-3 align-top relative">
 										<div className="flex items-center flex-wrap gap-1">
 											{getActions(o).map((action, idx) => (
 												<button
@@ -674,6 +720,30 @@ export function OrdersTable({ rows = [] }) {
 												</button>
 											))}
 										</div>
+										{refundMenuOpenId === o.id && !isMobile && (
+											<div
+												onClick={(e) => e.stopPropagation()}
+												className="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+												<button
+													onClick={() => {
+														setRefundMenuOpenId(null);
+														handleOrderFiveDayRefund(o);
+													}}
+													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50">
+													<FontAwesomeIcon icon={faUndoAlt} className="text-orange-600" />
+													<span>{t("fiveDayRefund")}</span>
+												</button>
+												<button
+													onClick={() => {
+														setRefundMenuOpenId(null);
+														handleOrderOneTwentyDayRefund(o);
+													}}
+													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50">
+													<FontAwesomeIcon icon={faHourglass} className="text-orange-700" />
+													<span>{t("120-day-delay")}</span>
+												</button>
+											</div>
+										)}
 									</td>
 								</tr>
 							);
