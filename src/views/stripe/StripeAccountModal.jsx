@@ -11,7 +11,7 @@ import { fetchAccountTypesAll } from "../../controllers/bSiteProductController.j
 import { getPaymentTypeOptions } from "../../utils/paymentUtils.js";
 import { getStripeAccountStatusOptions, StripeAccountStatus } from "../../utils/stripeStatusUtils.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLayerGroup, faToggleOn, faCommentAlt, faGlobe, faKey, faShieldAlt, faMoneyBillWave, faShoppingCart, faCreditCard, faAlignLeft, faGlobeAmericas, faTimes, faCheck, faSearch, faUser, faSpinner, faChartLine, faExchangeAlt } from "@fortawesome/free-solid-svg-icons";
+import { faLayerGroup, faToggleOn, faCommentAlt, faGlobe, faKey, faShieldAlt, faMoneyBillWave, faShoppingCart, faCreditCard, faAlignLeft, faGlobeAmericas, faTimes, faCheck, faSearch, faUser, faSpinner, faChartLine, faExchangeAlt, faClock } from "@fortawesome/free-solid-svg-icons";
 import { Select } from "../../components/ui/Select.jsx";
 
 const InputRow = ({ icon, label, children, className = "", noBorder = false }) => (
@@ -168,6 +168,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		max_order: "",
 		description: "",
 		maximum_purchase_amount: "",
+		minimum_purchase_amount: "",
 		white_list: "",
 		country_group: "",
 		level: "",
@@ -175,6 +176,8 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 		user_id: null,
 		paymentType: 0,
 		account_type_id: null,
+		frequency: null,
+		interval_count: null,
 	});
 
 	useEffect(() => {
@@ -226,7 +229,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 				list.map((tp) => ({
 					value: tp.id,
 					label: tp.country_code ? `${tp.country_code} (${tp.time_country})` : `ID: ${tp.id}`,
-				}))
+				})),
 			);
 		}
 	};
@@ -251,6 +254,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					max_order: initialData.max_order ?? "",
 					description: initialData.description || "",
 					maximum_purchase_amount: initialData.maximum_purchase_amount ?? "",
+					minimum_purchase_amount: initialData.minimum_purchase_amount ?? "",
 					white_list: "", // We don't use this for display anymore
 					country_group: initialData.country_group ? String(initialData.country_group) : "",
 					level: initialData.level !== undefined ? initialData.level : "",
@@ -260,6 +264,8 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					account_type_id: initialData.account_type_id || null,
 					jishu: initialData.jishu ?? "",
 					zhuandianId: initialData.zhuandianId ?? "",
+					frequency: initialData.frequency ?? null,
+					interval_count: initialData.interval_count ?? null,
 				});
 			} else {
 				// Reset form
@@ -275,6 +281,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					max_order: "",
 					description: "",
 					maximum_purchase_amount: "",
+					minimum_purchase_amount: "",
 					white_list: "",
 					country_group: "",
 					level: "",
@@ -284,6 +291,8 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 					account_type_id: null,
 					jishu: "",
 					zhuandianId: "",
+					frequency: null,
+					interval_count: null,
 				});
 			}
 			setError(null);
@@ -377,6 +386,8 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 
 		// Clean up fields
 		if (payload.c_site_url) payload.c_site_url = payload.c_site_url.trim();
+		if (payload.interval_count === "" || payload.interval_count === undefined) payload.interval_count = null;
+		if (payload.interval_count !== null) payload.interval_count = Number(payload.interval_count);
 
 		let res;
 		if (initialData) {
@@ -514,6 +525,10 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 								<input type="number" name="maximum_purchase_amount" value={formData.maximum_purchase_amount} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
 							</InputRow>
 
+							<InputRow icon={faCreditCard} label={t("st_min_purchase") || "Min Purchase"}>
+								<input type="number" name="minimum_purchase_amount" value={formData.minimum_purchase_amount} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
+							</InputRow>
+
 							<InputRow icon={faGlobeAmericas} label={t("st_whitelist_group")} noBorder={true}>
 								<MultiSelect options={groups} value={formData.country_group} onChange={handleCountryGroupChange} placeholder={t("st_whitelist_group_placeholder")} disabled={readOnly} />
 							</InputRow>
@@ -525,26 +540,43 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 									</InputRow>
 
 									<InputRow icon={faExchangeAlt} label={t("st_zhuandian")} noBorder={true}>
-										<Select
-											value={formData.zhuandianId}
-											onChange={(val) => setFormData((prev) => ({ ...prev, zhuandianId: val }))}
-											options={transferPoints}
-											placeholder={t("st_zhuandian_placeholder")}
-											isDisabled={readOnly}
-											className="w-full"
-											isClearable={true}
-										/>
+										<Select value={formData.zhuandianId} onChange={(val) => setFormData((prev) => ({ ...prev, zhuandianId: val }))} options={transferPoints} placeholder={t("st_zhuandian_placeholder")} isDisabled={readOnly} className="w-full" isClearable={true} />
 									</InputRow>
 								</>
 							)}
+
+							<InputRow icon={faAlignLeft} label={t("st_desc")}>
+								<textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 resize-none" placeholder={t("additionalDetails")} disabled={readOnly} />
+							</InputRow>
 						</div>
 					</div>
 
-					{/* Section 4: Description */}
-					<div className="mt-8">
-						<InputRow icon={faAlignLeft} label={t("st_desc")}>
-							<textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 resize-none" placeholder={t("additionalDetails")} disabled={readOnly} />
-						</InputRow>
+					{/* Section 3.1: Subscription Settings */}
+					<div className="mb-8">
+						<SectionHeader title={t("subscriptionConfig") || "订阅配置"} subtitle={t("subscriptionConfigDesc") || "设置订阅扣款频率与间隔（非必填）"} />
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+							<InputRow icon={faClock} label={t("subscriptionFrequency") || "扣款频率"} noBorder={true}>
+								<Select
+									value={formData.frequency}
+									onChange={(val) => setFormData((prev) => ({ ...prev, frequency: val }))}
+									options={[
+										{ value: "day", label: t("frequency_day") || "每天" },
+										{ value: "week", label: t("frequency_week") || "每周" },
+										{ value: "month", label: t("frequency_month") || "每月" },
+									]}
+									placeholder={t("pleaseSelect") || "请选择"}
+									isDisabled={readOnly}
+									className="w-full"
+									isClearable={true}
+								/>
+								{/* <div className="text-[11px] text-gray-400 mt-1">{t("subscriptionFrequencyHint") || "例如：选择“每天”表示每日扣款一次"}</div> */}
+							</InputRow>
+
+							<InputRow icon={faClock} label={t("subscriptionIntervalCount") || "扣款间隔数目"}>
+								<input type="number" name="interval_count" value={formData.interval_count} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="例如：1" disabled={readOnly} min="1" />
+								{/* <div className="text-[11px] text-gray-400 mt-1">{t("subscriptionIntervalHint") || "与频率结合使用；例如选择“每周”且间隔数目为 2，表示每两周扣款一次"}</div> */}
+							</InputRow>
+						</div>
 					</div>
 				</form>
 

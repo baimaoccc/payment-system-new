@@ -13,7 +13,7 @@ export const getOrderStatusOptions = (t) => [
     { value: 2, label: t("testSucceed") },
     { value: 5, label: t("fiveDayRefund") },
     // { value: 8, label: t("pendingWithdrawal") },
-    // { value: 9, label: t("refunded") },
+    { value: 9, label: t("refunded") },
     { value: 120, label: t("120-day-delay") },
 ];
 

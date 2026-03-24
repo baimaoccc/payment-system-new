@@ -177,6 +177,7 @@ export function OrdersTable({ rows = [] }) {
 	};
 
 	const handleOrderFiveDayRefund = (order) => {
+		if (!isSuperAdmin(authRole)) return;
 		dispatch({
 			type: "ui/setModal",
 			payload: {
@@ -201,6 +202,7 @@ export function OrdersTable({ rows = [] }) {
 	};
 
 	const handleOrderOneTwentyDayRefund = (order) => {
+		if (!isSuperAdmin(authRole)) return;
 		dispatch({
 			type: "ui/setModal",
 			payload: {
@@ -212,6 +214,31 @@ export function OrdersTable({ rows = [] }) {
 				cancelText: t("cancel") || "Cancel",
 				onConfirm: async () => {
 					const res = await updateOrderLogistics({ id: order.id, status: 120 });
+					if (res.ok) {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "success", message: t("saveSuccess") } });
+						fetchOrders({ dispatch, page, pageSize, filters });
+					} else {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("saveFailed") } });
+					}
+				},
+			},
+		});
+		setActiveUpdateOrderId(null);
+	};
+
+	const handleOrderRefunded = (order) => {
+		if (!isSuperAdmin(authRole)) return;
+		dispatch({
+			type: "ui/setModal",
+			payload: {
+				title: t("refunded") || "Refunded",
+				message: t("confirmUpdateOrderToRefunded") || "Are you sure to mark this order as refunded?",
+				variant: "danger",
+				showCancel: true,
+				confirmText: t("confirm") || "Confirm",
+				cancelText: t("cancel") || "Cancel",
+				onConfirm: async () => {
+					const res = await updateOrderLogistics({ id: order.id, status: 9 });
 					if (res.ok) {
 						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "success", message: t("saveSuccess") } });
 						fetchOrders({ dispatch, page, pageSize, filters });
@@ -388,6 +415,12 @@ export function OrdersTable({ rows = [] }) {
 				onClick: () => handleOrderOneTwentyDayRefund(o),
 				className: "text-orange-700",
 			},
+			refund9: {
+				label: t("refunded"),
+				icon: <FontAwesomeIcon icon={faUndoAlt} />,
+				onClick: () => handleOrderRefunded(o),
+				className: "text-purple-600",
+			},
 		};
 
 		const actions = [];
@@ -421,6 +454,7 @@ export function OrdersTable({ rows = [] }) {
 				// Mobile uses dropdown: show as two separate items
 				actions.push(allActions.refund5d);
 				actions.push(allActions.refund120d);
+				actions.push(allActions.refund9);
 			} else {
 				// Desktop/tablet: single button opens sub-menu
 				actions.push(allActions.refundMenu);
@@ -741,6 +775,15 @@ export function OrdersTable({ rows = [] }) {
 													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50">
 													<FontAwesomeIcon icon={faHourglass} className="text-orange-700" />
 													<span>{t("120-day-delay")}</span>
+												</button>
+												<button
+													onClick={() => {
+														setRefundMenuOpenId(null);
+														handleOrderRefunded(o);
+													}}
+													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50">
+													<FontAwesomeIcon icon={faUndoAlt} className="text-purple-600" />
+													<span>{t("refunded")}</span>
 												</button>
 											</div>
 										)}

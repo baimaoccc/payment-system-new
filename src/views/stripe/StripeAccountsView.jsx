@@ -806,6 +806,12 @@ export function StripeAccountsView() {
 																	<span className="font-medium text-gray-900 truncate">${item.maximum_purchase_amount || 0}</span>
 																</div>
 															)}
+															{item.minimum_purchase_amount && (
+																<div className="flex justify-between items-center gap-2">
+																	<span className="text-gray-500 truncate">{t("st_min_purchase")}:</span>
+																	<span className="font-medium text-gray-900 truncate">${item.minimum_purchase_amount || 0}</span>
+																</div>
+															)}
 														</div>
 													</td>
 

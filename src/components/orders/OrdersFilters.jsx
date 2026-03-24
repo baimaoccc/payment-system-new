@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import { setFilters, setPage, setUploading } from "../../store/slices/orders.js";
 import { setAllUsers } from "../../store/slices/users.js";
 import { addToast } from "../../store/slices/ui.js";
@@ -59,6 +61,56 @@ const InputField = ({ label, value, onChange, placeholder, type = "text" }) => (
 		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors" />
 	</div>
 );
+
+const CalendarPicker = ({ label, value, onChange, t, lang, isEnd = false, minDate, maxDate }) => {
+	const [isOpen, setIsOpen] = useState(false);
+	const containerRef = useRef(null);
+
+	useEffect(() => {
+		function handleClickOutside(event) {
+			if (containerRef.current && !containerRef.current.contains(event.target)) {
+				setIsOpen(false);
+			}
+		}
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
+
+	const date = value ? new Date(Number(value) * 1000) : null;
+	const dateString = timestampToDateValue(value);
+
+	return (
+		<div className="flex flex-col gap-1 relative" ref={containerRef}>
+			<label className="text-[11px] font-medium text-gray-500">{label}</label>
+			<button onClick={() => setIsOpen(!isOpen)} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs text-left focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 transition-colors flex items-center justify-between text-gray-700">
+				{dateString || t("pleaseSelect") || "Select date"}
+			</button>
+
+			{isOpen && (
+				<div className="absolute top-full left-0 z-[100] mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden p-2 min-w-[280px]">
+					<Calendar
+						onChange={(val) => {
+							const ts = Math.floor(val.getTime() / 1000);
+							const dateObj = new Date(ts * 1000);
+							if (isEnd) {
+								dateObj.setHours(23, 59, 59, 999);
+							} else {
+								dateObj.setHours(0, 0, 0, 0);
+							}
+							onChange(Math.floor(dateObj.getTime() / 1000));
+							setIsOpen(false);
+						}}
+						value={date}
+						minDate={minDate}
+						maxDate={maxDate}
+						className="border-none shadow-none text-xs w-full"
+						locale={lang === "zh" ? "zh-CN" : "en-US"}
+					/>
+				</div>
+			)}
+		</div>
+	);
+};
 
 export function OrdersFilters() {
 	const dispatch = useDispatch();
@@ -563,15 +615,8 @@ export function OrdersFilters() {
 							<Select options={countryOptions} value={countryOptions.find((o) => o.alpha2 === localFilters.country) || null} onChange={(opt) => setLocalFilters({ ...localFilters, country: opt?.alpha2 || null })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} isClearable />
 						</div>
 
-						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("startTime")}</label>
-							<input type="date" value={timestampToDateValue(localFilters.startTime)} onChange={(e) => setLocalFilters({ ...localFilters, startTime: dateValueToTimestamp(e.target.value, false) })} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50" />
-						</div>
-
-						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("endTime")}</label>
-							<input type="date" value={timestampToDateValue(localFilters.endTime)} onChange={(e) => setLocalFilters({ ...localFilters, endTime: dateValueToTimestamp(e.target.value, true) })} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50" />
-						</div>
+						<CalendarPicker label={t("startTime")} value={localFilters.startTime} onChange={(ts) => setLocalFilters({ ...localFilters, startTime: ts })} t={t} lang={lang} isEnd={false} maxDate={localFilters.endTime ? new Date(localFilters.endTime * 1000) : new Date()} />
+						<CalendarPicker label={t("endTime")} value={localFilters.endTime} onChange={(ts) => setLocalFilters({ ...localFilters, endTime: ts })} t={t} lang={lang} isEnd={true} minDate={localFilters.startTime ? new Date(localFilters.startTime * 1000) : null} maxDate={new Date()} />
 					</div>
 
 					{/* Actions Footer inside Absolute Container */}
