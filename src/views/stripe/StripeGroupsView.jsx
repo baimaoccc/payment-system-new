@@ -57,7 +57,7 @@ const MobileGroupCard = ({ item, onEdit, onDelete, t }) => {
 
 			<div className="space-y-2">
 				<div>
-					<span className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 block">{t("stripeAccounts")}</span>
+					<span className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 block">{t("accounts")}</span>
 					<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[92px] overflow-hidden"}`}>
 						{item.stripe_list && item.stripe_list.length > 0 ? (
 							item.stripe_list.map((s, idx) => (
@@ -254,13 +254,13 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 							<textarea value={form.remark} onChange={(e) => setForm((v) => ({ ...v, remark: e.target.value }))} placeholder={t("enterRemark")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 h-20 resize-none" />
 						</InputRow>
 
-						<InputRow icon={faCreditCard} label={t("stripeAccounts")} noBorder>
+						<InputRow icon={faCreditCard} label={t("accounts")} noBorder>
 							<Select
 								isMulti
 								value={form.stripe_list}
 								onChange={(val) => setForm((v) => ({ ...v, stripe_list: val }))}
 								options={currentStripeOptions}
-								placeholder={t("selectStripeAccounts")}
+								placeholder={t("selectAccounts")}
 								className="w-full mt-1"
 								styles={{
 									control: (base, state) => ({
@@ -459,7 +459,7 @@ export default function StripeGroupsView() {
 								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("name")}</th>
 								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("belongTo")}</th>
 								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("remark")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("stripeAccounts")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("accounts")}</th>
 								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("createTime")}</th>
 								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">{t("actions")}</th>
 							</tr>
