@@ -40,7 +40,7 @@ export function OrdersTable({ rows = [] }) {
 	const [selectedRiskData, setSelectedRiskData] = useState(null);
 	const [isLogisticsModalOpen, setIsLogisticsModalOpen] = useState(false);
 	const [logisticsSaving, setLogisticsSaving] = useState(false);
-	const [logisticsForm, setLogisticsForm] = useState({ id: null, logistics_mode: "", tracking_number: "" });
+	const [logisticsForm, setLogisticsForm] = useState({ id: null, logistics_mode: "", tracking_number: "", tracking_url: "" });
 	const [activeUpdateOrderId, setActiveUpdateOrderId] = useState(null);
 	const [activeEmailOrderId, setActiveEmailOrderId] = useState(null);
 	const [emailTasksModalOpen, setEmailTasksModalOpen] = useState(false);
@@ -147,6 +147,7 @@ export function OrdersTable({ rows = [] }) {
 			id: order.id,
 			logistics_mode: order.logistics_mode || "",
 			tracking_number: order.tracking_number || "",
+			tracking_url: order.tracking_url || "",
 		});
 		setIsLogisticsModalOpen(true);
 		setActiveUpdateOrderId(null);
@@ -259,6 +260,7 @@ export function OrdersTable({ rows = [] }) {
 			id: logisticsForm.id,
 			logistics_mode: logisticsForm.logistics_mode,
 			tracking_number: logisticsForm.tracking_number,
+			tracking_url: logisticsForm.tracking_url,
 			status: null,
 		});
 		setLogisticsSaving(false);
@@ -467,32 +469,32 @@ export function OrdersTable({ rows = [] }) {
 	return (
 		<div className="mt-3">
 			{isMobile ? (
-				<div className="space-y-3">
+				<div className="space-y-3 px-1 overflow-x-hidden">
 					{safeRows.map((o) => {
 						const createDate = o.createtime ? new Date(o.createtime).toLocaleString() : "-";
 						const updateDate = o.updatetime ? new Date(o.updatetime).toLocaleString() : "-";
 						const isExpanded = expandedMobileRow === o.id;
 
 						return (
-							<div key={o.id} className={`bg-white rounded-lg shadow-sm border transition-all box-border ${isExpanded ? "border-blue-500" : "border-gray-100"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : o.id)}>
+							<div key={o.id} className={`bg-white rounded-lg shadow-sm border transition-all box-border overflow-hidden ${isExpanded ? "border-blue-500" : "border-gray-100"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : o.id)}>
 								{/* Header / Summary Row */}
-								<div className="p-3 flex items-center justify-between gap-3">
-									<div className="flex-1 min-w-0">
+								<div className="p-3 flex items-center justify-between gap-3 overflow-hidden">
+									<div className="flex-1 min-w-0 overflow-hidden">
 										<div className="flex items-center gap-2 mb-1">
 											<div className="font-medium text-gray-900 truncate text-sm">{o.url || "-"}</div>
 										</div>
-										<div className="flex items-center gap-2 text-xs text-gray-500">
-											<span className="truncate max-w-[100px]">{o.username || t("guest")}</span>
-											<span>•</span>
-											<span className="font-mono">
+										<div className="flex items-center gap-2 text-xs text-gray-500 overflow-hidden">
+											<span className="truncate flex-shrink">{o.username || t("guest")}</span>
+											<span className="flex-none">•</span>
+											<span className="font-mono flex-none whitespace-nowrap">
 												{o.amount} {o.currency}
 											</span>
 										</div>
 									</div>
 
-									<div className="flex items-center gap-2 flex-none">
-										<div className="scale-90 origin-right">{renderOrderStatus(o, t, false)}</div>
-										<div onClick={(e) => e.stopPropagation()}>
+									<div className="flex items-center gap-2 flex-none overflow-hidden">
+										<div className="scale-90 origin-right min-w-0">{renderOrderStatus(o, t, false)}</div>
+										<div className="flex-none" onClick={(e) => e.stopPropagation()}>
 											<ActionDropdown actions={getActions(o)} />
 										</div>
 									</div>
@@ -594,17 +596,17 @@ export function OrdersTable({ rows = [] }) {
 					{safeRows.length === 0 && <div className="text-center text-gray-400 py-8">{t("noData")}</div>}
 				</div>
 			) : (
-				<table className="w-full text-xs table-fixed">
+				<table className="w-full text-xs table-fixed border-collapse">
 					<thead className="bg-gray-100">
 						<tr>
-							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("orderBelong")}</th>}
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[25%]" : "w-[18%]"}`}>{t("orderDetailsAndChannel")}</th>
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[30%]" : "w-[18%]"}`}>{t("customer")}</th>
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("amount")}</th>
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("status")}</th>
-							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("timeline")}</th>}
-							{!isTablet && !isAdv(authRole) && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[12%]">{t("logisticsInfo") || "Logistics"}</th>}
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>{t("operations")}</th>
+							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[100px]">{t("orderBelong")}</th>}
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[30%]" : "w-[200px]"}`}>{t("orderDetailsAndChannel")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[30%]" : "w-[220px]"}`}>{t("customer")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[120px]"}`}>{t("amount")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[180px]"}`}>{t("status")}</th>
+							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[110px]">{t("timeline")}</th>}
+							{!isTablet && !isAdv(authRole) && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[130px]">{t("logisticsInfo") || "Logistics"}</th>}
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[110px]"}`}>{t("operations")}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -810,6 +812,10 @@ export function OrdersTable({ rows = [] }) {
 							<div>
 								<label className="block text-sm font-medium text-gray-700 mb-1">{t("trackingNumber") || "Tracking Number"}</label>
 								<input type="text" className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={logisticsForm.tracking_number} onChange={(e) => setLogisticsForm({ ...logisticsForm, tracking_number: e.target.value })} placeholder={t("trackingNumber") || "Tracking Number"} required />
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">{t("trackingUrl") || "Tracking URL"}</label>
+								<input type="text" className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={logisticsForm.tracking_url} onChange={(e) => setLogisticsForm({ ...logisticsForm, tracking_url: e.target.value })} placeholder={t("trackingUrl") || "Tracking URL"} />
 							</div>
 							<div className="flex justify-end gap-2 mt-6">
 								<button type="button" onClick={() => setIsLogisticsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded">

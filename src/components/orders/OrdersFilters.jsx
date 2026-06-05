@@ -147,6 +147,7 @@ export function OrdersFilters() {
 		url: reduxFilters.url || "",
 		phone: reduxFilters.phone || "",
 		paymentType: reduxFilters.paymentType !== undefined ? reduxFilters.paymentType : "",
+		type_type: reduxFilters.type_type !== undefined ? reduxFilters.type_type : "",
 	});
 
 	// Load filters from IndexedDB on mount
@@ -173,11 +174,15 @@ export function OrdersFilters() {
 						parsed.status = 0;
 					}
 
-					if (parsed.userId) {
-						parsed.userId = Number(parsed.userId);
-					}
+					// userId is now a comma-separated string, so we don't convert it to a Number
+					// if (parsed.userId) {
+					// 	parsed.userId = Number(parsed.userId);
+					// }
 					if (parsed.paymentType !== undefined && parsed.paymentType !== "") {
 						parsed.paymentType = Number(parsed.paymentType);
+					}
+					if (parsed.type_type !== undefined && parsed.type_type !== "") {
+						parsed.type_type = Number(parsed.type_type);
 					}
 					if (parsed.startTime) {
 						parsed.startTime = Number(parsed.startTime);
@@ -261,7 +266,11 @@ export function OrdersFilters() {
 		// Close advanced filters when clicking outside
 		function handleClickOutside(event) {
 			if (containerRef.current && !containerRef.current.contains(event.target)) {
-				setIsExpanded(false);
+				// check if the clicked element is still in the document
+				// react-select removes elements from the DOM on clear/remove which causes false outside clicks
+				if (document.contains(event.target)) {
+					setIsExpanded(false);
+				}
 			}
 		}
 		document.addEventListener("mousedown", handleClickOutside);
@@ -314,6 +323,7 @@ export function OrdersFilters() {
 			url: "",
 			phone: "",
 			paymentType: "",
+			type_type: "",
 		};
 		setLocalFilters(resetState);
 		dispatch(setFilters({ ...resetState, range: null }));
@@ -376,6 +386,12 @@ export function OrdersFilters() {
 
 	const statusOptions = getOrderStatusOptions(t);
 	const paymentTypeOptions = getPaymentTypeOptions(t);
+	const typeTypeOptions = [
+		{ value: "", label: t("all") },
+		{ value: 0, label: "钓鱼账号" },
+		{ value: 1, label: "Stripe" },
+		{ value: 2, label: "Airwallex" },
+	];
 
 	const shippingStatusOptions = [
 		{ value: "all", label: t("all") },
@@ -399,8 +415,11 @@ export function OrdersFilters() {
 		activeFiltersList.push({ key: "lastName", label: t("orderLastName"), value: reduxFilters.lastName });
 	}
 	if (reduxFilters.userId) {
-		const userLabel = userOptions.find((u) => String(u.value) === String(reduxFilters.userId))?.label || reduxFilters.userId;
-		activeFiltersList.push({ key: "userId", label: t("username"), value: userLabel });
+		const userIds = String(reduxFilters.userId).split(",");
+		const userLabels = userIds
+			.map((id) => userOptions.find((u) => String(u.value) === String(id))?.label || id)
+			.join(", ");
+		activeFiltersList.push({ key: "userId", label: t("username"), value: userLabels });
 	}
 	if (reduxFilters.orderNo) {
 		activeFiltersList.push({ key: "orderNo", label: t("orderNo"), value: reduxFilters.orderNo });
@@ -429,6 +448,10 @@ export function OrdersFilters() {
 		const label = paymentTypeOptions.find((o) => String(o.value) === String(reduxFilters.paymentType))?.label || reduxFilters.paymentType;
 		activeFiltersList.push({ key: "paymentType", label: t("paymentType"), value: label });
 	}
+	if (reduxFilters.type_type !== undefined && reduxFilters.type_type !== null && reduxFilters.type_type !== "") {
+		const label = typeTypeOptions.find((o) => String(o.value) === String(reduxFilters.type_type))?.label || reduxFilters.type_type;
+		activeFiltersList.push({ key: "type_type", label: t("type") || "Type", value: label });
+	}
 	if (reduxFilters.range?.start) {
 		activeFiltersList.push({ key: "startTime", label: t("startTime"), value: timestampToDateValue(reduxFilters.range.start) });
 	}
@@ -447,7 +470,7 @@ export function OrdersFilters() {
 		} else {
 			// Reset to default values
 			if (key === "status" || key === "shippingStatus") newFilters[key] = "all";
-			else if (key === "userId" || key === "country" || key === "paymentType") newFilters[key] = "";
+			else if (key === "userId" || key === "country" || key === "paymentType" || key === "type_type") newFilters[key] = "";
 			else newFilters[key] = "";
 		}
 
@@ -585,7 +608,7 @@ export function OrdersFilters() {
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 						<div className="flex flex-col gap-1">
 							<label className="text-[11px] font-medium text-gray-500">{t("username") || "Username"}</label>
-							<Select className="hs-user-selector" options={userOptions} value={userOptions.find((o) => o.value === localFilters.userId) || null} onChange={(opt) => setLocalFilters({ ...localFilters, userId: opt?.value || "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectUser") || "Select User"} isClearable />
+							<Select className="hs-user-selector" isMulti options={userOptions} value={localFilters.userId ? localFilters.userId.split(",").map((id) => userOptions.find((o) => String(o.value) === String(id))).filter(Boolean) : []} onChange={(opts) => setLocalFilters({ ...localFilters, userId: opts ? opts.map((opt) => opt.value).join(",") : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectUser") || "Select User"} isClearable />
 						</div>
 						<InputField label={t("orderNo")} value={localFilters.orderNo} onChange={(e) => setLocalFilters({ ...localFilters, orderNo: e.target.value })} placeholder={t("enterOrderNo") || "Enter order no"} />
 						<InputField label={t("orderFirstName")} value={localFilters.firstName} onChange={(e) => setLocalFilters({ ...localFilters, firstName: e.target.value })} placeholder={t("enterOrderFirstName") || "Enter order first name"} />
@@ -598,6 +621,11 @@ export function OrdersFilters() {
 						<div className="flex flex-col gap-1">
 							<label className="text-[11px] font-medium text-gray-500">{t("paymentType")}</label>
 							<Select options={[{ value: "", label: t("all") }, ...paymentTypeOptions]} value={localFilters.paymentType === "" ? { value: "", label: t("all") } : paymentTypeOptions.find((o) => String(o.value) === String(localFilters.paymentType)) || { value: "", label: t("all") }} onChange={(opt) => setLocalFilters({ ...localFilters, paymentType: opt?.value ?? "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
+						</div>
+
+						<div className="flex flex-col gap-1">
+							<label className="text-[11px] font-medium text-gray-500">{t("accountType") || "Account Type"}</label>
+							<Select options={typeTypeOptions} value={typeTypeOptions.find((o) => String(o.value) === String(localFilters.type_type)) || typeTypeOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, type_type: opt?.value ?? "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
 						</div>
 
 						<div className="flex flex-col gap-1">

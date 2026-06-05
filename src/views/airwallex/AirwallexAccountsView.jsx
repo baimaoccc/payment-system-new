@@ -4,9 +4,9 @@ import { setModal } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { fetchStripeAccounts, deleteStripeAccount, updateStripeAccount } from "../../controllers/stripeController.js";
 import { Pagination } from "../../components/common/Pagination.jsx";
-import { StripeAccountModal } from "./StripeAccountModal.jsx";
-import { StripeWarningModal } from "./StripeWarningModal.jsx";
-import { StripeDisputeModal } from "./StripeDisputeModal.jsx";
+import { AirwallexAccountModal } from "./AirwallexAccountModal.jsx";
+import { AirwallexWarningModal } from "./AirwallexWarningModal.jsx";
+import { AirwallexDisputeModal } from "./AirwallexDisputeModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCopy, faPen, faTrash, faEye, faExclamationTriangle, faGavel, faFilter, faChevronUp, faChevronDown, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Select, { components } from "react-select";
@@ -16,6 +16,8 @@ import { db } from "../../utils/indexedDB.js";
 import { getPaymentTypeOptions } from "../../utils/paymentUtils.js";
 import { getStripeAccountStatusOptions, getStripeAccountStatusInfo } from "../../utils/stripeStatusUtils.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
+
+const FILTERS_CACHE_KEY = "airwallex_accounts_filters_cache";
 
 const DropdownIndicator = (props) => (
 	<components.DropdownIndicator {...props}>
@@ -51,7 +53,7 @@ const MobileWhitelist = ({ list }) => {
 	);
 };
 
-export function StripeAccountsView() {
+export function AirwallexAccountsView() {
 	const { t } = useI18n();
 	const dispatch = useDispatch();
 	const { isMobile, isTablet } = useResponsive();
@@ -74,17 +76,20 @@ export function StripeAccountsView() {
 	const [editingRemarkValue, setEditingRemarkValue] = useState("");
 	const containerRef = useRef(null);
 
-	// Filters state
 	const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
 	const [filters, setFilters] = useState({
 		comment: "",
 		userId: "",
 		paymentType: "",
 		status: "",
-		type: "0,1"
+		paymentChannel: "",
+		type:'0,2'
 	});
 
-	const paymentTypeOptions = getPaymentTypeOptions(t);
+	const paymentTypeOptions = getPaymentTypeOptions(t).map((opt) => ({
+		...opt,
+		label: typeof opt.label === "string" ? opt.label.replace(/Stripe/g, "Airwallex") : opt.label,
+	}));
 	const statusOptions = getStripeAccountStatusOptions(t);
 
 	useEffect(() => {
@@ -106,7 +111,6 @@ export function StripeAccountsView() {
 			});
 		}
 
-		// Close filters when clicking outside
 		function handleClickOutside(event) {
 			if (containerRef.current && !containerRef.current.contains(event.target)) {
 				setIsFiltersExpanded(false);
@@ -130,6 +134,7 @@ export function StripeAccountsView() {
 			user_id: activeFilters.userId || undefined,
 			paymentType: activeFilters.paymentType !== "" ? activeFilters.paymentType : undefined,
 			status: activeFilters.status !== "" ? activeFilters.status : undefined,
+			paymentChannel: activeFilters.paymentChannel || undefined,
 			type: activeFilters.type,
 		};
 		const res = await fetchStripeAccounts(params);
@@ -140,11 +145,10 @@ export function StripeAccountsView() {
 		setLoading(false);
 	};
 
-	// Load filters from IndexedDB on mount
 	useEffect(() => {
 		const loadFilters = async () => {
 			try {
-				const cached = await db.get("stripe_accounts_filters_cache");
+				const cached = await db.get(FILTERS_CACHE_KEY);
 				if (cached) {
 					const { page: cachedPage, pageSize: cachedPageSize, ...cachedFilters } = cached;
 					setFilters(cachedFilters);
@@ -163,24 +167,24 @@ export function StripeAccountsView() {
 	const onPageChange = (p) => {
 		setPage(p);
 		const cacheData = { ...filters, page: p, pageSize };
-		db.set("stripe_accounts_filters_cache", cacheData);
+		db.set(FILTERS_CACHE_KEY, cacheData);
 	};
 
 	const onPageSizeChange = (s) => {
 		setPageSize(s);
 		setPage(1);
 		const cacheData = { ...filters, page: 1, pageSize: s };
-		db.set("stripe_accounts_filters_cache", cacheData);
+		db.set(FILTERS_CACHE_KEY, cacheData);
 	};
 
 	const handleResetFilters = () => {
-		db.del("stripe_accounts_filters_cache");
+		db.del(FILTERS_CACHE_KEY);
 		const resetFilters = {
 			comment: "",
 			userId: "",
 			paymentType: "",
 			status: "",
-			type: "0,1"
+			type: '0,2'
 		};
 		setFilters(resetFilters);
 		setPage(1);
@@ -192,7 +196,7 @@ export function StripeAccountsView() {
 
 	const handleSearch = () => {
 		const cacheData = { ...filters };
-		db.set("stripe_accounts_filters_cache", cacheData);
+		db.set(FILTERS_CACHE_KEY, cacheData);
 		setPage(1);
 		if (page === 1) {
 			loadData();
@@ -297,6 +301,16 @@ export function StripeAccountsView() {
 		const label = paymentTypeOptions.find((o) => o.value === filters.paymentType)?.label || filters.paymentType;
 		activeFiltersList.push({ key: "paymentType", label: t("paymentType"), value: label });
 	}
+	if (filters.paymentChannel) {
+		const formattedChannels = filters.paymentChannel
+			.split(",")
+			.map((ch) => {
+				const pure = ch.replace(/\[|\]/g, "");
+				return pure.toUpperCase();
+			})
+			.join(", ");
+		activeFiltersList.push({ key: "paymentChannel", label: t("selectPaymentChannel") || "Payment Channel", value: formattedChannels });
+	}
 	if (filters.status !== "") {
 		const label = statusOptions.find((o) => o.value === filters.status)?.label || filters.status;
 		activeFiltersList.push({ key: "status", label: t("st_status"), value: label });
@@ -306,7 +320,7 @@ export function StripeAccountsView() {
 		const newFilters = { ...filters, [key]: "" };
 		setFilters(newFilters);
 		const cacheData = { ...newFilters, page: 1, pageSize };
-		db.set("stripe_accounts_filters_cache", cacheData);
+		db.set(FILTERS_CACHE_KEY, cacheData);
 		if (page === 1) {
 			loadData(newFilters);
 		} else {
@@ -325,7 +339,6 @@ export function StripeAccountsView() {
 			return;
 		}
 
-		// Construct safe payload with allowed fields
 		const safeFields = ["id", "status", "group_id", "comment", "api_key", "api_publishable_key", "endpoint_secret", "c_site_url", "max_money", "max_order", "description", "maximum_purchase_amount", "white_list", "country_group", "level", "type", "user_id", "paymentType"];
 		const payload = {};
 		safeFields.forEach((f) => {
@@ -333,14 +346,12 @@ export function StripeAccountsView() {
 		});
 		payload.description = editingRemarkValue;
 
-		// Optimistic update
 		const originalList = [...list];
 		setList(list.map((i) => (i.id === item.id ? { ...i, description: editingRemarkValue } : i)));
 		setEditingRemarkId(null);
 
 		const res = await updateStripeAccount(payload);
 		if (!res.ok) {
-			// Revert on failure
 			setList(originalList);
 			dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("updateFailed") || "Update failed" } });
 		} else {
@@ -413,10 +424,9 @@ export function StripeAccountsView() {
 		<div className="p-6">
 			<div className="bg-white rounded-2xl shadow p-4">
 				<div className="relative flex flex-col gap-4 mb-4" ref={containerRef}>
-					<h3 className="text-sm font-semibold text-gray-900 flex-shrink-0">{t("stripeAccounts")}</h3>
+					<h3 className="text-sm font-semibold text-gray-900 flex-shrink-0">{t("airwallexAccounts") || "Airwallex Accounts"}</h3>
 					<div className="flex items-center justify-between">
 						<div className="flex flex-wrap items-center justify-end gap-2">
-							{/* Active Filter Chips */}
 							{activeFiltersList.map((filter) => (
 								<div key={filter.key} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md border border-blue-100 animate-fade-in">
 									<span className="font-medium">{filter.label}:</span>
@@ -443,11 +453,10 @@ export function StripeAccountsView() {
 						</div>
 					</div>
 
-					{/* Collapsible Filters - Absolute Positioned */}
 					{isFiltersExpanded && (
 						<div className="absolute top-full left-0 right-0 z-50 p-4 bg-white shadow-xl border border-gray-100 rounded-xl mt-1">
 							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-								<InputField label={t("paymentChannel") || "Payment Channel"} value={filters.comment} onChange={(e) => setFilters({ ...filters, comment: e.target.value })} placeholder={t("enterPaymentChannel") || "Enter Payment Channel..."} />
+								<InputField label={t("paymentAccount") || "Payment Account"} value={filters.comment} onChange={(e) => setFilters({ ...filters, comment: e.target.value })} placeholder={t("enterPaymentAccount") || "Enter Payment Account..."} />
 								<div className="flex flex-col gap-1">
 									<label className="text-[11px] font-medium text-gray-500">{t("username") || "Username"}</label>
 									<Select className="hs-custom-select" options={userOptions} value={userOptions.find((o) => o.value === filters.userId) || null} onChange={(opt) => setFilters({ ...filters, userId: opt?.value || "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectUser") || "Select User"} isClearable />
@@ -459,6 +468,24 @@ export function StripeAccountsView() {
 								<div className="flex flex-col gap-1">
 									<label className="text-[11px] font-medium text-gray-500">{t("st_status") || "Status"}</label>
 									<Select className="hs-custom-select" options={statusOptions} value={statusOptions.find((o) => o.value === filters.status) || null} onChange={(opt) => setFilters({ ...filters, status: opt !== null ? opt.value : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectStatus") || "Select..."} isClearable />
+								</div>
+								<div className="flex flex-col gap-1 lg:col-span-2">
+									<label className="text-[11px] font-medium text-gray-500">{t("selectPaymentChannel") || "Payment Channel"}</label>
+									<Select
+										className="hs-custom-select"
+										isMulti
+										options={[
+											{ value: "[klarna]", label: "KLARNA" },
+											{ value: "[ideal]", label: "IDEAL" },
+											{ value: "[bancontact]", label: "BANCONTACT" },
+										]}
+										value={filters.paymentChannel ? filters.paymentChannel.split(",").map((val) => ({ value: val, label: val.replace(/\[|\]/g, "").toUpperCase() })) : []}
+										onChange={(opts) => setFilters({ ...filters, paymentChannel: opts ? opts.map((opt) => opt.value || opt).join(",") : "" })}
+										styles={selectStyles}
+										components={{ DropdownIndicator, IndicatorSeparator: () => null }}
+										placeholder={t("selectPaymentChannel") || "Select..."}
+										isClearable
+									/>
 								</div>
 							</div>
 							<div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-50">
@@ -487,13 +514,12 @@ export function StripeAccountsView() {
 
 									return (
 										<div key={item.id} className={`bg-white rounded-lg shadow-sm border transition-all box-border ${isExpanded ? "border-blue-500" : "border-gray-100"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : item.id)}>
-											{/* Header / Summary Row */}
 											<div className="p-3 flex items-center justify-between gap-3">
 												<div className="flex-1 min-w-0">
 													<div className="flex items-center gap-2 mb-1">
 														<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-mono">ID: {item.id}</span>
-														<span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${item.type === 0 ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`} title={t("st_type")}>
-															{item.type === 0 ? t("stTypePhishing") : t("stTypeNormal")}
+														<span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${item.type === 2 ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`} title={t("st_type")}>
+															{item.type === 2 ? t("airwallexTypeNormal") : (item.type === 0 ? t("stTypePhishing") : t("stTypeNormal"))}
 														</span>
 													</div>
 													<div className="font-medium text-gray-900 truncate text-sm" title={item.comment}>
@@ -532,11 +558,9 @@ export function StripeAccountsView() {
 												</div>
 											</div>
 
-											{/* Expanded Content */}
 											<div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
 												<div className="overflow-hidden">
 													<div className="px-3 pb-3 pt-0 text-xs text-gray-600 space-y-2 border-t border-gray-50 mt-1">
-														{/* Site URL */}
 														<div className="pt-2">
 															<span className="text-gray-400 block mb-0.5">{t("st_site")}</span>
 															{item.c_site_url ? (
@@ -548,7 +572,6 @@ export function StripeAccountsView() {
 															)}
 														</div>
 
-														{/* Keys */}
 														<div>
 															<span className="text-gray-400 block mb-0.5">{t("st_statistics")}</span>
 															<div className="flex flex-col gap-0.5 text-[10px]">
@@ -575,7 +598,6 @@ export function StripeAccountsView() {
 															</div>
 														</div>
 
-														{/* Limits & Stats */}
 														<div className="grid grid-cols-2 gap-3 bg-gray-50 p-2 rounded">
 															<div>
 																<span className="text-gray-400 block mb-0.5">{t("st_limits")}</span>
@@ -601,7 +623,6 @@ export function StripeAccountsView() {
 															</div>
 														</div>
 
-														{/* Whitelist */}
 														{item.white_list && item.white_list.length > 0 && (
 															<div>
 																<span className="text-gray-400 block mb-0.5">{t("st_whitelist")}</span>
@@ -609,7 +630,6 @@ export function StripeAccountsView() {
 															</div>
 														)}
 
-														{/* Dates */}
 														<div className="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
 															<div>
 																{t("createTime")}: {createDate}
@@ -619,7 +639,6 @@ export function StripeAccountsView() {
 															</div>
 														</div>
 
-														{/* Extra Actions */}
 														<div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
 															<button
 																onClick={(e) => {
@@ -660,7 +679,6 @@ export function StripeAccountsView() {
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[6%]"}`}>{t("st_status")}</th>
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[8%]"}`}>{t("remark") || "Remark"}</th>
 										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[8%]">{t("st_whitelist")}</th>}
-										{/* {!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_keys")}</th>} */}
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[20%]" : "w-[10%]"}`}>{t("st_limits")}</th>
 										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[11%]"}`}>{t("st_stats")}</th>
 										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_statistics")}</th>}
@@ -681,7 +699,6 @@ export function StripeAccountsView() {
 
 											return (
 												<tr key={item.id} className="hover:bg-gray-50 transition-colors align-top border-t">
-													{/* Account Details */}
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5">
 															<div className="flex items-center gap-2 flex-wrap">
@@ -693,8 +710,8 @@ export function StripeAccountsView() {
 																		Lv.{item.level}
 																	</span>
 																)}
-																<span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${item.type === 0 ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`} title={t("st_type") || "Type"}>
-																	{item.type === 0 ? t("stTypePhishing") || "Phishing" : t("stTypeNormal") || "Normal"}
+																<span className={`px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-600`} title={t("st_type") || "Type"}>
+																	{item.type === 2 ? t("airwallexTypeNormal") : (item.type === 0 ? t("stTypePhishing") : t("stTypeNormal"))}
 																</span>
 															</div>
 															<div className="font-medium text-gray-900 truncate" title={item.comment}>
@@ -703,7 +720,6 @@ export function StripeAccountsView() {
 														</div>
 													</td>
 
-													{/* Site */}
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5">
 															<div className="text-blue-600 truncate">
@@ -718,7 +734,6 @@ export function StripeAccountsView() {
 														</div>
 													</td>
 
-													{/* Status */}
 													<td className="p-3">
 														<div className="flex flex-col gap-1 items-start">
 															<div className="flex items-center gap-2 flex-wrap">
@@ -738,7 +753,6 @@ export function StripeAccountsView() {
 														</div>
 													</td>
 
-													{/* Remark */}
 													<td
 														className="p-3"
 														onClick={(e) => {
@@ -754,7 +768,6 @@ export function StripeAccountsView() {
 														)}
 													</td>
 
-													{/* Whitelist (Hidden on Tablet) */}
 													{!isTablet && (
 														<td className="p-3 relative group">
 															{item.white_list && item.white_list.length > 0 ? (
@@ -767,17 +780,6 @@ export function StripeAccountsView() {
 																		))}
 																		{item.white_list.length > 3 && <span className="text-gray-400 text-[10px]">+{item.white_list.length - 3}</span>}
 																	</div>
-																	{/* Hover Tooltip */}
-																	{/* <div className={`hidden absolute left-0 top-[1/2] mb-2 group-hover:block min-w-[200px] max-w-[300px] p-2 bg-gray-900/95 backdrop-blur-sm text-white text-xs rounded-lg shadow-xl z-[100] pointer-events-none transition-all animate-fade-in`}>
-																		<div className="flex flex-wrap gap-1.5">
-																			{item.white_list.map((w, idx) => (
-																				<span key={idx} className="bg-gray-700/50 px-1.5 py-0.5 rounded text-[10px] uppercase border border-gray-600/50">
-																					{w.country_code}
-																				</span>
-																			))}
-																		</div>
-																		<div className={`rotate-180 absolute left-4 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent bottom-full border-t-[6px] border-t-gray-900/95`}></div>
-																	</div> */}
 																</>
 															) : (
 																<span className="text-gray-400 text-[10px]">-</span>
@@ -785,14 +787,6 @@ export function StripeAccountsView() {
 														</td>
 													)}
 
-													{/* Keys (Hidden on Tablet) */}
-													{/* {!isTablet && (
-														<td className="p-3 overflow-hidden">
-															{renderKeys(item)}
-														</td>
-													)} */}
-
-													{/* Limits */}
 													<td className="p-3 overflow-hidden">
 														<div className="pr-2 flex flex-col gap-1.5 text-[10px]">
 															<div className="flex justify-between items-center gap-2">
@@ -818,7 +812,6 @@ export function StripeAccountsView() {
 														</div>
 													</td>
 
-													{/* Stats */}
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5 text-[10px]">
 															<div className="flex justify-between items-center gap-2">
@@ -832,7 +825,6 @@ export function StripeAccountsView() {
 														</div>
 													</td>
 
-													{/* Stats (Hidden on Tablet) */}
 													{!isTablet && (
 														<td className="p-4 overflow-hidden">
 															<div className="flex flex-col gap-1.5 text-[10px] text-gray-500">
@@ -861,7 +853,6 @@ export function StripeAccountsView() {
 														</td>
 													)}
 
-													{/* Actions */}
 													<td className="p-3">
 														<div className="flex flex-col gap-2">
 															<div className="flex flex-wrap gap-1">
@@ -894,9 +885,6 @@ export function StripeAccountsView() {
 																	<FontAwesomeIcon icon={faGavel} />
 																</button>
 															</div>
-															{/* <div className="flex gap-1">
-																
-															</div> */}
 														</div>
 													</td>
 												</tr>
@@ -914,9 +902,9 @@ export function StripeAccountsView() {
 				</div>
 			</div>
 
-			<StripeAccountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={loadData} initialData={editingItem} readOnly={isReadOnly} />
-			<StripeWarningModal isOpen={warningModalOpen} onClose={() => setWarningModalOpen(false)} accountId={selectedAccountId} />
-			<StripeDisputeModal isOpen={disputeModalOpen} onClose={() => setDisputeModalOpen(false)} accountId={selectedAccountId} />
+			<AirwallexAccountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={loadData} initialData={editingItem} readOnly={isReadOnly} />
+			<AirwallexWarningModal isOpen={warningModalOpen} onClose={() => setWarningModalOpen(false)} accountId={selectedAccountId} />
+			<AirwallexDisputeModal isOpen={disputeModalOpen} onClose={() => setDisputeModalOpen(false)} accountId={selectedAccountId} />
 		</div>
 	);
 }

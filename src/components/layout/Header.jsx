@@ -12,6 +12,7 @@ import { useResponsive } from "../../hooks/useResponsive.js";
 import { Logo } from "../common/Logo.jsx";
 import { ROLE_MAP, MENU_CONFIG } from "./menuConfig";
 import BrandTextImg from "../../assets/brand-text.png";
+import { API_BASE_URL } from "../../constants/api.js";
 
 /**
  * 顶部栏：语言切换、用户信息、登出
@@ -180,7 +181,7 @@ export function Header() {
 					{/* User Profile Dropdown */}
 					<div className="relative" ref={profileRef}>
 						<button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center gap-2 hover:bg-gray-100 p-1.5 rounded-lg transition-colors focus:outline-none">
-							{user?.avatar ? <img src={user.avatar} alt="avatar" className="w-7 h-7 rounded-full object-cover border border-gray-200" /> : <FontAwesomeIcon icon={faUserCircle} className="text-2xl text-gray-600" />}
+							{user?.avatar ? <img src={API_BASE_URL + user.avatar} alt="avatar" className="w-7 h-7 rounded-full object-cover border border-gray-200" /> : <FontAwesomeIcon icon={faUserCircle} className="text-2xl text-gray-600" />}
 							<span className="text-sm font-medium text-gray-700 hidden lg:block">{user?.username || t("guest")}</span>
 						</button>
 

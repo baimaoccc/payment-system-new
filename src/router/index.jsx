@@ -6,6 +6,10 @@ import { StripeAccountsView } from "../views/stripe/StripeAccountsView.jsx";
 import { StripeLogsView } from "../views/stripe/StripeLogsView.jsx";
 import StripeWhitelistGroupsView from "../views/stripe/StripeWhitelistGroupsView.jsx";
 import StripeGroupsView from "../views/stripe/StripeGroupsView.jsx";
+import { AirwallexAccountsView } from "../views/airwallex/AirwallexAccountsView.jsx";
+import { AirwallexLogsView } from "../views/airwallex/AirwallexLogsView.jsx";
+import AirwallexGroupsView from "../views/airwallex/AirwallexGroupsView.jsx";
+import AirwallexWhitelistGroupsView from "../views/airwallex/AirwallexWhitelistGroupsView.jsx";
 import { UsersView } from "../views/users/UsersView.jsx";
 import { RolesView } from "../views/roles/RolesView.jsx";
 import { EmailTypeView } from "../views/email/EmailTypeView.jsx";
@@ -62,6 +66,9 @@ export function AppRouter() {
 					<Route path="stripe-accounts" element={<StripeAccountsView />} />
 					<Route path="stripe-whitelist-groups" element={<StripeWhitelistGroupsView />} />
 					<Route path="stripe-groups" element={<StripeGroupsView />} />
+					<Route path="airwallex-accounts" element={<AirwallexAccountsView />} />
+					<Route path="airwallex-whitelist-groups" element={<AirwallexWhitelistGroupsView />} />
+					<Route path="airwallex-groups" element={<AirwallexGroupsView />} />
 					<Route path="users" element={<UsersView />} />
 					<Route path="roles" element={<RolesView />} />
 					<Route path="blacklist" element={<BlacklistView />} />
@@ -108,6 +115,9 @@ export function AppRouter() {
 					<Route path="stripe-accounts" element={<StripeAccountsView />} />
 					<Route path="stripe-whitelist-groups" element={<StripeWhitelistGroupsView />} />
 					<Route path="stripe-groups" element={<StripeGroupsView />} />
+					<Route path="airwallex-accounts" element={<AirwallexAccountsView />} />
+					<Route path="airwallex-whitelist-groups" element={<AirwallexWhitelistGroupsView />} />
+					<Route path="airwallex-groups" element={<AirwallexGroupsView />} />
 					<Route path="users" element={<UsersView />} />
 					<Route path="roles" element={<RolesView />} />
 					<Route path="blacklist" element={<BlacklistView />} />

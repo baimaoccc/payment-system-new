@@ -46,18 +46,39 @@ export const MENU_CONFIG = [
 				label: "accountList",
 				roles: ["super_admin", "admin"],
 			},
+		],
+	},
+	{
+		path: "/airwallex-accounts",
+		label: "airwallexAccounts",
+		icon: faCreditCard,
+		roles: ["super_admin"],
+		children: [
 			{
-				path: "/stripe-whitelist-groups",
-				icon: faUnlock,
-				label: "stripeWhitelistGroups",
-				roles: ["super_admin", "admin"],
+				path: "/airwallex-accounts",
+				icon: faCreditCard,
+				label: "accountList",
+				roles: ["super_admin"],
 			},
+		],
+	},
+	{
+		label: "configManagement",
+		icon: faLayerGroup,
+		roles: ["super_admin", "admin"],
+		children: [
 			{
 				path: "/stripe-groups",
 				icon: faLayerGroup,
 				label: "accountGrouping",
 				roles: ["super_admin", "admin"],
 			},
+			{
+				path: "/stripe-whitelist-groups",
+				icon: faUnlock,
+				label: "whitelistManagement",
+				roles: ["super_admin", "admin"],
+			}
 		],
 	},
 	{

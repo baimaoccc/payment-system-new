@@ -29,6 +29,7 @@ export async function fetchOrders({ dispatch, page = 1, pageSize = 20, filters =
 		comment: filters.comment || null,
 		url: filters.url || null,
 		payment_type: filters.paymentType !== undefined && filters.paymentType !== "" ? filters.paymentType : null,
+		type_type: filters.type_type !== undefined && filters.type_type !== "" ? filters.type_type : null,
 	};
 
 	const res = await apiRequest({ url: API_ORDER_LIST, method: "POST", data: payload });
@@ -124,10 +125,11 @@ export async function fetchOrderCharges({ dispatch, id }) {
 	return { ok: true, data: chargesList };
 }
 
-export async function updateOrderLogistics({ id, logistics_mode, tracking_number, status = null }) {
+export async function updateOrderLogistics({ id, logistics_mode, tracking_number, tracking_url, status = null }) {
 	const payload = { id };
 	if (logistics_mode !== undefined) payload.logistics_mode = logistics_mode;
 	if (tracking_number !== undefined) payload.tracking_number = tracking_number;
+	if (tracking_url !== undefined) payload.tracking_url = tracking_url;
 	if (status !== null && status !== undefined) payload.status = status;
 	return apiRequest({ url: API_ORDER_UPDATE_LOGISTICS, method: "POST", data: payload });
 }
@@ -186,6 +188,7 @@ export async function exportOrders({ filters = {} }) {
 		comment: filters.comment || null,
 		url: filters.url || null,
 		payment_type: filters.paymentType !== undefined && filters.paymentType !== "" ? filters.paymentType : null,
+		type_type: filters.type_type !== undefined && filters.type_type !== "" ? filters.type_type : null,
 	};
 
 	return apiRequest({ url: API_ORDER_EXPORT, method: "GET", params: payload });
@@ -211,6 +214,7 @@ export function getExportOrdersUrl({ filters = {}, token = "" }) {
 		comment: filters.comment || null,
 		url: filters.url || null,
 		payment_type: filters.paymentType !== undefined && filters.paymentType !== "" ? filters.paymentType : null,
+		type_type: filters.type_type !== undefined && filters.type_type !== "" ? filters.type_type : null,
 		token: token,
 	};
 
