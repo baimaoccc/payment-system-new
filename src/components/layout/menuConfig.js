@@ -63,6 +63,20 @@ export const MENU_CONFIG = [
 		],
 	},
 	{
+		path: "/zelle-accounts",
+		label: "zelleAccounts",
+		icon: faCreditCard,
+		roles: ["super_admin"],
+		children: [
+			{
+				path: "/zelle-accounts",
+				icon: faCreditCard,
+				label: "accountList",
+				roles: ["super_admin"],
+			},
+		],
+	},
+	{
 		label: "configManagement",
 		icon: faLayerGroup,
 		roles: ["super_admin", "admin"],

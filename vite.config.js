@@ -4,5 +4,8 @@ import react from '@vitejs/plugin-react'
 // 中文/English: Vite 配置 / Vite config
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 3000,
+  },
 })
 

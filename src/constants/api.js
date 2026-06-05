@@ -24,10 +24,16 @@ export const API_ORDER_EXPORT_TEMPLATE = "/index.php/Api/Order/exportTemplate";
 export const API_ORDER_UPLOAD_EXCEL = "/index.php/api/Order/uploadExcel";
 export const API_ORDER_UPDATE_LOGISTICS = "/index.php/Api/Order/UpOder";
 export const API_ORDER_RISK_LEVEL = "/index.php/Api/Order/getRisklevel";
+export const API_ORDER_SEARCH_PUBLIC = "/index.php/Api/Dindan/SearchForOrdersQ";
 export const API_STRIPE_LIST = "/index.php/Api/Stripe/getStripeList";
 export const API_STRIPE_LIST_ALL = "/index.php/Api/Stripe/getStripeListN";
+export const API_STRIPE_GET = "/index.php/Api/Stripe/getStripe";
 export const API_STRIPE_CREATE = "/index.php/Api/Stripe/setStripe";
 export const API_STRIPE_DELETE = "/index.php/Api/Stripe/delStripe";
+
+// Zelle Payment Actions
+export const API_ZELLE_PAYMENT_CONFIRM = "/index.php/Api/Zelle/confirmPayment";
+export const API_ZELLE_SET_CONFIRMATION = "/index.php/Api/expand/setConfirmation";
 export const API_STRIPE_LOG_LIST = "/index.php/Api/Stripe/getStripeLogList";
 export const API_STRIPE_WARNING_LIST = "/index.php/Api/Stripe/getEarlyFraudWarnings";
 export const API_STRIPE_DISPUTE_LIST = "/index.php/Api/Stripe/getDisputelist";
@@ -98,6 +104,12 @@ export const API_LOG_LIST = "/index.php/api/Log/getLogList";
 export const API_LOG_GET = "/index.php/api/Log/getLog";
 
 // Country Transfer (Zhuandian) APIs
+
+// Zelle APIs
+export const API_ZELLE_LIST = "/index.php/Api/Zelle/getZelleList";
+export const API_ZELLE_CREATE = "/index.php/Api/Zelle/setZelle";
+export const API_ZELLE_DELETE = "/index.php/Api/Zelle/delZelle";
+export const API_ZELLE_AUTHORIZE = "/index.php/Api/Zelle/oauth";
 export const API_COUNTRY_TRANSFER_SET = "/api/Zhuandian/setZhuandian";
 export const API_COUNTRY_TRANSFER_GET = "/api/Zhuandian/getZhuandian";
 export const API_COUNTRY_TRANSFER_LIST = "/api/Zhuandian/getZhuandianlist";

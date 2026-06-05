@@ -7,6 +7,7 @@ import { StripeLogsView } from "../views/stripe/StripeLogsView.jsx";
 import StripeWhitelistGroupsView from "../views/stripe/StripeWhitelistGroupsView.jsx";
 import StripeGroupsView from "../views/stripe/StripeGroupsView.jsx";
 import { AirwallexAccountsView } from "../views/airwallex/AirwallexAccountsView.jsx";
+import { ZelleAccountsView } from "../views/zelle/ZelleAccountsView.jsx";
 import { AirwallexLogsView } from "../views/airwallex/AirwallexLogsView.jsx";
 import AirwallexGroupsView from "../views/airwallex/AirwallexGroupsView.jsx";
 import AirwallexWhitelistGroupsView from "../views/airwallex/AirwallexWhitelistGroupsView.jsx";
@@ -31,109 +32,134 @@ import { ProductView } from "../views/bSite/ProductView.jsx";
 import { WebsiteView } from "../views/bSite/WebsiteView.jsx";
 import { LogsView } from "../views/logs/LogsView.jsx";
 import CountryTransfersView from "../views/admin/CountryTransferView.jsx";
+import { ZellePaymentView } from "../views/payment/ZellePaymentView.jsx";
 
 /**
  * 中文：应用路由配置；受保护路由需登录与权限
  * English: App route config; protected routes require login and permissions
  */
 export function AppRouter() {
-	const hostname = window.location.hostname;
-	// Logic: If hostname is 'pay.ceo', it is the Official Site.
-	// Otherwise (e.g. www.pay.ceo, localhost, etc.), it's the App Domain.
-	const isOfficialSite = hostname === "pay.ceo";
+  const hostname = window.location.hostname;
+  // Logic: If hostname is 'pay.ceo', it is the Official Site.
+  // Otherwise (e.g. www.pay.ceo, localhost, etc.), it's the App Domain.
+  const isOfficialSite = hostname === "pay.ceo";
 
-	if (isOfficialSite) {
-		return (
-			<Routes>
-				<Route element={<OfficialSiteLayout />}>
-					<Route index element={<LandingPage />} />
-					<Route path="privacy-policy" element={<PrivacyPolicy />} />
-					<Route path="terms-of-service" element={<TermsOfService />} />
-					<Route path="cookie-policy" element={<CookiePolicy />} />
-				</Route>
+  if (isOfficialSite) {
+    return (
+      <Routes>
+        <Route element={<OfficialSiteLayout />}>
+          <Route index element={<LandingPage />} />
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="terms-of-service" element={<TermsOfService />} />
+          <Route path="cookie-policy" element={<CookiePolicy />} />
+        </Route>
 
-				<Route path="/login" element={<LoginView />} />
+        <Route path="/login" element={<LoginView />} />
+        <Route path="/zelle-payment" element={<ZellePaymentView />} />
 
-				<Route
-					element={
-						<GuardedRoute>
-							<AppLayout />
-						</GuardedRoute>
-					}>
-					<Route path="dashboard" element={<DashboardView />} />
-					<Route path="orders" element={<OrdersView />} />
-					<Route path="orders/:id" element={<OrderDetailsView />} />
-					<Route path="stripe-accounts" element={<StripeAccountsView />} />
-					<Route path="stripe-whitelist-groups" element={<StripeWhitelistGroupsView />} />
-					<Route path="stripe-groups" element={<StripeGroupsView />} />
-					<Route path="airwallex-accounts" element={<AirwallexAccountsView />} />
-					<Route path="airwallex-whitelist-groups" element={<AirwallexWhitelistGroupsView />} />
-					<Route path="airwallex-groups" element={<AirwallexGroupsView />} />
-					<Route path="users" element={<UsersView />} />
-					<Route path="roles" element={<RolesView />} />
-					<Route path="blacklist" element={<BlacklistView />} />
-					<Route path="bSite/categories" element={<ProductCategoryView />} />
-					<Route path="bSite/products" element={<ProductView />} />
-					<Route path="bSite/websites" element={<WebsiteView />} />
-					<Route path="email/types" element={<EmailTypeView />} />
-					<Route path="email/templates" element={<EmailTemplateView />} />
-					<Route path="email/tasks" element={<EmailTaskView />} />
-					<Route path="email/smtp" element={<SmtpServerView />} />
-					<Route path="logs" element={<LogsView />} />
-					<Route path="country-transfers" element={<CountryTransfersView />} />
-				</Route>
+        <Route
+          element={
+            <GuardedRoute>
+              <AppLayout />
+            </GuardedRoute>
+          }
+        >
+          <Route path="dashboard" element={<DashboardView />} />
+          <Route path="orders" element={<OrdersView />} />
+          <Route path="orders/:id" element={<OrderDetailsView />} />
+          <Route path="stripe-accounts" element={<StripeAccountsView />} />
+          <Route
+            path="stripe-whitelist-groups"
+            element={<StripeWhitelistGroupsView />}
+          />
+          <Route path="stripe-groups" element={<StripeGroupsView />} />
+          <Route
+            path="airwallex-accounts"
+            element={<AirwallexAccountsView />}
+          />
+          <Route
+            path="airwallex-whitelist-groups"
+            element={<AirwallexWhitelistGroupsView />}
+          />
+          <Route path="airwallex-groups" element={<AirwallexGroupsView />} />
+          <Route path="zelle-accounts" element={<ZelleAccountsView />} />
+          <Route path="users" element={<UsersView />} />
+          <Route path="roles" element={<RolesView />} />
+          <Route path="blacklist" element={<BlacklistView />} />
+          <Route path="bSite/categories" element={<ProductCategoryView />} />
+          <Route path="bSite/products" element={<ProductView />} />
+          <Route path="bSite/websites" element={<WebsiteView />} />
+          <Route path="email/types" element={<EmailTypeView />} />
+          <Route path="email/templates" element={<EmailTemplateView />} />
+          <Route path="email/tasks" element={<EmailTaskView />} />
+          <Route path="email/smtp" element={<SmtpServerView />} />
+          <Route path="logs" element={<LogsView />} />
+          <Route path="country-transfers" element={<CountryTransfersView />} />
+        </Route>
 
-				{/* Redirect unknown routes to home */}
-				<Route path="*" element={<Navigate to="/" replace />} />
-			</Routes>
-		);
-	} else {
-		return (
-			<Routes>
-				<Route path="/login" element={<LoginView />} />
+        {/* Redirect unknown routes to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    );
+  } else {
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginView />} />
+        <Route path="/zelle-payment" element={<ZellePaymentView />} />
 
-				{/* Official Website Routes (accessible via /website on App Domain for testing) */}
-				<Route path="/website" element={<OfficialSiteLayout />}>
-					<Route index element={<LandingPage />} />
-					<Route path="privacy-policy" element={<PrivacyPolicy />} />
-					<Route path="terms-of-service" element={<TermsOfService />} />
-					<Route path="cookie-policy" element={<CookiePolicy />} />
-					<Route path="*" element={<Navigate to="/website" replace />} />
-				</Route>
+        {/* Official Website Routes (accessible via /website on App Domain for testing) */}
+        <Route path="/website" element={<OfficialSiteLayout />}>
+          <Route index element={<LandingPage />} />
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="terms-of-service" element={<TermsOfService />} />
+          <Route path="cookie-policy" element={<CookiePolicy />} />
+          <Route path="*" element={<Navigate to="/website" replace />} />
+        </Route>
 
-				<Route
-					path="/"
-					element={
-						<GuardedRoute>
-							<AppLayout />
-						</GuardedRoute>
-					}>
-					<Route index element={<Navigate to="/dashboard" replace />} />
-					<Route path="dashboard" element={<DashboardView />} />
-					<Route path="orders" element={<OrdersView />} />
-					<Route path="orders/:id" element={<OrderDetailsView />} />
-					<Route path="stripe-accounts" element={<StripeAccountsView />} />
-					<Route path="stripe-whitelist-groups" element={<StripeWhitelistGroupsView />} />
-					<Route path="stripe-groups" element={<StripeGroupsView />} />
-					<Route path="airwallex-accounts" element={<AirwallexAccountsView />} />
-					<Route path="airwallex-whitelist-groups" element={<AirwallexWhitelistGroupsView />} />
-					<Route path="airwallex-groups" element={<AirwallexGroupsView />} />
-					<Route path="users" element={<UsersView />} />
-					<Route path="roles" element={<RolesView />} />
-					<Route path="blacklist" element={<BlacklistView />} />
-					<Route path="bSite/categories" element={<ProductCategoryView />} />
-					<Route path="bSite/products" element={<ProductView />} />
-					<Route path="bSite/websites" element={<WebsiteView />} />
-					<Route path="email/types" element={<EmailTypeView />} />
-					<Route path="email/templates" element={<EmailTemplateView />} />
-					<Route path="email/tasks" element={<EmailTaskView />} />
-					<Route path="email/smtp" element={<SmtpServerView />} />
-					<Route path="logs" element={<LogsView />} />
-					<Route path="country-transfers" element={<CountryTransfersView />} />
-				</Route>
+        <Route
+          path="/"
+          element={
+            <GuardedRoute>
+              <AppLayout />
+            </GuardedRoute>
+          }
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardView />} />
+          <Route path="orders" element={<OrdersView />} />
+          <Route path="orders/:id" element={<OrderDetailsView />} />
+          <Route path="stripe-accounts" element={<StripeAccountsView />} />
+          <Route
+            path="stripe-whitelist-groups"
+            element={<StripeWhitelistGroupsView />}
+          />
+          <Route path="stripe-groups" element={<StripeGroupsView />} />
+          <Route
+            path="airwallex-accounts"
+            element={<AirwallexAccountsView />}
+          />
+          <Route
+            path="airwallex-whitelist-groups"
+            element={<AirwallexWhitelistGroupsView />}
+          />
+          <Route path="airwallex-groups" element={<AirwallexGroupsView />} />
+          <Route path="zelle-accounts" element={<ZelleAccountsView />} />
+          <Route path="users" element={<UsersView />} />
+          <Route path="roles" element={<RolesView />} />
+          <Route path="blacklist" element={<BlacklistView />} />
+          <Route path="bSite/categories" element={<ProductCategoryView />} />
+          <Route path="bSite/products" element={<ProductView />} />
+          <Route path="bSite/websites" element={<WebsiteView />} />
+          <Route path="email/types" element={<EmailTypeView />} />
+          <Route path="email/templates" element={<EmailTemplateView />} />
+          <Route path="email/tasks" element={<EmailTaskView />} />
+          <Route path="email/smtp" element={<SmtpServerView />} />
+          <Route path="logs" element={<LogsView />} />
+          <Route path="country-transfers" element={<CountryTransfersView />} />
+        </Route>
 
-				<Route path="*" element={<Navigate to="/dashboard" replace />} />
-			</Routes>
-		);
-	}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    );
+  }
 }
