@@ -912,6 +912,10 @@ const messages = {
 		reviewExempt: "免审",
 		exempt: "免审",
 		reviewRequired: "需审核",
+		allowRepeatPurchase: "允许复购",
+		forbidRepeatPurchase: "禁止复购",
+		forbidRepeatPurchase48h: "48小时内禁止复购",
+		repeatPurchasePolicy: "复购策略",
 		// Logs
 		logManagement: "日志管理",
 		logManagementHint: "查看和搜索系统日志",
@@ -1886,6 +1890,10 @@ const messages = {
 		reviewExempt: "Exempt",
 		exempt: "Exempt",
 		reviewRequired: "Review Required",
+		allowRepeatPurchase: "Allow Repeat Purchase",
+		forbidRepeatPurchase: "Forbid Repeat Purchase",
+		forbidRepeatPurchase48h: "Forbid Repeat Purchase within 48h",
+		repeatPurchasePolicy: "Repeat Purchase Policy",
 		// Logs
 		logManagement: "Log Management",
 		logManagementHint: "View and search system logs",

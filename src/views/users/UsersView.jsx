@@ -10,7 +10,7 @@ import { getRoleInfo } from "../../utils/roleRender.js";
 import { Select } from "../../components/ui/Select.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faPen, faTrash, faTimes, faUser, faKey, faEnvelope, faPhone, faPaperPlane, faUsers, faShieldAlt, faCamera, faSpinner, faEye, faEyeSlash, faSitemap, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPen, faTrash, faTimes, faUser, faKey, faEnvelope, faPhone, faPaperPlane, faUsers, faShieldAlt, faCamera, faSpinner, faEye, faEyeSlash, faSitemap, faCopy, faRedo } from "@fortawesome/free-solid-svg-icons";
 
 const InputRow = ({ icon, label, children, className = "", noBorder = false }) => (
 	<div className={`flex items-start gap-4 ${className}`}>
@@ -32,14 +32,14 @@ const SectionHeader = ({ title, subtitle }) => (
 );
 
 function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentUser, allUsers = [], saving, readonly = false }) {
-	const [form, setForm] = useState(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "", review_exempt: 0 });
+	const [form, setForm] = useState(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "", review_exempt: 0, repeat_purchase: 1 });
 	const [uploading, setUploading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
 	const isAdvertiser = currentUser && Number(currentUser.juese_id) === 6;
 
 	useEffect(() => {
-		setForm(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: currentUser?.id || "", api_token: "", review_exempt: 0 });
+		setForm(initial || { juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: currentUser?.id || "", api_token: "", review_exempt: 0, repeat_purchase: 1 });
 		setShowPassword(false);
 	}, [initial, currentUser]);
 
@@ -217,6 +217,21 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 								/>
 							</InputRow>
 						)}
+
+						<InputRow icon={faRedo} label={t("repeatPurchasePolicy")} noBorder={true}>
+							<Select
+								value={form.repeat_purchase}
+								onChange={(val) => setForm((s) => ({ ...s, repeat_purchase: Number(val) }))}
+								options={[
+									{ value: 1, label: t("allowRepeatPurchase") },
+									{ value: 0, label: t("forbidRepeatPurchase") },
+									{ value: 48, label: t("forbidRepeatPurchase48h") },
+								]}
+								placeholder={t("select")}
+								className="w-full"
+								isDisabled={readonly}
+							/>
+						</InputRow>
 
 						<InputRow icon={faUser} label={t("username")}>
 							<input value={form.username} onChange={(e) => setForm((v) => ({ ...v, username: e.target.value }))} placeholder={t("username")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly || isAdvertiser} disabled={readonly || isAdvertiser} />
@@ -505,7 +520,7 @@ export function UsersView() {
 		allUsers: s.users.allUsers,
 	}));
 
-	const [form, setForm] = useState({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "", review_exempt: 0 });
+	const [form, setForm] = useState({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", avatar: "", pid: "", group_list: null, api_token: "", review_exempt: 0, repeat_purchase: 1 });
 	const [modalOpen, setModalOpen] = useState(false);
 	const [assignGroupModalOpen, setAssignGroupModalOpen] = useState(false);
 	const [assignTarget, setAssignTarget] = useState(null);
@@ -538,7 +553,7 @@ export function UsersView() {
 
 	const onAdd = () => {
 		setEditing(null);
-		setForm({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", pid: currentUser?.id || "", avatar: "", group_list: null, api_token: "" });
+		setForm({ juese_id: 4, username: "", password: "", email: "", mobile: "", tgid: "", qunid: "", pid: currentUser?.id || "", avatar: "", group_list: null, api_token: "", review_exempt: 0, repeat_purchase: 1 });
 		setModalOpen(true);
 	};
 
@@ -558,6 +573,7 @@ export function UsersView() {
 			group_list: user.group_list || null,
 			api_token: user.api_token || "",
 			review_exempt: user.review_exempt || 0,
+			repeat_purchase: user.repeat_purchase !== undefined ? Number(user.repeat_purchase) : 1,
 			// pay_group_id handled in separate modal
 		});
 		setModalOpen(true);
