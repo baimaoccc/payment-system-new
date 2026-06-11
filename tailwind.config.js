@@ -3,6 +3,7 @@
  * English: Tailwind config; define content paths and theme extensions
  */
 export default {
+	darkMode: 'class',
 	content: ["./index.html", "./src/**/*.{js,jsx}"],
 	theme: {
 		extend: {

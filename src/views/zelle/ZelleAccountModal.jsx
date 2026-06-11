@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToast } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
-import { isSuperAdmin as checkIsSuperAdmin } from "../../components/layout/menuConfig.js";
+import { isSuperAdmin as checkIsSuperAdmin } from "../../components/layout/menuConfig.jsx";
 import {
   createStripeAccount,
   updateStripeAccount,
@@ -43,9 +43,9 @@ const InputRow = ({
       <FontAwesomeIcon icon={icon} className="text-lg" />
     </div>
     <div
-      className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}
+      className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 dark:border-gray-700/50 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}
     >
-      <label className="block text-xs font-medium text-gray-500 mb-0.5 uppercase tracking-wider">
+      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5 uppercase tracking-wider">
         {label}
       </label>
       {children}
@@ -115,11 +115,11 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled }) => {
 			</div>
 
 			{isOpen && !disabled && (
-				<div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-60 flex flex-col animate-in fade-in zoom-in-95 duration-100">
-					<div className="p-2 border-b border-gray-100 bg-gray-50/50">
+				<div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-lg shadow-xl z-50 max-h-60 flex flex-col animate-in fade-in zoom-in-95 duration-100">
+					<div className="p-2 border-b border-gray-100 dark:border-gray-700/50 bg-gray-50/50">
 						<div className="relative">
 							<FontAwesomeIcon icon={faSearch} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
-							<input type="text" value={search} onClick={(e) => e.stopPropagation()} onChange={(e) => setSearch(e.target.value)} placeholder="Search countries..." className="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-gray-200 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" autoFocus />
+							<input type="text" value={search} onClick={(e) => e.stopPropagation()} onChange={(e) => setSearch(e.target.value)} placeholder="Search countries..." className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" autoFocus />
 						</div>
 					</div>
 					<div className="overflow-y-auto flex-1 p-1">
@@ -129,9 +129,9 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled }) => {
 							filteredOptions.map((opt) => {
 								const isSelected = selectedValues.includes(opt.code);
 								return (
-									<div key={opt.code} onClick={() => handleSelect(opt.code)} className={`px-3 py-2 text-xs rounded-md cursor-pointer flex items-center justify-between transition-colors ${isSelected ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-700 hover:bg-gray-50"}`}>
+									<div key={opt.code} onClick={() => handleSelect(opt.code)} className={`px-3 py-2 text-xs rounded-md cursor-pointer flex items-center justify-between transition-colors ${isSelected ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900"}`}>
 										<div className="flex items-center gap-2">
-											<span className="w-6 font-mono text-gray-500">{opt.code}</span>
+											<span className="w-6 font-mono text-gray-500 dark:text-gray-400">{opt.code}</span>
 											<span>{opt.name}</span>
 										</div>
 										{isSelected && <FontAwesomeIcon icon={faCheck} className="text-blue-600" />}
@@ -148,8 +148,8 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled }) => {
 
 const SectionHeader = ({ title, subtitle }) => (
   <div className="mb-6 mt-2">
-    <h4 className="text-base font-bold text-gray-900">{title}</h4>
-    {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
+    <h4 className="text-base font-bold text-gray-900 dark:text-gray-100">{title}</h4>
+    {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</p>}
   </div>
 );
 
@@ -366,15 +366,15 @@ export function ZelleAccountModal({
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
-        <div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 bg-white z-10">
+      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
+        <div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800 z-10">
           <div>
-            <h3 className="text-xl font-bold text-gray-900">{modalTitle}</h3>
-            <p className="text-sm text-gray-500 mt-1">{modalDesc}</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{modalTitle}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{modalDesc}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50"
+            className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900"
           >
             <FontAwesomeIcon icon={faTimes} className="text-xl" />
           </button>
@@ -435,7 +435,7 @@ export function ZelleAccountModal({
                   name="comment"
                   value={formData.comment}
                   onChange={handleChange}
-                  className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1"
+                  className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1"
                   placeholder="example@email.com"
                   disabled={readOnly}
                 />
@@ -451,7 +451,7 @@ export function ZelleAccountModal({
                   name="bankAccountHolder"
                   value={formData.bankAccountHolder}
                   onChange={handleChange}
-                  className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1"
+                  className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1"
                   placeholder="John Doe"
                   disabled={readOnly}
                 />
@@ -463,19 +463,19 @@ export function ZelleAccountModal({
             <SectionHeader title={t("st_risk_title")} subtitle={t("st_risk_subtitle")} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
               <InputRow icon={faMoneyBillWave} label={t("st_max_money")}>
-                <input type="number" name="max_money" value={formData.max_money} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
+                <input type="number" name="max_money" value={formData.max_money} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
               </InputRow>
 
               <InputRow icon={faShoppingCart} label={t("st_max_order")}>
-                <input type="number" name="max_order" value={formData.max_order} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0" disabled={readOnly} />
+                <input type="number" name="max_order" value={formData.max_order} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" placeholder="0" disabled={readOnly} />
               </InputRow>
 
               <InputRow icon={faCreditCard} label={t("st_max_purchase")}>
-                <input type="number" name="maximum_purchase_amount" value={formData.maximum_purchase_amount} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
+                <input type="number" name="maximum_purchase_amount" value={formData.maximum_purchase_amount} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
               </InputRow>
 
               <InputRow icon={faCreditCard} label={t("st_min_purchase") || "Min Purchase"}>
-                <input type="number" name="minimum_purchase_amount" value={formData.minimum_purchase_amount} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
+                <input type="number" name="minimum_purchase_amount" value={formData.minimum_purchase_amount} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" placeholder="0.00" disabled={readOnly} />
               </InputRow>
 
               <InputRow icon={faGlobeAmericas} label={t("st_whitelist_group")} noBorder={true}>
@@ -489,17 +489,17 @@ export function ZelleAccountModal({
               )}
 
               <InputRow icon={faAlignLeft} label={t("st_desc")}>
-                <textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 resize-none" placeholder={t("additionalDetails")} disabled={readOnly} />
+                <textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1 resize-none" placeholder={t("additionalDetails")} disabled={readOnly} />
               </InputRow>
             </div>
           </div>
         </form>
 
-        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+        <div className="p-6 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm"
+            className="px-6 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:bg-gray-900 hover:text-gray-900 dark:text-gray-100 transition-all shadow-sm"
             disabled={loading}
           >
             {readOnly ? t("close") : t("cancel")}

@@ -35,20 +35,20 @@ export function EmailTaskListTable({ list, t, templates, onView, onEdit, onDelet
 				txt: t("taskStatus_failed"),
 				bg: "bg-action-red-30 text-action-red",
 			};
-		return { txt: status, bg: "bg-gray-100 text-gray-700" };
+		return { txt: status, bg: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" };
 	};
 
 	return (
 		<div className="overflow-x-auto">
 			<table className="min-w-full text-xs">
-				<thead className="bg-gray-100">
+				<thead className="bg-gray-100 dark:bg-gray-700">
 					<tr>
-						<th className="px-3 py-3 text-left font-medium text-gray-700 w-16">ID</th>
-						<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/5">{t("orderNo")}</th>
-						<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/5">{t("emailTemplate")}</th>
-						<th className="px-3 py-3 text-left font-medium text-gray-700 w-24">{t("status")}</th>
-						<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/6">{t("timeline")}</th>
-						{showActions && <th className="px-3 py-3 text-left font-medium text-gray-700 w-24">{t("actions")}</th>}
+						<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-16">ID</th>
+						<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/5">{t("orderNo")}</th>
+						<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/5">{t("emailTemplate")}</th>
+						<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-24">{t("status")}</th>
+						<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/6">{t("timeline")}</th>
+						{showActions && <th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-24">{t("actions")}</th>}
 					</tr>
 				</thead>
 				<tbody>
@@ -56,15 +56,15 @@ export function EmailTaskListTable({ list, t, templates, onView, onEdit, onDelet
 						list.map((item) => {
 							const { txt, bg } = renderStatus(item.status);
 							return (
-								<tr key={item.id} className="border-t hover:bg-gray-50">
-									<td className="p-3 align-top font-mono text-gray-500">#{item.id}</td>
+								<tr key={item.id} className="border-t hover:bg-gray-50 dark:bg-gray-900">
+									<td className="p-3 align-top font-mono text-gray-500 dark:text-gray-400">#{item.id}</td>
 									<td className="p-3 align-top">
-										<div className="text-gray-800 text-xs truncate max-w-xs" title={item.orderNo || item.order_no}>
+										<div className="text-gray-800 dark:text-gray-100 text-xs truncate max-w-xs" title={item.orderNo || item.order_no}>
 											{item.orderNo || item.order_no}
 										</div>
 									</td>
 									<td className="p-3 align-top">
-										<div className="text-gray-800 text-xs truncate max-w-xs" title={getTemplateName(item.template_id)}>
+										<div className="text-gray-800 dark:text-gray-100 text-xs truncate max-w-xs" title={getTemplateName(item.template_id)}>
 											{getTemplateName(item.template_id)}
 										</div>
 									</td>
@@ -72,10 +72,10 @@ export function EmailTaskListTable({ list, t, templates, onView, onEdit, onDelet
 										<div className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${bg}`}>{txt}</div>
 									</td>
 									<td className="p-3 align-top">
-										<div className="text-gray-500 text-[11px]">
+										<div className="text-gray-500 dark:text-gray-400 text-[11px]">
 											{t("crt")}: {formatDate(item.createtime)}
 										</div>
-										<div className="text-gray-500 text-[11px]">
+										<div className="text-gray-500 dark:text-gray-400 text-[11px]">
 											{t("upd")}: {formatDate(item.updatetime)}
 										</div>
 									</td>
@@ -83,7 +83,7 @@ export function EmailTaskListTable({ list, t, templates, onView, onEdit, onDelet
 										<td className="p-3 align-top">
 											<div className="flex items-center gap-3">
 												{onView && (
-													<button type="button" onClick={() => onView(item)} className="text-gray-600 hover:text-gray-800" title={t("view")}>
+													<button type="button" onClick={() => onView(item)} className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-100" title={t("view")}>
 														<FontAwesomeIcon icon={faEye} />
 													</button>
 												)}

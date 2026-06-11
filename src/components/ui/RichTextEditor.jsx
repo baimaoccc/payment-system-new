@@ -80,9 +80,9 @@ export function RichTextEditor({ value, onChange, placeholder, readOnly, height 
 		<div className="rich-text-editor relative">
 			{isUploading && (
 				<div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[1px] rounded-lg transition-all duration-300">
-					<div className="flex flex-col items-center justify-center p-6 bg-white shadow-2xl rounded-2xl border border-gray-100 transform scale-100 animate-scale-in">
+					<div className="flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-800 shadow-2xl rounded-2xl border border-gray-100 dark:border-gray-700/50 transform scale-100 animate-scale-in">
 						<FontAwesomeIcon icon={faSpinner} spin className="text-4xl text-indigo-600 mb-3" />
-						<span className="text-sm text-gray-600 font-semibold tracking-wide">Uploading...</span>
+						<span className="text-sm text-gray-600 dark:text-gray-400 font-semibold tracking-wide">Uploading...</span>
 					</div>
 				</div>
 			)}

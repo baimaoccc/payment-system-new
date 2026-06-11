@@ -3,12 +3,15 @@ import { useI18n } from "../../plugins/i18n/index.jsx";
 import { NavLink } from "react-router-dom";
 import Select from "react-select";
 import { db } from "../../utils/indexedDB.js";
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTelegram } from "@fortawesome/free-brands-svg-icons";
 import { faGlobe, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 export function Footer() {
 	const { t, lang, setLanguage } = useI18n();
+	const theme = useSelector((s) => s.ui?.theme || "light");
+	const isDark = theme === "dark";
 	const telegram = "@ACeo_Pay";
 	const telegramLink = "https://t.me/ACeo_Pay";
 	const icp = "ICP备 2026-000001";
@@ -24,10 +27,10 @@ export function Footer() {
 	};
 
 	return (
-		<footer className="bg-white w-full border-t px-4 py-6 lg:px-6 lg:py-4 text-sm">
+		<footer className="bg-white dark:bg-gray-800 w-full border-t dark:border-gray-700/50 px-4 py-6 lg:px-6 lg:py-4 text-sm transition-colors duration-200">
 			<div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4">
-				<div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-4 gap-y-2 text-gray-600">
-					<span className="text-gray-500 font-medium tracking-wide text-xs sm:text-sm">Copyright © 2026 {t("appTitle")}. All Rights Reserved.</span>
+				<div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-4 gap-y-2 text-gray-600 dark:text-gray-300">
+					<span className="text-gray-500 dark:text-gray-400 font-medium tracking-wide text-xs sm:text-sm">Copyright © 2026 {t("appTitle")}. All Rights Reserved.</span>
 					{/* <NavLink to="#" className="hover:text-brand">
 						{t("privacyPolicy")}
 					</NavLink>
@@ -66,14 +69,14 @@ export function Footer() {
 										minHeight: "32px",
 										paddingLeft: "24px",
 										borderRadius: "9999px",
-										backgroundColor: state.isFocused ? "white" : "#F9FAFB",
-										borderColor: state.isFocused ? "#3B82F6" : "#E5E7EB",
+										backgroundColor: isDark ? (state.isFocused ? "#374151" : "#1F2937") : (state.isFocused ? "white" : "#F9FAFB"),
+										borderColor: isDark ? (state.isFocused ? "#3B82F6" : "rgba(55, 65, 81, 0.5)") : (state.isFocused ? "#3B82F6" : "#E5E7EB"),
 										boxShadow: state.isFocused ? "0 0 0 2px rgba(59, 130, 246, 0.1)" : "none",
 										cursor: "pointer",
 										fontSize: "13px",
 										"&:hover": {
-											borderColor: "#D1D5DB",
-											backgroundColor: "white",
+											borderColor: isDark ? "#6B7280" : "#D1D5DB",
+											backgroundColor: isDark ? "#374151" : "white",
 										},
 									}),
 									menu: (base) => ({
@@ -83,25 +86,26 @@ export function Footer() {
 										borderRadius: "12px",
 										overflow: "hidden",
 										boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-										border: "1px solid #F3F4F6",
+										border: isDark ? "1px solid #374151" : "1px solid #F3F4F6",
+										backgroundColor: isDark ? "#1F2937" : "white",
 									}),
 									option: (base, state) => ({
 										...base,
 										fontSize: "13px",
 										padding: "8px 12px",
-										backgroundColor: state.isSelected ? "#EFF6FF" : state.isFocused ? "#F9FAFB" : "white",
-										color: state.isSelected ? "#2563eb" : "#374151",
+										backgroundColor: state.isSelected ? (isDark ? "#1E3A8A" : "#EFF6FF") : state.isFocused ? (isDark ? "#374151" : "#F9FAFB") : (isDark ? "#1F2937" : "white"),
+										color: state.isSelected ? (isDark ? "#93C5FD" : "#2563eb") : (isDark ? "#D1D5DB" : "#374151"),
 										cursor: "pointer",
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "space-between",
 										":active": {
-											backgroundColor: "#EFF6FF",
+											backgroundColor: isDark ? "#1E3A8A" : "#EFF6FF",
 										},
 									}),
 									singleValue: (base) => ({
 										...base,
-										color: "#4B5563",
+										color: isDark ? "#D1D5DB" : "#4B5563",
 										fontWeight: 500,
 									}),
 									dropdownIndicator: (base) => ({

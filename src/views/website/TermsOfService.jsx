@@ -12,7 +12,7 @@ export function TermsOfService() {
 	return (
 		<div className="pt-32 pb-20 bg-slate-50 min-h-screen">
 			<div className="container mx-auto px-4 max-w-4xl">
-				<div className="bg-white rounded-2xl shadow-sm p-8 md:p-12 border border-slate-100">
+				<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 border border-slate-100">
 					<h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{t("legal.termsOfService.title")}</h1>
 					<p className="text-slate-500 mb-12 pb-8 border-b border-slate-100">{t("legal.termsOfService.lastUpdated")}</p>
 

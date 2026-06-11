@@ -79,15 +79,15 @@ export function LoginView() {
 	};
 
 	return (
-		<div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+		<div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900 transition-colors duration-200">
 			{/* 左侧插画区 */}
-			<div className="hidden md:flex items-center justify-center bg-brand-12 p-8">
+			<div className="hidden md:flex items-center justify-center bg-brand-12 dark:bg-gray-800 p-8">
 				<div className="w-full max-w-lg">
 					<div className="mb-6 flex items-center gap-2">
 						<Logo size={60} />
 						<img src={brandTextImg} alt="" className="h-[40px] object-contain" />
 					</div>
-					{/* <div className="aspect-video rounded-2xl bg-white shadow flex items-center justify-center">
+					{/* <div className="aspect-video rounded-2xl bg-white dark:bg-gray-800 shadow flex items-center justify-center">
 						<div className="text-gray-400">{t("illustrationPlaceholder")}</div>
 					</div> */}
 					<img src={onboardingLogo} alt="onboarding" className="w-full h-full object-cover rounded-2xl" />
@@ -95,7 +95,7 @@ export function LoginView() {
 			</div>
 
 			{/* 右侧表单区 */}
-			<div className={`flex items-center justify-center p-6 ${isMobile ? 'bg-brand-12 flex-col' : 'bg-white flex-row'}`}>
+			<div className={`flex items-center justify-center p-6 ${isMobile ? 'bg-brand-12 dark:bg-gray-800 flex-col' : 'bg-white dark:bg-gray-900 flex-row'}`}>
 				{isMobile && <img src={onboardingLogo} alt="onboarding" className="w-[300px] h-auto object-cover rounded-2xl" />}
 				<div className="w-full max-w-md">
 					<div className="flex justify-end mb-4">
@@ -110,8 +110,8 @@ export function LoginView() {
 						/>
 					</div>
 					<div className="mb-6">
-						<h1 className="text-2xl font-semibold text-gray-800">{t("welcomeTitle")}</h1>
-						<div className="text-sm text-gray-500">
+						<h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">{t("welcomeTitle")}</h1>
+						<div className="text-sm text-gray-500 dark:text-gray-400">
 							{t("welcomeSub")}
 							{/* <button type="button" className="ml-2 text-brand hover:text-brand-dark">
 								{t("createAccount")}
@@ -120,24 +120,24 @@ export function LoginView() {
 					</div>
 					<form onSubmit={onSubmit} className="space-y-4">
 						<label className="block">
-							<span className="text-sm text-gray-600">{t("username")} *</span>
-							<input value={username} onChange={(e) => setUsername(e.target.value)} className="mt-1 w-full border rounded px-3 py-2" placeholder={t("username")} />
+							<span className="text-sm text-gray-600 dark:text-gray-400">{t("username")} *</span>
+							<input value={username} onChange={(e) => setUsername(e.target.value)} className="mt-1 w-full border border-gray-300 dark:border-gray-700/50 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand" placeholder={t("username")} />
 						</label>
 						<label className="block">
-							<span className="text-sm text-gray-600">{t("password")} *</span>
+							<span className="text-sm text-gray-600 dark:text-gray-400">{t("password")} *</span>
 							<div className="relative mt-1">
-								<input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border rounded px-3 py-2 pr-10" />
-								<button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-gray-600">
+								<input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-300 dark:border-gray-700/50 rounded px-3 py-2 pr-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand" />
+								<button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
 									<FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
 								</button>
 							</div>
 						</label>
 						{showCaptcha && (
 							<label className="block">
-								<span className="text-sm text-gray-600">{t("captcha")} *</span>
+								<span className="text-sm text-gray-600 dark:text-gray-400">{t("captcha")} *</span>
 								<div className="mt-1 flex gap-2">
-									<input value={code} onChange={(e) => setCode(e.target.value)} className="flex-1 border rounded px-3 py-2" />
-									<button type="button" onClick={onGetCode} disabled={captchaLoading} className={`px-3 py-2 rounded border bg-secondary-12 text-sm flex items-center gap-2 ${captchaLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
+									<input value={code} onChange={(e) => setCode(e.target.value)} className="flex-1 border border-gray-300 dark:border-gray-700/50 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand" />
+									<button type="button" onClick={onGetCode} disabled={captchaLoading} className={`px-3 py-2 rounded border border-gray-300 dark:border-gray-700/50 bg-secondary-12 dark:bg-gray-700 text-sm flex items-center gap-2 dark:text-gray-200 ${captchaLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
 										{captchaLoading && <FontAwesomeIcon icon={faSpinner} spin />}
 										{t("getCaptcha")}
 									</button>
@@ -164,7 +164,7 @@ export function LoginView() {
 							)}
 						</button>
 					</form>
-					{/* <div className="text-center text-sm text-gray-500 my-4">{t("orSignIn")}</div>
+					{/* <div className="text-center text-sm text-gray-500 dark:text-gray-400 my-4">{t("orSignIn")}</div>
 					<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 						<button className="border rounded py-2">{t("socialButton")}</button>
 						<button className="border rounded py-2">{t("facebook")}</button>

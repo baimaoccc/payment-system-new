@@ -27,8 +27,8 @@ const DropdownIndicator = (props) => (
 
 const InputField = ({ label, value, onChange, placeholder, type = "text" }) => (
 	<div className="flex flex-col gap-1">
-		<label className="text-[11px] font-medium text-gray-500">{label}</label>
-		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors" />
+		<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{label}</label>
+		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 dark:border-gray-700/50 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-900 transition-colors" />
 	</div>
 );
 
@@ -370,9 +370,9 @@ export function AirwallexAccountsView() {
 	const renderKeys = (item) => (
 		<div className="flex flex-col gap-1.5">
 			{item.api_publishable_key && (
-				<div className="group flex items-center gap-1 text-[10px] text-gray-500">
+				<div className="group flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400">
 					<span className="font-medium w-6 flex-shrink-0">PK:</span>
-					<span className="font-mono bg-gray-50 px-1 rounded truncate flex-1" title={item.api_publishable_key}>
+					<span className="font-mono bg-gray-50 dark:bg-gray-900 px-1 rounded truncate flex-1" title={item.api_publishable_key}>
 						{item.api_publishable_key.substring(0, 8)}...{item.api_publishable_key.slice(-4)}
 					</span>
 					<button
@@ -386,9 +386,9 @@ export function AirwallexAccountsView() {
 				</div>
 			)}
 			{item.endpoint_secret && (
-				<div className="group flex items-center gap-1 text-[10px] text-gray-500">
+				<div className="group flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400">
 					<span className="font-medium w-6 flex-shrink-0">SK:</span>
-					<span className="font-mono bg-gray-50 px-1 rounded truncate flex-1" title={item.endpoint_secret}>
+					<span className="font-mono bg-gray-50 dark:bg-gray-900 px-1 rounded truncate flex-1" title={item.endpoint_secret}>
 						{item.endpoint_secret.substring(0, 8)}...{item.endpoint_secret.slice(-4)}
 					</span>
 					<button
@@ -402,9 +402,9 @@ export function AirwallexAccountsView() {
 				</div>
 			)}
 			{item.api_key && (
-				<div className="group flex items-center gap-1 text-[10px] text-gray-500">
+				<div className="group flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400">
 					<span className="font-medium w-6 flex-shrink-0">WH:</span>
-					<span className="font-mono bg-gray-50 px-1 rounded truncate flex-1" title={item.api_key}>
+					<span className="font-mono bg-gray-50 dark:bg-gray-900 px-1 rounded truncate flex-1" title={item.api_key}>
 						{item.api_key.substring(0, 8)}...{item.api_key.slice(-4)}
 					</span>
 					<button
@@ -422,9 +422,9 @@ export function AirwallexAccountsView() {
 
 	return (
 		<div className="p-6">
-			<div className="bg-white rounded-2xl shadow p-4">
+			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
 				<div className="relative flex flex-col gap-4 mb-4" ref={containerRef}>
-					<h3 className="text-sm font-semibold text-gray-900 flex-shrink-0">{t("airwallexAccounts") || "Airwallex Accounts"}</h3>
+					<h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{t("airwallexAccounts") || "Airwallex Accounts"}</h3>
 					<div className="flex items-center justify-between">
 						<div className="flex flex-wrap items-center justify-end gap-2">
 							{activeFiltersList.map((filter) => (
@@ -440,7 +440,7 @@ export function AirwallexAccountsView() {
 							))}
 
 							<div className="flex items-center gap-x-2 flex-wrap">
-								<button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border ${isFiltersExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
+								<button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border ${isFiltersExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700/50 hover:bg-gray-50 dark:bg-gray-900"}`}>
 									<FontAwesomeIcon icon={faFilter} />
 									{t("filter")}
 									<FontAwesomeIcon icon={isFiltersExpanded ? faChevronUp : faChevronDown} className="ml-1" />
@@ -454,25 +454,24 @@ export function AirwallexAccountsView() {
 					</div>
 
 					{isFiltersExpanded && (
-						<div className="absolute top-full left-0 right-0 z-50 p-4 bg-white shadow-xl border border-gray-100 rounded-xl mt-1">
+						<div className="absolute top-full left-0 right-0 z-50 p-4 bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700/50 rounded-xl mt-1">
 							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 								<InputField label={t("paymentAccount") || "Payment Account"} value={filters.comment} onChange={(e) => setFilters({ ...filters, comment: e.target.value })} placeholder={t("enterPaymentAccount") || "Enter Payment Account..."} />
 								<div className="flex flex-col gap-1">
-									<label className="text-[11px] font-medium text-gray-500">{t("username") || "Username"}</label>
-									<Select className="hs-custom-select" options={userOptions} value={userOptions.find((o) => o.value === filters.userId) || null} onChange={(opt) => setFilters({ ...filters, userId: opt?.value || "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectUser") || "Select User"} isClearable />
+									<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("username") || "Username"}</label>
+									<Select menuPortalTarget={document.body} className="hs-custom-select" options={userOptions} value={userOptions.find((o) => o.value === filters.userId) || null} onChange={(opt) => setFilters({ ...filters, userId: opt?.value || "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectUser") || "Select User"} isClearable />
 								</div>
 								<div className="flex flex-col gap-1">
-									<label className="text-[11px] font-medium text-gray-500">{t("paymentType") || "Payment Type"}</label>
-									<Select className="hs-custom-select" options={paymentTypeOptions} value={paymentTypeOptions.find((o) => o.value === filters.paymentType) || null} onChange={(opt) => setFilters({ ...filters, paymentType: opt !== null ? opt.value : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectPaymentType") || "Select..."} isClearable />
+									<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("paymentType") || "Payment Type"}</label>
+									<Select menuPortalTarget={document.body} className="hs-custom-select" options={paymentTypeOptions} value={paymentTypeOptions.find((o) => o.value === filters.paymentType) || null} onChange={(opt) => setFilters({ ...filters, paymentType: opt !== null ? opt.value : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectPaymentType") || "Select..."} isClearable />
 								</div>
 								<div className="flex flex-col gap-1">
-									<label className="text-[11px] font-medium text-gray-500">{t("st_status") || "Status"}</label>
-									<Select className="hs-custom-select" options={statusOptions} value={statusOptions.find((o) => o.value === filters.status) || null} onChange={(opt) => setFilters({ ...filters, status: opt !== null ? opt.value : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectStatus") || "Select..."} isClearable />
+									<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("st_status") || "Status"}</label>
+									<Select menuPortalTarget={document.body} className="hs-custom-select" options={statusOptions} value={statusOptions.find((o) => o.value === filters.status) || null} onChange={(opt) => setFilters({ ...filters, status: opt !== null ? opt.value : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectStatus") || "Select..."} isClearable />
 								</div>
 								<div className="flex flex-col gap-1 lg:col-span-2">
-									<label className="text-[11px] font-medium text-gray-500">{t("selectPaymentChannel") || "Payment Channel"}</label>
-									<Select
-										className="hs-custom-select"
+									<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("selectPaymentChannel") || "Payment Channel"}</label>
+									<Select menuPortalTarget={document.body} className="hs-custom-select"
 										isMulti
 										options={[
 											{ value: "[klarna]", label: "KLARNA" },
@@ -488,8 +487,8 @@ export function AirwallexAccountsView() {
 									/>
 								</div>
 							</div>
-							<div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-50">
-								<button onClick={handleResetFilters} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+							<div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-50 dark:border-gray-700/50">
+								<button onClick={handleResetFilters} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 hover:bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
 									{t("reset")}
 								</button>
 								<button onClick={handleSearch} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
@@ -502,7 +501,7 @@ export function AirwallexAccountsView() {
 				</div>
 
 				{loading ? (
-					<div className="p-8 text-center text-gray-500">{t("loading")}</div>
+					<div className="p-8 text-center text-gray-500 dark:text-gray-400">{t("loading")}</div>
 				) : (
 					<div className="mt-3">
 						{isMobile ? (
@@ -513,16 +512,16 @@ export function AirwallexAccountsView() {
 									const isExpanded = expandedMobileRow === item.id;
 
 									return (
-										<div key={item.id} className={`bg-white rounded-lg shadow-sm border transition-all box-border ${isExpanded ? "border-blue-500" : "border-gray-100"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : item.id)}>
+										<div key={item.id} className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border transition-all box-border ${isExpanded ? "border-blue-500" : "border-gray-100 dark:border-gray-700/50"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : item.id)}>
 											<div className="p-3 flex items-center justify-between gap-3">
 												<div className="flex-1 min-w-0">
 													<div className="flex items-center gap-2 mb-1">
-														<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-mono">ID: {item.id}</span>
+														<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-[10px] font-mono">ID: {item.id}</span>
 														<span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${item.type === 2 ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`} title={t("st_type")}>
 															{item.type === 2 ? t("airwallexTypeNormal") : (item.type === 0 ? t("stTypePhishing") : t("stTypeNormal"))}
 														</span>
 													</div>
-													<div className="font-medium text-gray-900 truncate text-sm" title={item.comment}>
+													<div className="font-medium text-gray-900 dark:text-gray-100 truncate text-sm" title={item.comment}>
 														{item.comment || "-"}
 													</div>
 													<div className="flex flex-col gap-1 mt-1">
@@ -531,15 +530,15 @@ export function AirwallexAccountsView() {
 																const statusInfo = getStripeAccountStatusInfo(item.status, t);
 																const colorClass =
 																	{
-																		gray: "bg-gray-100 text-gray-800",
+																		gray: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100",
 																		green: "bg-green-100 text-green-800",
 																		blue: "bg-blue-100 text-blue-800",
 																		red: "bg-red-100 text-red-800",
-																	}[statusInfo.color] || "bg-gray-100 text-gray-800";
+																	}[statusInfo.color] || "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100";
 																return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
 															})()}
 															<div className="flex items-center gap-1 text-[10px]">
-																<span className="text-gray-500">{t("st_money_sum")}:</span>
+																<span className="text-gray-500 dark:text-gray-400">{t("st_money_sum")}:</span>
 																<span className="font-medium text-blue-600">${item.money_sum || 0}</span>
 															</div>
 														</div>
@@ -560,7 +559,7 @@ export function AirwallexAccountsView() {
 
 											<div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
 												<div className="overflow-hidden">
-													<div className="px-3 pb-3 pt-0 text-xs text-gray-600 space-y-2 border-t border-gray-50 mt-1">
+													<div className="px-3 pb-3 pt-0 text-xs text-gray-600 dark:text-gray-400 space-y-2 border-t border-gray-50 dark:border-gray-700/50 mt-1">
 														<div className="pt-2">
 															<span className="text-gray-400 block mb-0.5">{t("st_site")}</span>
 															{item.c_site_url ? (
@@ -598,7 +597,7 @@ export function AirwallexAccountsView() {
 															</div>
 														</div>
 
-														<div className="grid grid-cols-2 gap-3 bg-gray-50 p-2 rounded">
+														<div className="grid grid-cols-2 gap-3 bg-gray-50 dark:bg-gray-900 p-2 rounded">
 															<div>
 																<span className="text-gray-400 block mb-0.5">{t("st_limits")}</span>
 																<div className="flex flex-col gap-0.5 text-[10px]">
@@ -639,7 +638,7 @@ export function AirwallexAccountsView() {
 															</div>
 														</div>
 
-														<div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+														<div className="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-gray-700/50">
 															<button
 																onClick={(e) => {
 																	e.stopPropagation();
@@ -670,22 +669,22 @@ export function AirwallexAccountsView() {
 							</div>
 						) : (
 							<table className="w-full text-xs table-fixed">
-								<thead className="bg-gray-100">
+								<thead className="bg-gray-100 dark:bg-gray-700">
 									<tr>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>
 											{t("st_group")} / {t("st_comment")}
 										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>{t("st_site")}</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[6%]"}`}>{t("st_status")}</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[8%]"}`}>{t("remark") || "Remark"}</th>
-										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[8%]">{t("st_whitelist")}</th>}
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[20%]" : "w-[10%]"}`}>{t("st_limits")}</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[11%]"}`}>{t("st_stats")}</th>
-										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[10%]">{t("st_statistics")}</th>}
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[10%]"}`}>{t("actions")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[12%]"}`}>{t("st_site")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[10%]" : "w-[6%]"}`}>{t("st_status")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[8%]"}`}>{t("remark") || "Remark"}</th>
+										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-[8%]">{t("st_whitelist")}</th>}
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[20%]" : "w-[10%]"}`}>{t("st_limits")}</th>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[11%]"}`}>{t("st_stats")}</th>
+										{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-[10%]">{t("st_statistics")}</th>}
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[10%]" : "w-[10%]"}`}>{t("actions")}</th>
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-gray-100">
+								<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50">
 									{list.length === 0 ? (
 										<tr>
 											<td colSpan={isTablet ? 7 : 10} className="px-4 py-8 text-center text-gray-400">
@@ -698,11 +697,11 @@ export function AirwallexAccountsView() {
 											const updateDate = item.updatetime ? new Date(item.updatetime * 1000).toLocaleString() : "-";
 
 											return (
-												<tr key={item.id} className="hover:bg-gray-50 transition-colors align-top border-t">
+												<tr key={item.id} className="hover:bg-gray-50 dark:bg-gray-900 transition-colors align-top border-t">
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5">
 															<div className="flex items-center gap-2 flex-wrap">
-																<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-mono">
+																<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-[10px] font-mono">
 																	{t("owner") || "Owner"}: <span className="text-[12px] text-peach font-bold italic">{item.username}</span>{" "}
 																</span>
 																{item.level !== undefined && (
@@ -714,7 +713,7 @@ export function AirwallexAccountsView() {
 																	{item.type === 2 ? t("airwallexTypeNormal") : (item.type === 0 ? t("stTypePhishing") : t("stTypeNormal"))}
 																</span>
 															</div>
-															<div className="font-medium text-gray-900 truncate" title={item.comment}>
+															<div className="font-medium text-gray-900 dark:text-gray-100 truncate" title={item.comment}>
 																{item.comment || "-"}
 															</div>
 														</div>
@@ -741,11 +740,11 @@ export function AirwallexAccountsView() {
 																	const statusInfo = getStripeAccountStatusInfo(item.status, t);
 																	const colorClass =
 																		{
-																			gray: "bg-gray-100 text-gray-800",
+																			gray: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100",
 																			green: "bg-green-100 text-green-800",
 																			blue: "bg-blue-100 text-blue-800",
 																			red: "bg-red-100 text-red-800",
-																		}[statusInfo.color] || "bg-gray-100 text-gray-800";
+																		}[statusInfo.color] || "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100";
 																	return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
 																})()}
 															</div>
@@ -760,9 +759,9 @@ export function AirwallexAccountsView() {
 															handleRemarkEdit(item);
 														}}>
 														{editingRemarkId === item.id ? (
-															<input type="text" value={editingRemarkValue} onChange={(e) => setEditingRemarkValue(e.target.value)} onBlur={() => handleRemarkSave(item)} onKeyDown={(e) => handleRemarkKeyDown(e, item)} className="w-full px-2 py-1 text-xs border border-blue-500 rounded focus:outline-none bg-white text-gray-900" autoFocus onClick={(e) => e.stopPropagation()} />
+															<input type="text" value={editingRemarkValue} onChange={(e) => setEditingRemarkValue(e.target.value)} onBlur={() => handleRemarkSave(item)} onKeyDown={(e) => handleRemarkKeyDown(e, item)} className="w-full px-2 py-1 text-xs border border-blue-500 rounded focus:outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" autoFocus onClick={(e) => e.stopPropagation()} />
 														) : (
-															<div className="text-gray-600 text-xs break-all cursor-pointer hover:bg-gray-50 p-1 rounded min-h-[20px] transition-colors" title={t("clickToEdit") || "Click to edit"}>
+															<div className="text-gray-600 dark:text-gray-400 text-xs break-all cursor-pointer hover:bg-gray-50 dark:bg-gray-900 p-1 rounded min-h-[20px] transition-colors" title={t("clickToEdit") || "Click to edit"}>
 																{item.description || "-"}
 															</div>
 														)}
@@ -790,23 +789,23 @@ export function AirwallexAccountsView() {
 													<td className="p-3 overflow-hidden">
 														<div className="pr-2 flex flex-col gap-1.5 text-[10px]">
 															<div className="flex justify-between items-center gap-2">
-																<span className="text-gray-500 truncate">{t("st_max_money")}:</span>
-																<span className="font-medium text-gray-900 truncate">${item.max_money || 0}</span>
+																<span className="text-gray-500 dark:text-gray-400 truncate">{t("st_max_money")}:</span>
+																<span className="font-medium text-gray-900 dark:text-gray-100 truncate">${item.max_money || 0}</span>
 															</div>
 															<div className="flex justify-between items-center gap-2">
-																<span className="text-gray-500 truncate">{t("st_max_order")}:</span>
-																<span className="font-medium text-gray-900 truncate">{item.max_order || 0}</span>
+																<span className="text-gray-500 dark:text-gray-400 truncate">{t("st_max_order")}:</span>
+																<span className="font-medium text-gray-900 dark:text-gray-100 truncate">{item.max_order || 0}</span>
 															</div>
 															{item.maximum_purchase_amount && (
 																<div className="flex justify-between items-center gap-2">
-																	<span className="text-gray-500 truncate">{t("st_max_purchase")}:</span>
-																	<span className="font-medium text-gray-900 truncate">${item.maximum_purchase_amount || 0}</span>
+																	<span className="text-gray-500 dark:text-gray-400 truncate">{t("st_max_purchase")}:</span>
+																	<span className="font-medium text-gray-900 dark:text-gray-100 truncate">${item.maximum_purchase_amount || 0}</span>
 																</div>
 															)}
 															{item.minimum_purchase_amount && (
 																<div className="flex justify-between items-center gap-2">
-																	<span className="text-gray-500 truncate">{t("st_min_purchase")}:</span>
-																	<span className="font-medium text-gray-900 truncate">${item.minimum_purchase_amount || 0}</span>
+																	<span className="text-gray-500 dark:text-gray-400 truncate">{t("st_min_purchase")}:</span>
+																	<span className="font-medium text-gray-900 dark:text-gray-100 truncate">${item.minimum_purchase_amount || 0}</span>
 																</div>
 															)}
 														</div>
@@ -815,11 +814,11 @@ export function AirwallexAccountsView() {
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5 text-[10px]">
 															<div className="flex justify-between items-center gap-2">
-																<span className="text-gray-500 truncate">{t("st_today_order_amount_sum")}:</span>
+																<span className="text-gray-500 dark:text-gray-400 truncate">{t("st_today_order_amount_sum")}:</span>
 																<span className="font-medium text-red-600 truncate">${item.today_order_amount || 0}</span>
 															</div>
 															<div className="flex justify-between items-center gap-2">
-																<span className="text-gray-500 truncate">{t("st_money_sum")}:</span>
+																<span className="text-gray-500 dark:text-gray-400 truncate">{t("st_money_sum")}:</span>
 																<span className="font-medium text-blue-600 truncate">${item.money_sum || 0}</span>
 															</div>
 														</div>
@@ -827,9 +826,9 @@ export function AirwallexAccountsView() {
 
 													{!isTablet && (
 														<td className="p-4 overflow-hidden">
-															<div className="flex flex-col gap-1.5 text-[10px] text-gray-500">
+															<div className="flex flex-col gap-1.5 text-[10px] text-gray-500 dark:text-gray-400">
 																<div className="flex items-center gap-2 flex-wrap">
-																	<div className="text-[9px] text-gray-500">{t("st_today_success_rate")}:</div>
+																	<div className="text-[9px] text-gray-500 dark:text-gray-400">{t("st_today_success_rate")}:</div>
 																	<div className="truncate">
 																		{(() => {
 																			if (item.today_order_count_1 == null && item.today_order_count_6 == null) return "-";
@@ -842,11 +841,11 @@ export function AirwallexAccountsView() {
 																	</div>
 																</div>
 																<div className="flex items-center gap-2 flex-wrap">
-																	<div className="text-[9px] text-gray-500">{t("st_today_payment_rate")}:</div>
+																	<div className="text-[9px] text-gray-500 dark:text-gray-400">{t("st_today_payment_rate")}:</div>
 																	<div className="truncate">{Number(item.today_order_count) > 0 ? (((Number(item.today_order_count_1) || 0) / Number(item.today_order_count)) * 100).toFixed(2) + "%" : "0%"}</div>
 																</div>
 																<div className="flex items-center gap-2 flex-wrap">
-																	<div className="text-[9px] text-gray-500">{t("st_total_payment_rate")}:</div>
+																	<div className="text-[9px] text-gray-500 dark:text-gray-400">{t("st_total_payment_rate")}:</div>
 																	<div className="truncate">{Number(item.order_count) > 0 ? (((Number(item.order_count_1) || 0) / Number(item.order_count)) * 100).toFixed(2) + "%" : "0%"}</div>
 																</div>
 															</div>
@@ -862,7 +861,7 @@ export function AirwallexAccountsView() {
 																<button onClick={() => handleDelete(item)} className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors" title={t("delete")}>
 																	<FontAwesomeIcon icon={faTrash} />
 																</button>
-																<button onClick={() => handleView(item)} className="p-1 text-gray-600 hover:bg-gray-50 rounded transition-colors" title={t("view")}>
+																<button onClick={() => handleView(item)} className="p-1 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-900 rounded transition-colors" title={t("view")}>
 																	<FontAwesomeIcon icon={faEye} />
 																</button>
 

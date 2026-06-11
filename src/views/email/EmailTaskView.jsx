@@ -11,7 +11,7 @@ import { EmailTaskListTable } from "../../components/email/EmailTaskListTable.js
 
 const InputRow = ({ label, children, className = "" }) => (
 	<div className={`mb-4 ${className}`}>
-		<label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
+		<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">{label}</label>
 		{children}
 	</div>
 );
@@ -55,10 +55,10 @@ function EmailTaskFormModal({ open, initial, onClose, onSave, t, readOnly, templ
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-			<div className="bg-white rounded-xl overflow-hidden shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-				<div className="flex items-center justify-between p-6 border-b border-gray-100">
-					<h3 className="text-xl font-bold text-gray-800">{readOnly ? t("viewEmailTask") : initial ? t("editEmailTask") : t("addEmailTask")}</h3>
-					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+			<div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+				<div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700/50">
+					<h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{readOnly ? t("viewEmailTask") : initial ? t("editEmailTask") : t("addEmailTask")}</h3>
+					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-gray-100 dark:bg-gray-700 hover:text-gray-600 dark:text-gray-400">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
@@ -66,20 +66,20 @@ function EmailTaskFormModal({ open, initial, onClose, onSave, t, readOnly, templ
 				<form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6">
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						<InputRow label={t("emailTemplate")}>
-							<Select value={String(form.template_id || "")} onChange={(val) => setForm({ ...form, template_id: val })} options={templates.map((tpl) => ({ value: String(tpl.id), label: tpl.name || tpl.title || `#${tpl.id}` }))} placeholder={t("selectEmailTemplate")} isDisabled={readOnly} />
+							<Select value={String(form.template_id || "")} onChange={(val) => setForm({ ...form, template_id: val })} options={templates.map((tpl) => ({ value: String(tpl.id), label: tpl.name || tpl.title || `#${tpl.id}` }))} placeholder={t("selectEmailTemplate")} isDisabled={readOnly} menuPortalTarget={document.body} />
 						</InputRow>
 						<InputRow label={t("orderNo")}>
-							<input type="text" className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-sm" value={form.orderNo} onChange={(e) => setForm({ ...form, orderNo: e.target.value })} disabled={readOnly} />
+							<input type="text" className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-sm" value={form.orderNo} onChange={(e) => setForm({ ...form, orderNo: e.target.value })} disabled={readOnly} />
 						</InputRow>
 					</div>
 
 					<InputRow label={t("status")}>
-						<Select value={form.status} onChange={(val) => setForm({ ...form, status: val })} options={statusOptions} isDisabled={readOnly} />
+						<Select value={form.status} onChange={(val) => setForm({ ...form, status: val })} options={statusOptions} isDisabled={readOnly} menuPortalTarget={document.body} />
 					</InputRow>
 				</form>
 
-				<div className="flex justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50">
-					<button type="button" onClick={onClose} className="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100">
+				<div className="flex justify-end gap-3 p-4 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900">
+					<button type="button" onClick={onClose} className="px-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-700">
 						{t("cancel")}
 					</button>
 					{!readOnly && (
@@ -115,25 +115,25 @@ const MobileEmailTaskCard = ({ item, onView, onEdit, onDelete, t, templates, for
 		if (value === "3")
 			return {
 				txt: t("taskStatus_cancelled"),
-				bg: "bg-gray-100 text-gray-600 border-gray-200",
+				bg: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700/50",
 			};
 		if (value === "4" || value === "失败")
 			return {
 				txt: t("taskStatus_failed"),
 				bg: "bg-red-50 text-red-700 border-red-100",
 			};
-		return { txt: status, bg: "bg-gray-50 text-gray-600 border-gray-100" };
+		return { txt: status, bg: "bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-100 dark:border-gray-700/50" };
 	};
 
 	const { txt, bg } = renderStatus(item.status);
 
 	return (
-		<div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+		<div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700/50">
 			<div className="flex justify-between items-start mb-3">
 				<div className="flex-1 min-w-0 mr-3">
 					<div className="flex items-center gap-2 mb-1">
-						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
-						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.orderNo || item.order_no}</h3>
+						<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-1 break-all">{item.orderNo || item.order_no}</h3>
 					</div>
 					<div className="flex flex-wrap gap-2 mt-2">
 						<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${bg}`}>
@@ -146,7 +146,7 @@ const MobileEmailTaskCard = ({ item, onView, onEdit, onDelete, t, templates, for
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between pt-3 border-t border-gray-50">
+			<div className="flex items-center justify-between pt-3 border-t border-gray-50 dark:border-gray-700/50">
 				<div className="flex flex-col gap-0.5 text-[10px] text-gray-400">
 					{item.createtime && <span>{t("crt")}: {formatDate(item.createtime)}</span>}
 					{item.updatetime && <span>{t("upd")}: {formatDate(item.updatetime)}</span>}
@@ -154,21 +154,21 @@ const MobileEmailTaskCard = ({ item, onView, onEdit, onDelete, t, templates, for
 				<div className="flex items-center gap-2">
 					<button 
 						onClick={() => onView(item)} 
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-500/20 dark:text-green-400 dark:hover:bg-green-500/30 transition-colors"
 						title={t("view")}
 					>
 						<FontAwesomeIcon icon={faEye} size="sm" />
 					</button>
 					<button 
 						onClick={() => onEdit(item)} 
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30 transition-colors"
 						title={t("edit")}
 					>
 						<FontAwesomeIcon icon={faPen} size="sm" />
 					</button>
 					<button 
 						onClick={() => onDelete(item.id)} 
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-500/20 dark:text-red-400 dark:hover:bg-red-500/30 transition-colors"
 						title={t("delete")}
 					>
 						<FontAwesomeIcon icon={faTrash} size="sm" />
@@ -287,8 +287,8 @@ export function EmailTaskView() {
 						<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
 					</div>
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">{t("emailTaskManagement")}</h1>
-						<p className="text-sm text-gray-500 mt-1">{t("emailTaskManagementDesc")}</p>
+						<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("emailTaskManagement")}</h1>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("emailTaskManagementDesc")}</p>
 					</div>
 				</div>
 				<button
@@ -306,12 +306,12 @@ export function EmailTaskView() {
 			{/* Mobile/Tablet View (Cards) */}
 			<div className="lg:hidden space-y-4 mb-4">
 				{loading ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
 						{t("loading")}
 					</div>
 				) : (list || []).length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						{t("noData")}
 					</div>
 				) : (
@@ -334,7 +334,7 @@ export function EmailTaskView() {
 			</div>
 
 			{/* Desktop View (Table) */}
-			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			<div className="hidden lg:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/50 overflow-hidden">
 				{loading ? (
 					<div className="p-12 text-center text-gray-400">
 						<FontAwesomeIcon icon={faSpinner} spin className="text-3xl mb-3" />
@@ -344,7 +344,7 @@ export function EmailTaskView() {
 					<EmailTaskListTable list={list} t={t} templates={templates} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
 				)}
 
-				<div className="border-t border-gray-100 bg-gray-50/30 p-4">
+				<div className="border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/30 p-4">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
 				</div>
 			</div>

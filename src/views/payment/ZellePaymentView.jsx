@@ -147,7 +147,7 @@ export function ZellePaymentView() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
+			<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
 				<div className="flex flex-col items-center text-[#6d1ac8]">
 					<FontAwesomeIcon icon={faSpinner} spin className="text-4xl mb-4" />
 					<p className="text-sm font-medium">{t("zp_loadingDetails")}</p>
@@ -158,13 +158,13 @@ export function ZellePaymentView() {
 
 	if (error) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-				<div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
+			<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+				<div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
 					<div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
 						!
 					</div>
-					<h2 className="text-xl font-bold text-gray-900 mb-2">{t("zp_errorTitle")}</h2>
-					<p className="text-gray-500">{error}</p>
+					<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("zp_errorTitle")}</h2>
+					<p className="text-gray-500 dark:text-gray-400">{error}</p>
 				</div>
 			</div>
 		);
@@ -172,13 +172,13 @@ export function ZellePaymentView() {
 
 	return (
 		<div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
-			<div className="w-full max-w-md bg-white rounded-[24px] shadow-xl overflow-hidden border border-gray-100">
+			<div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-[24px] shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700/50">
 				
 				{/* Header with Zelle Logo and Amount */}
 				<div className="bg-[#6d1ac8] px-8 py-10 text-center text-white relative overflow-hidden">
 					{/* Decorative circles */}
-					<div className="absolute -top-10 -right-10 w-32 h-32 bg-white opacity-10 rounded-full"></div>
-					<div className="absolute -bottom-10 -left-10 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+					<div className="absolute -top-10 -right-10 w-32 h-32 bg-white dark:bg-gray-800 opacity-10 rounded-full"></div>
+					<div className="absolute -bottom-10 -left-10 w-24 h-24 bg-white dark:bg-gray-800 opacity-10 rounded-full"></div>
 					
 					<div className="relative z-10">
 						{/* Zelle Logo (Image) */}
@@ -199,14 +199,14 @@ export function ZellePaymentView() {
 				<div className="px-8 py-8">
 					{step === 1 && (
 						<>
-							<h3 className="text-lg font-bold text-gray-900 mb-6 text-center">{t("zp_sendPaymentTo")}</h3>
+							<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">{t("zp_sendPaymentTo")}</h3>
 							
 							<div className="space-y-5">
 								{/* Email Field */}
-								<div className="bg-gray-50 p-4 rounded-xl border border-gray-100 relative group transition-all hover:border-[#6d1ac8] hover:shadow-sm">
-									<label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t("zp_zelleEmail")}</label>
+								<div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-100 dark:border-gray-700/50 relative group transition-all hover:border-[#6d1ac8] hover:shadow-sm">
+									<label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">{t("zp_zelleEmail")}</label>
 									<div className="flex justify-between items-center">
-										<p className="text-gray-900 font-medium text-base truncate pr-4">{zelleAccount?.email || "N/A"}</p>
+										<p className="text-gray-900 dark:text-gray-100 font-medium text-base truncate pr-4">{zelleAccount?.email || "N/A"}</p>
 										<button 
 											onClick={() => handleCopy(zelleAccount?.email, 'email')}
 											className="flex-shrink-0 text-[#6d1ac8] hover:text-purple-800 transition-colors p-2 -mr-2"
@@ -218,10 +218,10 @@ export function ZellePaymentView() {
 								</div>
 
 								{/* Account Holder Name Field */}
-								<div className="bg-gray-50 p-4 rounded-xl border border-gray-100 relative group transition-all hover:border-[#6d1ac8] hover:shadow-sm">
-									<label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t("zp_accountHolderName")}</label>
+								<div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-100 dark:border-gray-700/50 relative group transition-all hover:border-[#6d1ac8] hover:shadow-sm">
+									<label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">{t("zp_accountHolderName")}</label>
 									<div className="flex justify-between items-center">
-										<p className="text-gray-900 font-medium text-base truncate pr-4">{zelleAccount?.bankAccountHolder || "N/A"}</p>
+										<p className="text-gray-900 dark:text-gray-100 font-medium text-base truncate pr-4">{zelleAccount?.bankAccountHolder || "N/A"}</p>
 										<button 
 											onClick={() => handleCopy(zelleAccount?.bankAccountHolder, 'name')}
 											className="flex-shrink-0 text-[#6d1ac8] hover:text-purple-800 transition-colors p-2 -mr-2"
@@ -234,7 +234,7 @@ export function ZellePaymentView() {
 							</div>
 
 							<div className="mt-8 text-center">
-								<p className="text-sm text-gray-500 mb-6">
+								<p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
 									{t("zp_sendInstruction")}
 								</p>
 								<button 
@@ -249,34 +249,34 @@ export function ZellePaymentView() {
 
 					{step === 2 && (
 						<form onSubmit={handleSubmitPayment}>
-							<h3 className="text-lg font-bold text-gray-900 mb-2 text-center">{t("zp_confirmPaymentTitle")}</h3>
-							<p className="text-sm text-gray-500 mb-6 text-center">
+							<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">{t("zp_confirmPaymentTitle")}</h3>
+							<p className="text-sm text-gray-500 dark:text-gray-400 mb-6 text-center">
 								{t("zp_confirmInstruction")}
 							</p>
 							
 							<div className="space-y-5">
-								<div className="bg-white p-1 relative">
-									<label className="block text-sm font-semibold text-gray-700 mb-2">{t("zp_confirmationNumber")}</label>
+								<div className="bg-white dark:bg-gray-800 p-1 relative">
+									<label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t("zp_confirmationNumber")}</label>
 									<input 
 										type="text" 
 										name="confirmationNumber"
 										value={formData.confirmationNumber}
 										onChange={handleInputChange}
 										placeholder={t("zp_confNumPlaceholder")}
-										className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6d1ac8] focus:ring-1 focus:ring-[#6d1ac8] transition-all"
+										className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:outline-none focus:border-[#6d1ac8] focus:ring-1 focus:ring-[#6d1ac8] transition-all"
 										required
 									/>
 								</div>
 
-								<div className="bg-white p-1 relative">
-									<label className="block text-sm font-semibold text-gray-700 mb-2">{t("zp_zelleUsername")}</label>
+								<div className="bg-white dark:bg-gray-800 p-1 relative">
+									<label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t("zp_zelleUsername")}</label>
 									<input 
 										type="text" 
 										name="zelleUsername"
 										value={formData.zelleUsername}
 										onChange={handleInputChange}
 										placeholder={t("zp_zelleNamePlaceholder")}
-										className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6d1ac8] focus:ring-1 focus:ring-[#6d1ac8] transition-all"
+										className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-xl focus:outline-none focus:border-[#6d1ac8] focus:ring-1 focus:ring-[#6d1ac8] transition-all"
 										required
 									/>
 								</div>
@@ -295,7 +295,7 @@ export function ZellePaymentView() {
 									type="button"
 									onClick={() => setStep(1)}
 									disabled={submitting}
-									className="w-full bg-white text-gray-600 py-3.5 px-4 rounded-xl font-bold text-sm border border-gray-200 hover:bg-gray-50 transition-all"
+									className="w-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-3.5 px-4 rounded-xl font-bold text-sm border border-gray-200 dark:border-gray-700/50 hover:bg-gray-50 dark:bg-gray-900 transition-all"
 								>
 									{t("zp_back")}
 								</button>
@@ -308,10 +308,10 @@ export function ZellePaymentView() {
 							<div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
 								<FontAwesomeIcon icon={faCheckCircle} className="text-4xl" />
 							</div>
-							<h3 className="text-xl font-bold text-gray-900 mb-2">
+							<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
 								{orderInfo?.status === 1 ? t("zp_paymentAlreadyCompletedTitle") : t("zp_paymentConfirmedTitle")}
 							</h3>
-							<p className="text-gray-500 mb-6">
+							<p className="text-gray-500 dark:text-gray-400 mb-6">
 								{orderInfo?.status === 1 ? t("zp_paymentAlreadyCompletedDesc") : t("zp_paymentConfirmedDesc")}
 							</p>
 							{orderInfo?.return_url && (

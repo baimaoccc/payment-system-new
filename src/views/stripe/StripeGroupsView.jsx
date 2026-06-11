@@ -14,14 +14,14 @@ const MobileGroupCard = ({ item, onEdit, onDelete, t }) => {
 	const [expanded, setExpanded] = useState(false);
 
 	return (
-		<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-all duration-200 cursor-pointer ${expanded ? "ring-1 ring-blue-100" : "hover:shadow-md"}`} onClick={() => setExpanded(!expanded)}>
+		<div className={`bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700/50 transition-all duration-200 cursor-pointer ${expanded ? "ring-1 ring-blue-100" : "hover:shadow-md"}`} onClick={() => setExpanded(!expanded)}>
 			<div className="flex justify-between items-start mb-3">
 				<div className="flex-1 min-w-0 mr-3">
 					<div className="flex items-center gap-2 mb-1">
-						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
-						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.name}</h3>
+						<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-1 break-all">{item.name}</h3>
 					</div>
-					<div className="flex items-center gap-1.5 text-xs text-gray-500">
+					<div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
 						<FontAwesomeIcon icon={faUser} className="text-gray-400" />
 						<span className="font-medium text-brand truncate">{item.username || item.user_id || "-"}</span>
 					</div>
@@ -49,8 +49,8 @@ const MobileGroupCard = ({ item, onEdit, onDelete, t }) => {
 			</div>
 
 			{item.remark && (
-				<div className="bg-gray-50 rounded-lg p-2.5 mb-3 text-xs text-gray-600 leading-relaxed break-words">
-					<span className="font-medium text-gray-500 mr-1">{t("remark")}:</span>
+				<div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-2.5 mb-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed break-words">
+					<span className="font-medium text-gray-500 dark:text-gray-400 mr-1">{t("remark")}:</span>
 					{item.remark}
 				</div>
 			)}
@@ -72,12 +72,12 @@ const MobileGroupCard = ({ item, onEdit, onDelete, t }) => {
 					</div>
 					{!expanded && item.stripe_list && item.stripe_list.length > 0 && (
 						<div className="flex justify-center mt-1">
-							<span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{t("clickToExpand") || "..."}</span>
+							<span className="text-[10px] text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-0.5 rounded-full">{t("clickToExpand") || "..."}</span>
 						</div>
 					)}
 				</div>
 
-				<div className="pt-3 mt-3 border-t border-gray-50 flex items-center justify-between text-xs text-gray-400">
+				<div className="pt-3 mt-3 border-t border-gray-50 dark:border-gray-700/50 flex items-center justify-between text-xs text-gray-400">
 					<span>{t("createTime")}</span>
 					<span className="font-mono">{item.createtime ? new Date(item.createtime * 1000).toLocaleString() : "-"}</span>
 				</div>
@@ -91,15 +91,15 @@ const DesktopGroupRow = ({ item, onEdit, onDelete, t }) => {
 
 	return (
 		<tr className="hover:bg-gray-50/50 transition-colors cursor-pointer" onClick={() => setExpanded(!expanded)}>
-			<td className="py-2 px-6 text-xs text-gray-500">#{item.id}</td>
-			<td className="py-2 px-6 text-xs font-medium text-gray-900">{item.name}</td>
+			<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">#{item.id}</td>
+			<td className="py-2 px-6 text-xs font-medium text-gray-900 dark:text-gray-100">{item.name}</td>
 			<td className="py-2 px-6 text-xs text-brand italic font-bold">{item.username || item.user_id || "-"}</td>
-			<td className="py-2 px-6 text-xs text-gray-500 max-w-xs" title={item.remark}>
+			<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400 max-w-xs" title={item.remark}>
 				<div className={`line-clamp-3 ${expanded ? "line-clamp-none" : ""}`}>
 					{item.remark || "-"}
 				</div>
 			</td>
-			<td className="py-2 px-6 text-xs text-gray-500">
+			<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">
 				<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[76px] overflow-hidden"}`} title={!expanded ? item.stripe_list?.map((s) => s.name || s.id).join(", ") : ""}>
 					{item.stripe_list && item.stripe_list.length > 0
 						? item.stripe_list.map((s, idx) => (
@@ -110,7 +110,7 @@ const DesktopGroupRow = ({ item, onEdit, onDelete, t }) => {
 						: "-"}
 				</div>
 			</td>
-			<td className="py-2 px-6 text-xs text-gray-500">{item.createtime ? new Date(item.createtime * 1000).toLocaleString() : "-"}</td>
+			<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">{item.createtime ? new Date(item.createtime * 1000).toLocaleString() : "-"}</td>
 			<td className="py-2 px-6 text-right">
 				<div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
 					<button onClick={() => onEdit(item)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("edit")}>
@@ -130,8 +130,8 @@ const InputRow = ({ icon, label, children, className = "", noBorder = false }) =
 		<div className="text-gray-400 w-6 pt-4 flex justify-center">
 			<FontAwesomeIcon icon={icon} className="text-lg" />
 		</div>
-		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
-			<label className="block text-xs font-medium text-gray-500 mb-0.5 uppercase tracking-wider">{label}</label>
+		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 dark:border-gray-700/50 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
+			<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5 uppercase tracking-wider">{label}</label>
 			{children}
 		</div>
 	</div>
@@ -210,12 +210,12 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-			<div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
-				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 bg-white z-10">
+			<div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
+				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800 z-10">
 					<div>
-						<h3 className="text-xl font-bold text-gray-900">{initial ? t("editGroup") : t("addGroup")}</h3>
+						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{initial ? t("editGroup") : t("addGroup")}</h3>
 					</div>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50">
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900">
 						<FontAwesomeIcon icon={faTimes} className="text-xl" />
 					</button>
 				</div>
@@ -223,7 +223,7 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 				<div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
 					<div className="grid grid-cols-1 gap-y-6">
 						<InputRow icon={faLayerGroup} label={t("groupName")}>
-							<input value={form.name} onChange={(e) => setForm((v) => ({ ...v, name: e.target.value }))} placeholder={t("enterGroupName")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+							<input value={form.name} onChange={(e) => setForm((v) => ({ ...v, name: e.target.value }))} placeholder={t("enterGroupName")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" />
 						</InputRow>
 
 						{currentUser && Number(currentUser.juese_id) === 1 && (
@@ -251,7 +251,7 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 						)}
 
 						<InputRow icon={faAlignLeft} label={t("remark")}>
-							<textarea value={form.remark} onChange={(e) => setForm((v) => ({ ...v, remark: e.target.value }))} placeholder={t("enterRemark")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 h-20 resize-none" />
+							<textarea value={form.remark} onChange={(e) => setForm((v) => ({ ...v, remark: e.target.value }))} placeholder={t("enterRemark")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1 h-20 resize-none" />
 						</InputRow>
 
 						<InputRow icon={faCreditCard} label={t("accounts")} noBorder>
@@ -290,8 +290,8 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 					</div>
 				</div>
 
-				<div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-					<button onClick={onClose} className="px-6 py-2 rounded-xl text-gray-600 font-medium hover:bg-gray-200 transition-colors" disabled={saving}>
+				<div className="p-6 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
+					<button onClick={onClose} className="px-6 py-2 rounded-xl text-gray-600 dark:text-gray-400 font-medium hover:bg-gray-200 transition-colors" disabled={saving}>
 						{t("cancel")}
 					</button>
 					<button onClick={handleSubmit} disabled={saving} className="px-6 py-2 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2">
@@ -410,8 +410,8 @@ export default function StripeGroupsView() {
 		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
 				<div>
-					<h1 className="text-2xl font-bold text-gray-900">{t("accountGrouping")}</h1>
-					<p className="text-sm text-gray-500 mt-1">{t("accountGroupingDesc")}</p>
+					<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("accountGrouping")}</h1>
+					<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("accountGroupingDesc")}</p>
 				</div>
 				<button
 					onClick={() => {
@@ -427,12 +427,12 @@ export default function StripeGroupsView() {
 			{/* Mobile/Tablet View (Cards) */}
 			<div className="lg:hidden space-y-4">
 				{loading ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
 						{t("loading")}
 					</div>
 				) : list.length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">{t("noData")}</div>
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">{t("noData")}</div>
 				) : (
 					list.map((item) => (
 						<MobileGroupCard
@@ -450,21 +450,21 @@ export default function StripeGroupsView() {
 			</div>
 
 			{/* Desktop View (Table) */}
-			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			<div className="hidden lg:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/50 overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="w-full">
 						<thead>
-							<tr className="bg-gray-50/50 border-b border-gray-100 text-left">
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("id")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("name")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("belongTo")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("remark")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("accounts")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("createTime")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">{t("actions")}</th>
+							<tr className="bg-gray-50/50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700/50 text-left">
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("id")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("name")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("belongTo")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("remark")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("accounts")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("createTime")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">{t("actions")}</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-100 text-[12px]">
+						<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50 text-[12px]">
 							{loading ? (
 								<tr>
 									<td colSpan="7" className="py-8 text-center text-gray-400">
@@ -496,7 +496,7 @@ export default function StripeGroupsView() {
 					</table>
 				</div>
 
-				<div className="p-4 border-t border-gray-100">
+				<div className="p-4 border-t border-gray-100 dark:border-gray-700/50">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
 				</div>
 			</div>

@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchOrder, fetchOrderCharges } from "../../controllers/ordersController.js";
 import { addToast } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
-import { isAdmin } from "../../components/layout/menuConfig.js";
+import { isAdmin } from "../../components/layout/menuConfig.jsx";
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
 import { LogDetailModal } from "../../components/logs/LogDetailModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faUser, faCreditCard, faDesktop, faList, faHistory, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faUser, faCreditCard, faDesktop, faList, faHistory, faEye, faCopy } from "@fortawesome/free-solid-svg-icons";
 
 export default function OrderDetailsView() {
 	const { id } = useParams();
@@ -83,8 +83,8 @@ export default function OrderDetailsView() {
 			});
 	};
 
-	if (loading) return <div className="p-8 text-center text-gray-500">{t("loading")}</div>;
-	if (!order) return <div className="p-8 text-center text-gray-500">{t("noData")}</div>;
+	if (loading) return <div className="p-8 text-center text-gray-500 dark:text-gray-400">{t("loading")}</div>;
+	if (!order) return <div className="p-8 text-center text-gray-500 dark:text-gray-400">{t("noData")}</div>;
 
 	return (
 		<div className="p-4 md:py-6 w-full mx-auto animate-in fade-in duration-300">
@@ -93,27 +93,27 @@ export default function OrderDetailsView() {
 			{/* Header */}
 			<div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-6">
 				<div className="flex items-center">
-					<button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
+					<button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 dark:bg-gray-700 rounded-full transition-colors text-gray-600 dark:text-gray-400">
 						<FontAwesomeIcon icon={faArrowLeft} className="text-xl" />
 					</button>
-					<h1 className="text-2xl font-bold text-gray-900">{t("orderDetails")}</h1>
+					<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("orderDetails")}</h1>
 				</div>
 
-				<p className="text-sm text-gray-500 ml-2 md:ml-0">
+				<p className="text-sm text-gray-500 dark:text-gray-400 ml-2 md:ml-0">
 					{t("idLabel")}: {order.orderNo || order.id}
 				</p>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				{/* Contact Details Card */}
-				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 p-6">
+					<div className="flex items-center gap-3 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-4">
 						<div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
 							<FontAwesomeIcon icon={faUser} className="text-xl" />
 						</div>
 						<div>
-							<h2 className="text-lg font-bold text-gray-900">{t("contactDetails")}</h2>
-							<p className="text-xs text-gray-500">
+							<h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t("contactDetails")}</h2>
+							<p className="text-xs text-gray-500 dark:text-gray-400">
 								{order.first_name} {order.last_name}
 							</p>
 						</div>
@@ -121,50 +121,50 @@ export default function OrderDetailsView() {
 
 					<div className="grid grid-cols-2 gap-y-6 gap-x-4">
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("mobile")}</label>
-							<div className={`text-sm font-medium text-gray-900 break-all ${order.phone ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.phone)} title={order.phone ? t("clickToCopy") : ""}>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("mobile")}</label>
+							<div className={`text-sm font-medium text-gray-900 dark:text-gray-100 break-all ${order.phone ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.phone)} title={order.phone ? t("clickToCopy") : ""}>
 								{order.phone || "-"}
 							</div>
 						</div>
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("email")}</label>
-							<div className={`text-sm font-medium text-gray-900 break-all ${order.email ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.email)} title={order.email ? t("clickToCopy") : ""}>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("email")}</label>
+							<div className={`text-sm font-medium text-gray-900 dark:text-gray-100 break-all ${order.email ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.email)} title={order.email ? t("clickToCopy") : ""}>
 								{order.email || "-"}
 							</div>
 						</div>
 						<div className="col-span-2">
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("billingAddress")}</label>
-							<div className="text-sm font-medium text-gray-900">
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("billingAddress")}</label>
+							<div className="text-sm font-medium text-gray-900 dark:text-gray-100">
 								{order.address} {order.address2 ? `, ${order.address2}` : ""}
 							</div>
 						</div>
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("city")}</label>
-							<div className="text-sm font-medium text-gray-900">{order.city || "-"}</div>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("city")}</label>
+							<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{order.city || "-"}</div>
 						</div>
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("country")}</label>
-							<div className="text-sm font-medium text-gray-900 flex items-center gap-2">
-								{order.country_code && <span className="bg-gray-100 px-1.5 rounded text-xs text-gray-600">{order.country_code}</span>}
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("country")}</label>
+							<div className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+								{order.country_code && <span className="bg-gray-100 dark:bg-gray-700 px-1.5 rounded text-xs text-gray-600 dark:text-gray-400">{order.country_code}</span>}
 								{order.state || "-"}
 							</div>
 						</div>
 						<div className="col-span-2">
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("zipcode")}</label>
-							<div className="text-sm font-medium text-gray-900">{order.zipcode || "-"}</div>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("zipcode")}</label>
+							<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{order.zipcode || "-"}</div>
 						</div>
 					</div>
 				</div>
 
 				{/* Transaction Details Card */}
-				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 p-6">
+					<div className="flex items-center gap-3 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-4">
 						<div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
 							<FontAwesomeIcon icon={faCreditCard} className="text-xl" />
 						</div>
 						<div>
-							<h2 className="text-lg font-bold text-gray-900">{t("transactionDetails")}</h2>
-							<p className="text-xs text-gray-500">
+							<h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t("transactionDetails")}</h2>
+							<p className="text-xs text-gray-500 dark:text-gray-400">
 								{t("amount")}: {order.amount} {order.currency}
 							</p>
 						</div>
@@ -173,30 +173,45 @@ export default function OrderDetailsView() {
 
 					<div className="grid grid-cols-2 gap-y-6 gap-x-4">
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("amount")}</label>
-							<div className="text-xl font-bold text-gray-900">
-								{order.amount} <span className="text-sm font-normal text-gray-500">{order.currency}</span>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("amount")}</label>
+							<div className="text-xl font-bold text-gray-900 dark:text-gray-100">
+								{order.amount} <span className="text-sm font-normal text-gray-500 dark:text-gray-400">{order.currency}</span>
 							</div>
 						</div>
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("ref")}</label>
-							<div className={`text-sm font-medium text-gray-900 break-all ${order.client_orderNo ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.client_orderNo)} title={order.client_orderNo ? t("clickToCopy") : ""}>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("ref")}</label>
+							<div className={`text-sm font-medium text-gray-900 dark:text-gray-100 break-all ${order.client_orderNo ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} onClick={() => handleCopy(order.client_orderNo)} title={order.client_orderNo ? t("clickToCopy") : ""}>
 								{order.client_orderNo || "-"}
 							</div>
 						</div>
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("crt")}</label>
-							<div className="text-sm font-medium text-gray-900">{order.createtime ? new Date(order.createtime * 1000).toLocaleString() : "-"}</div>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("crt")}</label>
+							<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{order.createtime ? new Date(order.createtime * 1000).toLocaleString() : "-"}</div>
 						</div>
 						<div>
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("upd")}</label>
-							<div className="text-sm font-medium text-gray-900">{order.updatetime ? new Date(order.updatetime * 1000).toLocaleString() : "-"}</div>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("upd")}</label>
+							<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{order.updatetime ? new Date(order.updatetime * 1000).toLocaleString() : "-"}</div>
 						</div>
 						<div className="col-span-2">
-							<label className="block text-xs font-medium text-gray-500 mb-1">{t("site")}</label>
-							<a href={order.url} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 hover:underline break-all block truncate">
-								{order.url || "-"}
-							</a>
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("site")}</label>
+							<div className="flex items-center gap-2 group">
+								<span className="text-sm font-medium text-gray-900 dark:text-gray-100 break-all truncate">
+									{order.url || "-"}
+								</span>
+								{order.url && (
+									<button 
+										onClick={() => {
+											if (navigator.clipboard) {
+												navigator.clipboard.writeText(order.url);
+											}
+										}}
+										className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-opacity p-1"
+										title={t("clickToCopy") || "Copy URL"}
+									>
+										<FontAwesomeIcon icon={faCopy} size="sm" />
+									</button>
+								)}
+							</div>
 						</div>
 						{order.failure_message && (
 							<div className="col-span-2 bg-red-50 p-3 rounded-lg border border-red-100">
@@ -209,48 +224,52 @@ export default function OrderDetailsView() {
 								)}
 							</div>
 						)}
+						<div className="col-span-2">
+							<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("paymentChannel") || "Payment Channel"}</label>
+							<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{order.comment || t("untitledChannel")}</div>
+						</div>
 					</div>
 				</div>
 
 				{/* Technical Info Card */}
 				{isAdmin(authRole) && (
-					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:col-span-2">
-						<div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+					<div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 p-6 md:col-span-2">
+						<div className="flex items-center gap-3 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-4">
 							<div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
 								<FontAwesomeIcon icon={faDesktop} className="text-xl" />
 							</div>
 							<div>
-								<h2 className="text-lg font-bold text-gray-900">{t("technicalDetails")}</h2>
-								<p className="text-xs text-gray-500">{t("technicalSub")}</p>
+								<h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t("technicalDetails")}</h2>
+								<p className="text-xs text-gray-500 dark:text-gray-400">{t("technicalSub")}</p>
 							</div>
 						</div>
 
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 							<div>
-								<label className="block text-xs font-medium text-gray-500 mb-1">{t("ipAddress")}</label>
-								<div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+								<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("ipAddress")}</label>
+								<div className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
 									{order.ip || "-"}
 									{order.ipv6 && <span className="text-xs text-gray-400">({t("ipv6")})</span>}
 								</div>
 							</div>
 							<div className="md:col-span-2">
-								<label className="block text-xs font-medium text-gray-500 mb-1">{t("userAgent")}</label>
-								<div className="text-xs font-mono text-gray-600 bg-gray-50 p-2 rounded break-all border border-gray-100">{order.user_agent || "-"}</div>
+								<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("userAgent")}</label>
+								<div className="text-xs font-mono text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-2 rounded break-all border border-gray-100 dark:border-gray-700/50">{order.user_agent || "-"}</div>
 							</div>
 						</div>
 
 						{(extraData.title || extraData.ad) && (
-							<div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700/50 grid grid-cols-1 md:grid-cols-2 gap-6">
 								{extraData.title && (
 									<div className={!extraData.ad ? "md:col-span-2" : ""}>
-										<label className="block text-xs font-medium text-gray-500 mb-1">{t("title") || "Title"}</label>
-										<div className="text-sm font-medium text-gray-900 break-words">{extraData.title}</div>
+										<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("title") || "Title"}</label>
+										<div className="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">{extraData.title}</div>
 									</div>
 								)}
 								{extraData.ad && (
 									<div className={!extraData.title ? "md:col-span-2" : ""}>
-										<label className="block text-xs font-medium text-gray-500 mb-1">{t("ad") || "Ad"}</label>
-										<div className="text-sm font-medium text-gray-900 break-words">{extraData.ad}</div>
+										<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("ad") || "Ad"}</label>
+										<div className="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">{extraData.ad}</div>
 									</div>
 								)}
 							</div>
@@ -260,27 +279,27 @@ export default function OrderDetailsView() {
 
 				{/* Charges List Card */}
 				{isAdmin(authRole) && order?.paymentType !== 1 && (
-					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:col-span-2">
-						<div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+					<div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 p-6 md:col-span-2">
+						<div className="flex items-center gap-3 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-4">
 							<div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
 								<FontAwesomeIcon icon={faList} className="text-xl" />
 							</div>
 							<div>
-								<h2 className="text-lg font-bold text-gray-900">{t("chargesList")}</h2>
-								<p className="text-xs text-gray-500">{t("chargesListSub")}</p>
+								<h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t("chargesList")}</h2>
+								<p className="text-xs text-gray-500 dark:text-gray-400">{t("chargesListSub")}</p>
 							</div>
 						</div>
 
 						{loadingCharges ? (
-							<div className="text-center py-8 text-gray-500">{t("loading")}</div>
+							<div className="text-center py-8 text-gray-500 dark:text-gray-400">{t("loading")}</div>
 						) : charges.length === 0 ? (
-							<div className="text-center py-8 text-gray-500">{t("noData")}</div>
+							<div className="text-center py-8 text-gray-500 dark:text-gray-400">{t("noData")}</div>
 						) : (
 							<>
 								{/* Desktop/Tablet Table View */}
 								<div className="hidden md:block overflow-x-auto">
 									<table className="w-full text-sm text-left">
-										<thead className="bg-gray-50 text-gray-500">
+										<thead className="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400">
 											<tr>
 												<th className="px-4 py-3 font-medium rounded-l-lg">{t("amount")}</th>
 												<th className="px-4 py-3 font-medium">{t("status")}</th>
@@ -291,14 +310,14 @@ export default function OrderDetailsView() {
 												<th className="px-4 py-3 font-medium rounded-r-lg">{t("idLabel")}</th>
 											</tr>
 										</thead>
-										<tbody className="divide-y divide-gray-100">
+										<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50">
 											{charges.map((charge, idx) => (
-												<tr key={charge.id || idx} className="hover:bg-gray-50 transition-colors">
-													<td className="px-4 py-3 font-medium text-gray-900">
-														{(charge.amount / 100).toFixed(2)} <span className="text-gray-500 font-normal">{charge.currency?.toUpperCase()}</span>
+												<tr key={charge.id || idx} className="hover:bg-gray-50 dark:bg-gray-900 transition-colors">
+													<td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+														{(charge.amount / 100).toFixed(2)} <span className="text-gray-500 dark:text-gray-400 font-normal">{charge.currency?.toUpperCase()}</span>
 													</td>
 													<td className="px-4 py-3">
-														{charge.refunded ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}
+														{charge.refunded ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}
 														{charge.failure_message && (
 															<div className="text-xs text-red-600 mt-1 max-w-[200px] truncate" title={charge.failure_message}>
 																{charge.failure_message}
@@ -307,11 +326,11 @@ export default function OrderDetailsView() {
 													</td>
 													<td className="px-4 py-3">
 														<div className="flex items-center gap-2">
-															<span className="uppercase font-medium text-gray-700">{charge.payment_method_details?.card?.brand}</span>
+															<span className="uppercase font-medium text-gray-700 dark:text-gray-300">{charge.payment_method_details?.card?.brand}</span>
 															<span className="text-gray-400">•••• {charge.payment_method_details?.card?.last4}</span>
 														</div>
 													</td>
-													<td className="px-4 py-3 text-gray-500">{new Date(charge.created * 1000).toLocaleString()}</td>
+													<td className="px-4 py-3 text-gray-500 dark:text-gray-400">{new Date(charge.created * 1000).toLocaleString()}</td>
 													<td className="px-4 py-3">{charge.outcome?.risk_score !== undefined ? <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${charge.outcome.risk_score < 65 ? "bg-green-100 text-green-800" : charge.outcome.risk_score < 75 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>{charge.outcome.risk_score}</span> : "-"}</td>
 													<td className="px-4 py-3">
 														{charge.receipt_url ? (
@@ -332,34 +351,34 @@ export default function OrderDetailsView() {
 								{/* Mobile Card View */}
 								<div className="md:hidden space-y-4">
 									{charges.map((charge, idx) => (
-										<div key={charge.id || idx} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+										<div key={charge.id || idx} className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-100 dark:border-gray-700/50">
 											<div className="flex justify-between items-start mb-3">
 												<div>
-													<div className="text-lg font-bold text-gray-900">
-														{(charge.amount / 100).toFixed(2)} <span className="text-sm font-normal text-gray-500">{charge.currency?.toUpperCase()}</span>
+													<div className="text-lg font-bold text-gray-900 dark:text-gray-100">
+														{(charge.amount / 100).toFixed(2)} <span className="text-sm font-normal text-gray-500 dark:text-gray-400">{charge.currency?.toUpperCase()}</span>
 													</div>
 													<div className="text-xs text-gray-400 mt-1">{new Date(charge.created * 1000).toLocaleString()}</div>
 												</div>
-												<div className="text-right">{charge.refunded ? <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}</div>
+												<div className="text-right">{charge.refunded ? <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100">{t("refunded")}</span> : charge.paid ? <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">{t("succeed")}</span> : <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">{t("failed")}</span>}</div>
 											</div>
 
 											{charge.failure_message && <div className="bg-red-50 text-red-700 text-xs p-2 rounded mb-3 break-words border border-red-100">{charge.failure_message}</div>}
 
-											<div className="grid grid-cols-2 gap-2 text-sm border-t border-gray-200 pt-3 mt-3">
+											<div className="grid grid-cols-2 gap-2 text-sm border-t border-gray-200 dark:border-gray-700/50 pt-3 mt-3">
 												<div>
-													<div className="text-xs text-gray-500 mb-1">{t("paymentMethod")}</div>
+													<div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t("paymentMethod")}</div>
 													<div className="flex items-center gap-2">
-														<span className="uppercase font-medium text-gray-700">{charge.payment_method_details?.card?.brand}</span>
+														<span className="uppercase font-medium text-gray-700 dark:text-gray-300">{charge.payment_method_details?.card?.brand}</span>
 														<span className="text-gray-400">•••• {charge.payment_method_details?.card?.last4}</span>
 													</div>
 												</div>
 												<div>
-													<div className="text-xs text-gray-500 mb-1">{t("riskScore")}</div>
+													<div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t("riskScore")}</div>
 													<div>{charge.outcome?.risk_score !== undefined ? <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${charge.outcome.risk_score < 65 ? "bg-green-100 text-green-800" : charge.outcome.risk_score < 75 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>{charge.outcome.risk_score}</span> : "-"}</div>
 												</div>
 											</div>
 
-											<div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-100">
+											<div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-100 dark:border-gray-700/50">
 												<div className="text-xs font-mono text-gray-400 truncate max-w-[200px]">{charge.id}</div>
 												{charge.receipt_url && (
 													<a href={charge.receipt_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs font-medium">
@@ -377,21 +396,21 @@ export default function OrderDetailsView() {
 
 				{/* Logs List Card */}
 				{isAdmin(authRole) && order?.logList && order.logList.length > 0 && (
-					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:col-span-2">
-						<div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+					<div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 p-6 md:col-span-2">
+						<div className="flex items-center gap-3 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-4">
 							<div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
 								<FontAwesomeIcon icon={faHistory} className="text-xl" />
 							</div>
 							<div>
-								<h2 className="text-lg font-bold text-gray-900">{t("orderLogs") || "Order Logs"}</h2>
-								<p className="text-xs text-gray-500">{t("orderLogsSub") || "System logs related to this order"}</p>
+								<h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t("orderLogs") || "Order Logs"}</h2>
+								<p className="text-xs text-gray-500 dark:text-gray-400">{t("orderLogsSub") || "System logs related to this order"}</p>
 							</div>
 						</div>
 
 						{/* Desktop/Tablet Table View */}
 						<div className="hidden md:block overflow-x-auto">
 							<table className="w-full text-sm text-left text-xs">
-								<thead className="bg-gray-50 text-gray-500">
+								<thead className="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400">
 									<tr>
 										<th className="px-4 py-3 font-medium rounded-l-lg">{t("log_id") || "Log ID"}</th>
 										<th className="px-4 py-3 font-medium">{t("user_id") || "User ID"}</th>
@@ -402,17 +421,17 @@ export default function OrderDetailsView() {
 										<th className="px-4 py-3 font-medium rounded-r-lg text-right">{t("actions") || "Actions"}</th>
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-gray-100">
+								<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50">
 									{order.logList.map((log, idx) => (
-										<tr key={log.id || idx} className="hover:bg-gray-50 transition-colors">
-											<td className="px-4 py-3 font-mono text-gray-500">#{log.id}</td>
-											<td className="px-4 py-3 text-gray-900">{log.user_id}</td>
-											<td className="px-4 py-3 text-gray-900">{log.title}</td>
+										<tr key={log.id || idx} className="hover:bg-gray-50 dark:bg-gray-900 transition-colors">
+											<td className="px-4 py-3 font-mono text-gray-500 dark:text-gray-400">#{log.id}</td>
+											<td className="px-4 py-3 text-gray-900 dark:text-gray-100">{log.user_id}</td>
+											<td className="px-4 py-3 text-gray-900 dark:text-gray-100">{log.title}</td>
 											<td className="px-4 py-3 text-blue-600 max-w-[200px] truncate" title={log.link}>
 												{log.link}
 											</td>
-											<td className="px-4 py-3 text-gray-500 font-mono">{log.ip}</td>
-											<td className="px-4 py-3 text-gray-500 whitespace-nowrap">{log.createtime ? new Date(log.createtime * 1000).toLocaleString() : "-"}</td>
+											<td className="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono">{log.ip}</td>
+											<td className="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">{log.createtime ? new Date(log.createtime * 1000).toLocaleString() : "-"}</td>
 											<td className="px-4 py-3 text-right">
 												<button onClick={() => openDetails(log.id)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("viewDetails")}>
 													<FontAwesomeIcon icon={faEye} />
@@ -427,14 +446,14 @@ export default function OrderDetailsView() {
 						{/* Mobile Card View */}
 						<div className="md:hidden space-y-4">
 							{order.logList.map((log, idx) => (
-								<div key={log.id || idx} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+								<div key={log.id || idx} className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-100 dark:border-gray-700/50">
 									<div className="flex justify-between items-start mb-2">
 										<span className="text-xs font-mono text-gray-400">#{log.id}</span>
-										<span className="text-xs text-gray-500">{log.createtime ? new Date(log.createtime * 1000).toLocaleString() : "-"}</span>
+										<span className="text-xs text-gray-500 dark:text-gray-400">{log.createtime ? new Date(log.createtime * 1000).toLocaleString() : "-"}</span>
 									</div>
-									<div className="font-medium text-gray-900 mb-1">{log.title}</div>
+									<div className="font-medium text-gray-900 dark:text-gray-100 mb-1">{log.title}</div>
 									<div className="text-xs text-blue-600 break-all mb-2">{log.link}</div>
-									<div className="flex justify-between items-center text-xs text-gray-500 border-t border-gray-200 pt-2 mt-2">
+									<div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700/50 pt-2 mt-2">
 										<div className="flex flex-col gap-1">
 											<div>User: {log.username || log.user_id}</div>
 											<div className="font-mono">{log.ip}</div>

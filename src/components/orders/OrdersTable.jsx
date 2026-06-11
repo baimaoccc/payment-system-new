@@ -12,7 +12,7 @@ import { fetchEmailTypesN } from "../../controllers/emailController.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
 import { ActionDropdown } from "../ui/ActionDropdown.jsx";
 import { setSidebarCollapsed } from "../../store/slices/ui.js";
-import { isAdmin, isCS, isAdv, isSuperAdmin } from "../layout/menuConfig.js";
+import { isAdmin, isCS, isAdv, isSuperAdmin } from "../layout/menuConfig.jsx";
 
 export function OrdersTable({ rows = [] }) {
 	const { t } = useI18n();
@@ -288,7 +288,7 @@ export function OrdersTable({ rows = [] }) {
 		const confirmLine = msgTpl.replace("{orderNo}", orderNo || "-").replace("{templateName}", templateName);
 		const message = (
 			<div className="space-y-3 text-sm">
-				<div className="text-xs text-gray-500">{t("sendEmailConfirmIntro") || "请确认邮件发送目标信息："}</div>
+				<div className="text-xs text-gray-500 dark:text-gray-400">{t("sendEmailConfirmIntro") || "请确认邮件发送目标信息："}</div>
 				<div className="space-y-1 text-xs">
 					<div>
 						<span className="text-gray-400 text-[11px]">{t("orderId") || "订单号"}:</span> <span className="font-mono text-[11px]">{orderNo || "-"}</span>
@@ -306,7 +306,7 @@ export function OrdersTable({ rows = [] }) {
 						<span className="text-gray-400 text-[11px]">{t("templateName") || "模版"}:</span> <span className="text-[11px]">{templateName}</span>
 					</div>
 				</div>
-				<div className="mt-2 text-sm font-medium text-gray-900">{confirmLine}</div>
+				<div className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{confirmLine}</div>
 			</div>
 		);
 		dispatch({
@@ -397,7 +397,7 @@ export function OrdersTable({ rows = [] }) {
 				label: t("logisticsShipment") || "Logistics Shipment",
 				icon: <FontAwesomeIcon icon={faPlaneDeparture} />,
 				onClick: () => handleOpenLogisticsModal(o),
-				className: "text-gray-700",
+				className: "text-gray-700 dark:text-gray-300",
 			},
 			callback: {
 				label: t("orderCallback") || "Order Callback",
@@ -476,14 +476,14 @@ export function OrdersTable({ rows = [] }) {
 						const isExpanded = expandedMobileRow === o.id;
 
 						return (
-							<div key={o.id} className={`bg-white rounded-lg shadow-sm border transition-all box-border overflow-hidden ${isExpanded ? "border-blue-500" : "border-gray-100"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : o.id)}>
+							<div key={o.id} className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border transition-all box-border overflow-hidden ${isExpanded ? "border-blue-500" : "border-gray-100 dark:border-gray-700/50"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : o.id)}>
 								{/* Header / Summary Row */}
 								<div className="p-3 flex items-center justify-between gap-3 overflow-hidden">
 									<div className="flex-1 min-w-0 overflow-hidden">
 										<div className="flex items-center gap-2 mb-1">
-											<div className="font-medium text-gray-900 truncate text-sm">{o.url || "-"}</div>
+											<div className="font-medium text-gray-900 dark:text-gray-100 truncate text-sm">{o.url || "-"}</div>
 										</div>
-										<div className="flex items-center gap-2 text-xs text-gray-500 overflow-hidden">
+										<div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 overflow-hidden">
 											<span className="truncate flex-shrink">{o.username || t("guest")}</span>
 											<span className="flex-none">•</span>
 											<span className="font-mono flex-none whitespace-nowrap">
@@ -503,7 +503,7 @@ export function OrdersTable({ rows = [] }) {
 								{/* Expanded Content */}
 								<div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
 									<div className="overflow-hidden">
-										<div className="px-3 pb-3 pt-0 text-xs text-gray-600 space-y-2 border-t border-gray-50 mt-1">
+										<div className="px-3 pb-3 pt-0 text-xs text-gray-600 dark:text-gray-400 space-y-2 border-t border-gray-50 dark:border-gray-700/50 mt-1">
 											{/* Channel & Ref */}
 											<div className="grid grid-cols-2 gap-2 mt-3">
 												{isAdmin(authRole) && (
@@ -516,7 +516,7 @@ export function OrdersTable({ rows = [] }) {
 													<div>
 														<span className="text-gray-400 block mb-0.5">{t("ref")}</span>
 														<span
-															className="font-mono bg-gray-50 rounded break-all"
+															className="font-mono bg-gray-50 dark:bg-gray-900 rounded break-all"
 															onClick={(e) => {
 																e.stopPropagation();
 																handleCopy(o.client_orderNo);
@@ -529,7 +529,7 @@ export function OrdersTable({ rows = [] }) {
 
 											{/* Customer */}
 											<div className="space-y-1">
-												<div className="font-medium text-gray-800">{t("customer")}</div>
+												<div className="font-medium text-gray-800 dark:text-gray-100">{t("customer")}</div>
 												<div>{[o.first_name, o.last_name].filter(Boolean).join(" ") || t("guest")}</div>
 												<div className="flex items-center gap-2">
 													<span
@@ -570,10 +570,10 @@ export function OrdersTable({ rows = [] }) {
 
 											{/* Logistics */}
 											{!isAdv(authRole) && (o.shipping_status || o.logistics_mode || o.tracking_number) && (
-												<div className="bg-gray-50 p-2 rounded">
+												<div className="bg-gray-50 dark:bg-gray-900 p-2 rounded">
 													{o.shipping_status && (
 														<div className="flex items-center mb-2">
-															<div className="font-medium text-gray-800 mr-2">{t("logisticsInfo") || "Logistics"}:</div>
+															<div className="font-medium text-gray-800 dark:text-gray-100 mr-2">{t("logisticsInfo") || "Logistics"}:</div>
 															{o.shipping_status == "未发货" ? <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] border border-yellow-200">{t("notShipped")}</span> : <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200 shadow-sm">{t("shipped")}</span>}
 
 															{/* {t("status")}: {o.shipping_status} */}
@@ -597,16 +597,16 @@ export function OrdersTable({ rows = [] }) {
 				</div>
 			) : (
 				<table className="w-full text-xs table-fixed border-collapse">
-					<thead className="bg-gray-100">
+					<thead className="bg-gray-100 dark:bg-gray-700">
 						<tr>
-							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[100px]">{t("orderBelong")}</th>}
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[30%]" : "w-[200px]"}`}>{t("orderDetailsAndChannel")}</th>
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[30%]" : "w-[220px]"}`}>{t("customer")}</th>
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[120px]"}`}>{t("amount")}</th>
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[180px]"}`}>{t("status")}</th>
-							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[110px]">{t("timeline")}</th>}
-							{!isTablet && !isAdv(authRole) && <th className="px-3 py-3 text-left font-medium text-gray-700 w-[130px]">{t("logisticsInfo") || "Logistics"}</th>}
-							<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[10%]" : "w-[110px]"}`}>{t("operations")}</th>
+							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-[100px]">{t("orderBelong")}</th>}
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[30%]" : "w-[200px]"}`}>{t("orderDetailsAndChannel")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[30%]" : "w-[220px]"}`}>{t("customer")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[120px]"}`}>{t("amount")}</th>
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[180px]"}`}>{t("status")}</th>
+							{!isTablet && <th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-[110px]">{t("timeline")}</th>}
+							{!isTablet && !isAdv(authRole) && <th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-[130px]">{t("logisticsInfo") || "Logistics"}</th>}
+							<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[10%]" : "w-[110px]"}`}>{t("operations")}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -616,11 +616,11 @@ export function OrdersTable({ rows = [] }) {
 							const updateDate = o.updatetime ? new Date(o.updatetime).toLocaleString() : "-";
 
 							return (
-								<tr key={o.id} className="border-t hover:bg-gray-50 transition-colors">
+								<tr key={o.id} className="border-t border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 									{/* Order Belong */}
 									{!isTablet && (
 										<td className="p-3 align-middle">
-											<div className="font-bold text-gray-900 text-sm truncate align-middle" title={`Order No: ${o.orderNo || "-"}`}>
+											<div className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate align-middle" title={`Order No: ${o.orderNo || "-"}`}>
 												{o.username || t("guest")}
 											</div>
 										</td>
@@ -629,14 +629,14 @@ export function OrdersTable({ rows = [] }) {
 									{/* Order Details */}
 									<td className="p-3 align-top">
 										<div className="flex flex-col gap-1">
-											{/* <div className="font-bold text-gray-900 text-sm truncate" title={`Order No: ${o.orderNo || "-"}`}>
+											{/* <div className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate" title={`Order No: ${o.orderNo || "-"}`}>
 											{o.title || t("untitledOrder")}
 										</div> */}
-											<div className="font-bold text-gray-900 text-sm truncate" title={o.url}>
-												<span className="font-medium text-gray-600">{t("site")}: </span> {o.url || "-"}
+											<div className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate" title={o.url}>
+												<span className="font-medium text-gray-600 dark:text-gray-400">{t("site")}: </span> {o.url || "-"}
 											</div>
 											{isAdmin(authRole) && (
-												<div className="text-gray-500 truncate text-xs" title={`Channel: ${o.comment || "-"}`}>
+												<div className="text-gray-500 dark:text-gray-400 truncate text-xs" title={`Channel: ${o.comment || "-"}`}>
 													<span className="font-medium">{t("paymentChannel") || "Payment Channel"}:</span> {o.comment || t("untitledChannel")}
 												</div>
 											)}
@@ -650,7 +650,7 @@ export function OrdersTable({ rows = [] }) {
 											{o.client_orderNo && (
 												<div className="flex items-center gap-1 text-[10px] text-gray-400">
 													<span className="font-medium">{t("ref")}:</span>
-													<span className="font-mono bg-gray-50 px-1 rounded truncate max-w-[100px] cursor-pointer hover:bg-gray-100 transition-colors" title={`${o.client_orderNo} (${t("clickToCopy")})`} onClick={() => handleCopy(o.client_orderNo)}>
+													<span className="font-mono bg-gray-50 dark:bg-gray-900 px-1 rounded truncate max-w-[100px] cursor-pointer hover:bg-gray-100 dark:bg-gray-700 transition-colors" title={`${o.client_orderNo} (${t("clickToCopy")})`} onClick={() => handleCopy(o.client_orderNo)}>
 														{o.client_orderNo}
 													</span>
 												</div>
@@ -662,10 +662,10 @@ export function OrdersTable({ rows = [] }) {
 
 									<td className="p-3 align-top">
 										<div className="flex flex-col gap-1">
-											<div className="font-medium text-gray-900 truncate" title={[o.first_name, o.last_name].filter(Boolean).join(" ") || t("guest")}>
+											<div className="font-medium text-gray-900 dark:text-gray-100 truncate" title={[o.first_name, o.last_name].filter(Boolean).join(" ") || t("guest")}>
 												{[o.first_name, o.last_name].filter(Boolean).join(" ") || t("guest")}
 											</div>
-											<div className={`text-gray-500 truncate ${o.email ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} title={o.email ? `${o.email} (${t("clickToCopy")})` : "-"} onClick={() => o.email && handleCopy(o.email)}>
+											<div className={`text-gray-500 dark:text-gray-400 truncate ${o.email ? "cursor-pointer hover:text-blue-600 transition-colors" : ""}`} title={o.email ? `${o.email} (${t("clickToCopy")})` : "-"} onClick={() => o.email && handleCopy(o.email)}>
 												{o.email || "-"}
 											</div>
 											<div className="flex items-center gap-2 text-gray-400 text-[10px] truncate">
@@ -685,11 +685,11 @@ export function OrdersTable({ rows = [] }) {
 									{/* Financials */}
 									<td className="p-3 align-top">
 										<div className="flex flex-col gap-1">
-											<div className="font-bold text-gray-900 text-sm">
-												{o.amount} <span className="text-xs font-normal text-gray-500">{o.currency}</span>
+											<div className="font-bold text-gray-900 dark:text-gray-100 text-sm">
+												{o.amount} <span className="text-xs font-normal text-gray-500 dark:text-gray-400">{o.currency}</span>
 											</div>
 											{(o.jine || o.bizhong) && (
-												<div className="text-gray-500">
+												<div className="text-gray-500 dark:text-gray-400">
 													≈ {o.jine} <span className="text-[10px]">{o.bizhong}</span>
 												</div>
 											)}
@@ -707,7 +707,7 @@ export function OrdersTable({ rows = [] }) {
 									{/* Timeline */}
 									{!isTablet && (
 										<td className="p-3 align-top">
-											<div className="flex flex-col gap-1 text-gray-500">
+											<div className="flex flex-col gap-1 text-gray-500 dark:text-gray-400">
 												{updateDate !== "-" && (
 													<div title={`Updated: ${updateDate}`}>
 														<span className="text-gray-400 text-[10px]">{t("upd")}:</span> {updateDate.split(" ")[0]}
@@ -720,7 +720,7 @@ export function OrdersTable({ rows = [] }) {
 									{/* Logistics */}
 									{!isTablet && !isAdv(authRole) && (
 										<td className="p-3 align-top">
-											<div className="flex flex-col gap-1 text-gray-500">
+											<div className="flex flex-col gap-1 text-gray-500 dark:text-gray-400">
 												{(o.shipping_status || o.logistics_mode || o.tracking_number) && (
 													<div className="mt-1 space-y-0.5 text-[11px]">
 														{o.shipping_status && (
@@ -750,7 +750,7 @@ export function OrdersTable({ rows = [] }) {
 														e.stopPropagation();
 														action.onClick();
 													}}
-													className={`p-1.5 hover:bg-gray-100 rounded transition-colors ${action.className}`}
+													className={`p-1.5 hover:bg-gray-100 dark:bg-gray-700 rounded transition-colors ${action.className}`}
 													title={action.label}>
 													{action.icon}
 												</button>
@@ -759,13 +759,13 @@ export function OrdersTable({ rows = [] }) {
 										{refundMenuOpenId === o.id && !isMobile && (
 											<div
 												onClick={(e) => e.stopPropagation()}
-												className="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+												className="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-md shadow-lg z-50">
 												<button
 													onClick={() => {
 														setRefundMenuOpenId(null);
 														handleOrderFiveDayRefund(o);
 													}}
-													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50">
+													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50 dark:bg-gray-900">
 													<FontAwesomeIcon icon={faUndoAlt} className="text-orange-600" />
 													<span>{t("fiveDayRefund")}</span>
 												</button>
@@ -774,7 +774,7 @@ export function OrdersTable({ rows = [] }) {
 														setRefundMenuOpenId(null);
 														handleOrderOneTwentyDayRefund(o);
 													}}
-													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50">
+													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50 dark:bg-gray-900">
 													<FontAwesomeIcon icon={faHourglass} className="text-orange-700" />
 													<span>{t("120-day-delay")}</span>
 												</button>
@@ -783,7 +783,7 @@ export function OrdersTable({ rows = [] }) {
 														setRefundMenuOpenId(null);
 														handleOrderRefunded(o);
 													}}
-													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50">
+													className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50 dark:bg-gray-900">
 													<FontAwesomeIcon icon={faUndoAlt} className="text-purple-600" />
 													<span>{t("refunded")}</span>
 												</button>
@@ -802,23 +802,23 @@ export function OrdersTable({ rows = [] }) {
 			{/* Logistics Modal */}
 			{isLogisticsModalOpen && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-					<div className="bg-white p-6 rounded-lg w-[400px] shadow-lg animate-page">
+					<div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-[400px] shadow-lg animate-page">
 						<h3 className="text-lg font-bold mb-4">{t("logisticsShipment") || "Logistics Shipment"}</h3>
 						<form onSubmit={handleLogisticsSubmit} className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-1">{t("logisticsMode") || "Logistics Mode"}</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("logisticsMode") || "Logistics Mode"}</label>
 								<input type="text" className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={logisticsForm.logistics_mode} onChange={(e) => setLogisticsForm({ ...logisticsForm, logistics_mode: e.target.value })} placeholder={t("logisticsModeExample") || "e.g. DHL, FedEx"} required />
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-1">{t("trackingNumber") || "Tracking Number"}</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("trackingNumber") || "Tracking Number"}</label>
 								<input type="text" className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={logisticsForm.tracking_number} onChange={(e) => setLogisticsForm({ ...logisticsForm, tracking_number: e.target.value })} placeholder={t("trackingNumber") || "Tracking Number"} required />
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-1">{t("trackingUrl") || "Tracking URL"}</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("trackingUrl") || "Tracking URL"}</label>
 								<input type="text" className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={logisticsForm.tracking_url} onChange={(e) => setLogisticsForm({ ...logisticsForm, tracking_url: e.target.value })} placeholder={t("trackingUrl") || "Tracking URL"} />
 							</div>
 							<div className="flex justify-end gap-2 mt-6">
-								<button type="button" onClick={() => setIsLogisticsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded">
+								<button type="button" onClick={() => setIsLogisticsModalOpen(false)} className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-700 rounded">
 									{t("cancel")}
 								</button>
 								<button type="submit" disabled={logisticsSaving} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2">
@@ -907,19 +907,19 @@ function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sendi
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" onClick={!sending ? onClose : undefined}>
-			<div className="bg-white rounded-lg shadow-xl w-[400px] max-h-[80vh] flex flex-col animate-page relative" onClick={(e) => e.stopPropagation()}>
+			<div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-[400px] max-h-[80vh] flex flex-col animate-page relative" onClick={(e) => e.stopPropagation()}>
 				{sending && (
 					<div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center rounded-lg">
 						<div className="flex flex-col items-center gap-2">
 							<FontAwesomeIcon icon={faSpinner} spin size="2x" className="text-blue-600" />
-							<span className="text-sm font-medium text-gray-600">{t("sending") || "Sending..."}</span>
+							<span className="text-sm font-medium text-gray-600 dark:text-gray-400">{t("sending") || "Sending..."}</span>
 						</div>
 					</div>
 				)}
 
 				<div className="p-4 border-b flex justify-between items-center">
-					<h3 className="font-bold text-gray-800">{t("selectEmailTemplate") || "Select Email Template"}</h3>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600" disabled={sending}>
+					<h3 className="font-bold text-gray-800 dark:text-gray-100">{t("selectEmailTemplate") || "Select Email Template"}</h3>
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400" disabled={sending}>
 						&times;
 					</button>
 				</div>
@@ -940,13 +940,13 @@ function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sendi
 										onClick={() => !disabled && onSelect(tpl)}
 										disabled={disabled || sending}
 										className={`w-full text-left p-3 border rounded-lg transition-all flex flex-col gap-1 group relative
-											${disabled ? "bg-gray-50 border-gray-100 opacity-70 cursor-not-allowed" : "hover:bg-blue-50 hover:border-blue-200 border-gray-200 cursor-pointer"}
+											${disabled ? "bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-700/50 opacity-70 cursor-not-allowed" : "hover:bg-blue-50 hover:border-blue-200 border-gray-200 dark:border-gray-700/50 cursor-pointer"}
 										`}>
 										<div className="flex justify-between items-start w-full">
-											<span className={`font-medium ${disabled ? "text-gray-500" : "text-gray-800 group-hover:text-blue-700"}`}>{tpl.name || tpl.title || tpl.template_name}</span>
-											{tpl.type_name && <span className={`text-[10px] px-1.5 py-0.5 rounded border ${disabled ? "bg-gray-100 text-gray-500 border-gray-200" : "bg-blue-50 text-blue-600 border-blue-100"}`}>{tpl.type_name}</span>}
+											<span className={`font-medium ${disabled ? "text-gray-500 dark:text-gray-400" : "text-gray-800 dark:text-gray-100 group-hover:text-blue-700"}`}>{tpl.name || tpl.title || tpl.template_name}</span>
+											{tpl.type_name && <span className={`text-[10px] px-1.5 py-0.5 rounded border ${disabled ? "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700/50" : "bg-blue-50 text-blue-600 border-blue-100"}`}>{tpl.type_name}</span>}
 										</div>
-										{tpl.description && <span className="text-xs text-gray-500 line-clamp-2">{tpl.description}</span>}
+										{tpl.description && <span className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{tpl.description}</span>}
 
 										{disabled && reason && (
 											<div className="mt-1 flex items-center gap-1 text-[10px] text-red-500 font-medium">
@@ -960,8 +960,8 @@ function EmailTemplateSelectorModal({ isOpen, onClose, onSelect, t, order, sendi
 						</div>
 					)}
 				</div>
-				<div className="p-4 border-t bg-gray-50 rounded-b-lg flex justify-end">
-					<button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-200 rounded" disabled={sending}>
+				<div className="p-4 border-t bg-gray-50 dark:bg-gray-900 rounded-b-lg flex justify-end">
+					<button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 rounded" disabled={sending}>
 						{t("cancel")}
 					</button>
 				</div>

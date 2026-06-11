@@ -28,8 +28,8 @@ const DropdownIndicator = (props) => (
 
 const InputField = ({ label, value, onChange, placeholder, type = "text" }) => (
 	<div className="flex flex-col gap-1">
-		<label className="text-[11px] font-medium text-gray-500">{label}</label>
-		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors" />
+		<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{label}</label>
+		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 dark:border-gray-700/50 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-900 transition-colors" />
 	</div>
 );
 
@@ -319,9 +319,9 @@ export function ZelleAccountsView() {
 
 	return (
 		<div className="p-6">
-			<div className="bg-white rounded-2xl shadow p-4">
+			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
 				<div className="relative flex flex-col gap-4 mb-4" ref={containerRef}>
-					<h3 className="text-sm font-semibold text-gray-900 flex-shrink-0">{t("zelleAccounts") || "Zelle Accounts"}</h3>
+					<h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{t("zelleAccounts") || "Zelle Accounts"}</h3>
 					<div className="flex items-center justify-between">
 						<div className="flex flex-wrap items-center justify-end gap-2">
 							{activeFiltersList.map((filter) => (
@@ -337,7 +337,7 @@ export function ZelleAccountsView() {
 							))}
 
 							<div className="flex items-center gap-x-2 flex-wrap">
-								<button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border ${isFiltersExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
+								<button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border ${isFiltersExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700/50 hover:bg-gray-50 dark:bg-gray-900"}`}>
 									<FontAwesomeIcon icon={faFilter} />
 									{t("filter")}
 									<FontAwesomeIcon icon={isFiltersExpanded ? faChevronUp : faChevronDown} className="ml-1" />
@@ -353,20 +353,20 @@ export function ZelleAccountsView() {
 					</div>
 
 					{isFiltersExpanded && (
-						<div className="absolute top-full left-0 right-0 z-50 p-4 bg-white shadow-xl border border-gray-100 rounded-xl mt-1">
+						<div className="absolute top-full left-0 right-0 z-50 p-4 bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700/50 rounded-xl mt-1">
 							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 								<InputField label={t("zelleEmail") || "Email"} value={filters.comment} onChange={(e) => setFilters({ ...filters, comment: e.target.value })} placeholder={t("search") || "Search..."} />
 								<div className="flex flex-col gap-1">
-									<label className="text-[11px] font-medium text-gray-500">{t("username") || "Username"}</label>
+									<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("username") || "Username"}</label>
 									<Select className="hs-custom-select" options={userOptions} value={userOptions.find((o) => o.value === filters.userId) || null} onChange={(opt) => setFilters({ ...filters, userId: opt?.value || "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectUser") || "Select User"} isClearable />
 								</div>
 								<div className="flex flex-col gap-1">
-									<label className="text-[11px] font-medium text-gray-500">{t("st_status") || "Status"}</label>
+									<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("st_status") || "Status"}</label>
 									<Select className="hs-custom-select" options={statusOptions} value={statusOptions.find((o) => o.value === filters.status) || null} onChange={(opt) => setFilters({ ...filters, status: opt !== null ? opt.value : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectStatus") || "Select..."} isClearable />
 								</div>
 							</div>
-							<div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-50">
-								<button onClick={handleResetFilters} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+							<div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-50 dark:border-gray-700/50">
+								<button onClick={handleResetFilters} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 hover:bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
 									{t("reset")}
 								</button>
 								<button onClick={handleSearch} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
@@ -379,7 +379,7 @@ export function ZelleAccountsView() {
 				</div>
 
 				{loading ? (
-					<div className="p-8 text-center text-gray-500">{t("loading")}</div>
+					<div className="p-8 text-center text-gray-500 dark:text-gray-400">{t("loading")}</div>
 				) : (
 					<div className="mt-3">
 						{isMobile ? (
@@ -390,13 +390,13 @@ export function ZelleAccountsView() {
 									const isExpanded = expandedMobileRow === item.id;
 
 									return (
-										<div key={item.id} className={`bg-white rounded-lg shadow-sm border transition-all box-border ${isExpanded ? "border-blue-500" : "border-gray-100"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : item.id)}>
+										<div key={item.id} className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border transition-all box-border ${isExpanded ? "border-blue-500" : "border-gray-100 dark:border-gray-700/50"}`} onClick={() => setExpandedMobileRow(isExpanded ? null : item.id)}>
 											<div className="p-3 flex items-center justify-between gap-3">
 												<div className="flex-1 min-w-0">
 													<div className="flex items-center gap-2 mb-1">
-														<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-mono">ID: {item.id}</span>
+														<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-[10px] font-mono">ID: {item.id}</span>
 													</div>
-													<div className="font-medium text-gray-900 truncate text-sm" title={item.comment}>
+													<div className="font-medium text-gray-900 dark:text-gray-100 truncate text-sm" title={item.comment}>
 														{item.comment || "-"}
 													</div>
 													<div className="flex flex-col gap-1 mt-1">
@@ -405,11 +405,11 @@ export function ZelleAccountsView() {
 																const statusInfo = getStripeAccountStatusInfo(item.status, t);
 																const colorClass =
 																	{
-																		gray: "bg-gray-100 text-gray-800",
+																		gray: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100",
 																		green: "bg-green-100 text-green-800",
 																		blue: "bg-blue-100 text-blue-800",
 																		red: "bg-red-100 text-red-800",
-																	}[statusInfo.color] || "bg-gray-100 text-gray-800";
+																	}[statusInfo.color] || "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100";
 																return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
 															})()}
 														</div>
@@ -438,7 +438,7 @@ export function ZelleAccountsView() {
 
 											<div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
 												<div className="overflow-hidden">
-													<div className="px-3 pb-3 pt-0 text-xs text-gray-600 space-y-2 border-t border-gray-50 mt-1">
+													<div className="px-3 pb-3 pt-0 text-xs text-gray-600 dark:text-gray-400 space-y-2 border-t border-gray-50 dark:border-gray-700/50 mt-1">
 														<div className="pt-2">
 															<span className="text-gray-400 block mb-0.5">{t("zelleAccountName") || "Account Name"}</span>
 															<span className="font-medium">{item.bankAccountHolder || "-"}</span>
@@ -466,26 +466,26 @@ export function ZelleAccountsView() {
 							</div>
 						) : (
 							<table className="w-full text-xs table-fixed">
-								<thead className="bg-gray-100">
+								<thead className="bg-gray-100 dark:bg-gray-700">
 									<tr>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[20%]" : "w-[15%]"}`}>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[20%]" : "w-[15%]"}`}>
 											{t("owner") || "Owner"}
 										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[25%]" : "w-[30%]"}`}>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[25%]" : "w-[30%]"}`}>
 											{t("zelleEmail") || "Email"}
 										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[25%]" : "w-[30%]"}`}>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[25%]" : "w-[30%]"}`}>
 											{t("zelleAccountName") || "Account Name"}
 										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[10%]"}`}>
 											{t("st_status")}
 										</th>
-										<th className={`px-3 py-3 text-left font-medium text-gray-700 ${isTablet ? "w-[15%]" : "w-[15%]"}`}>
+										<th className={`px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 ${isTablet ? "w-[15%]" : "w-[15%]"}`}>
 											{t("actions")}
 										</th>
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-gray-100">
+								<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50">
 									{list.length === 0 ? (
 										<tr>
 											<td colSpan={5} className="px-4 py-8 text-center text-gray-400">
@@ -495,7 +495,7 @@ export function ZelleAccountsView() {
 									) : (
 										list.map((item) => {
 											return (
-												<tr key={item.id} className="hover:bg-gray-50 transition-colors align-top border-t">
+												<tr key={item.id} className="hover:bg-gray-50 dark:bg-gray-900 transition-colors align-top border-t">
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5">
 															<span className="text-[12px] text-peach font-bold italic">{item.username || "-"}</span>
@@ -503,14 +503,14 @@ export function ZelleAccountsView() {
 													</td>
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5">
-															<span className="font-medium text-gray-900 truncate" title={item.comment}>
+															<span className="font-medium text-gray-900 dark:text-gray-100 truncate" title={item.comment}>
 																{item.comment || "-"}
 															</span>
 														</div>
 													</td>
 													<td className="p-3 overflow-hidden">
 														<div className="flex flex-col gap-1.5">
-															<span className="font-medium text-gray-900 truncate" title={item.bankAccountHolder}>
+															<span className="font-medium text-gray-900 dark:text-gray-100 truncate" title={item.bankAccountHolder}>
 																{item.bankAccountHolder || "-"}
 															</span>
 														</div>
@@ -521,11 +521,11 @@ export function ZelleAccountsView() {
 																const statusInfo = getStripeAccountStatusInfo(item.status, t);
 																const colorClass =
 																	{
-																		gray: "bg-gray-100 text-gray-800",
+																		gray: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100",
 																		green: "bg-green-100 text-green-800",
 																		blue: "bg-blue-100 text-blue-800",
 																		red: "bg-red-100 text-red-800",
-																	}[statusInfo.color] || "bg-gray-100 text-gray-800";
+																	}[statusInfo.color] || "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100";
 																return <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}>{statusInfo.label}</span>;
 															})()}
 														</div>

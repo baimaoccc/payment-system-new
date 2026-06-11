@@ -101,9 +101,9 @@ export function LandingPage() {
 	];
 
 	return (
-		<div className="bg-white">
+		<div className="bg-white dark:bg-gray-800">
 			{/* Hero Section - Light Theme */}
-			<section className="relative bg-white text-slate-900 pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+			<section className="relative bg-white dark:bg-gray-800 text-slate-900 pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
 				{/* Abstract Background Shapes - Light Theme */}
 				<div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-blue-100 to-transparent rounded-bl-full transform translate-x-1/3 -translate-y-1/4 blur-3xl opacity-60"></div>
 				<div className="absolute bottom-0 left-0 w-1/3 h-2/3 bg-gradient-to-tr from-cyan-100 to-transparent rounded-tr-full transform -translate-x-1/4 translate-y-1/4 blur-2xl opacity-60"></div>
@@ -177,7 +177,7 @@ export function LandingPage() {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 						{/* 1. Global Payment Gateway */}
 						<RevealOnScroll className="delay-0">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col" onClick={() => {
+							<div className="group bg-white dark:bg-gray-800 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col" onClick={() => {
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							}}>
 								<div className="flex items-center gap-4 mb-6">
@@ -200,7 +200,7 @@ export function LandingPage() {
 
 						{/* 2. Invoice & Billing Suite */}
 						<RevealOnScroll className="delay-100">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#5556fd]/30 h-full flex flex-col" onClick={() => {
+							<div className="group bg-white dark:bg-gray-800 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#5556fd]/30 h-full flex flex-col" onClick={() => {
 								window.open("https://www.paypay.it.com", "_blank");
 							}}>
 								<div className="flex items-center gap-4 mb-6">
@@ -223,7 +223,7 @@ export function LandingPage() {
 
 						{/* 3. Logistics & Mail System */}
 						<RevealOnScroll className="delay-200">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#4d2a8a]/30 h-full flex flex-col" onClick={() => {
+							<div className="group bg-white dark:bg-gray-800 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-[#4d2a8a]/30 h-full flex flex-col" onClick={() => {
 								window.open("https://www.hsmail.vip/", "_blank");
 							}}>
 								<div className="flex items-center gap-4 mb-6">
@@ -246,7 +246,7 @@ export function LandingPage() {
 
 						{/* 4. Global Account Solutions */}
 						<RevealOnScroll className="delay-300">
-							<div className="group bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col" onClick={() => {
+							<div className="group bg-white dark:bg-gray-800 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-slate-200/60 hover:border-blue-100 h-full flex flex-col" onClick={() => {
 								window.open("https://www.banksvip.com", "_blank");
 							}}>
 								<div className="flex items-center gap-4 mb-6">
@@ -271,7 +271,7 @@ export function LandingPage() {
 			</section>
 
 			{/* Products Section (Ecosystem) */}
-			<section id="products" className="py-20 bg-white text-slate-900 relative">
+			<section id="products" className="py-20 bg-white dark:bg-gray-800 text-slate-900 relative">
 				{/* Custom Styles for this section */}
 				<style>{`
 					@keyframes float-slow {
@@ -301,7 +301,7 @@ export function LandingPage() {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 						{products.map((product, idx) => (
 							<RevealOnScroll key={product.id} className={`delay-[${idx * 100}ms] h-full`}>
-								<div onClick={() => navigate("/")} className="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-2xl hover:bg-white transition-all duration-300 border border-slate-100 hover:border-blue-200 group h-full hover:-translate-y-2">
+								<div onClick={() => navigate("/")} className="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-2xl hover:bg-white dark:bg-gray-800 transition-all duration-300 border border-slate-100 hover:border-blue-200 group h-full hover:-translate-y-2">
 									<div className={`w-14 h-14 rounded-xl ${product.color} text-white flex items-center justify-center text-2xl mb-6 shadow-md transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 animate-float-slow`} style={{ animationDelay: `${idx * 0.5}s` }}>
 										<FontAwesomeIcon icon={product.icon} />
 									</div>
@@ -326,7 +326,7 @@ export function LandingPage() {
 			</section>
 
 			{/* Feature Highlight Section (formerly Conversational Commerce) */}
-			<section id="analytics" className="py-20 bg-white relative overflow-hidden mb-[10px]">
+			<section id="analytics" className="py-20 bg-white dark:bg-gray-800 relative overflow-hidden mb-[10px]">
 				<div className="absolute top-0 right-0 w-1/3 h-full bg-blue-50/50 blur-3xl rounded-l-full"></div>
 				<div className="container mx-auto px-6 relative z-10">
 					<div className="flex flex-col md:flex-row items-center gap-16">
@@ -407,7 +407,7 @@ export function LandingPage() {
 			</section>
 
 			{/* Trust Section */}
-			<section id="trust" className="py-24 bg-white relative z-20">
+			<section id="trust" className="py-24 bg-white dark:bg-gray-800 relative z-20">
 				<div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
 					<div className="md:w-1/2 mb-12 md:mb-0 pr-0 md:pr-12">
 						<RevealOnScroll>
@@ -441,7 +441,7 @@ export function LandingPage() {
 									].map((i) => (
 										<div
 											key={i.title}
-											className="h-24 bg-white rounded-lg flex items-center justify-center border border-slate-100 cursor-pointer hover:shadow-md transition-shadow"
+											className="h-24 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center border border-slate-100 cursor-pointer hover:shadow-md transition-shadow"
 											onClick={() => {
 												if (i.url) {
 													window.open(i.url, "_blank");

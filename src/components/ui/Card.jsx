@@ -5,10 +5,10 @@ import React from 'react'
  */
 export function Card({ title, action, children, className = '' }) {
   return (
-    <section className={`p-3 ${className}`}>
+    <section className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700/50 p-3 transition-colors duration-200 ${className}`}>
       {(title || action) && (
         <div className="flex items-center justify-between mb-2">
-          {title && <h3 className="text-sm font-semibold text-navy">{title}</h3>}
+          {title && <h3 className="text-sm font-semibold text-navy dark:text-gray-100">{title}</h3>}
           {action}
         </div>
       )}

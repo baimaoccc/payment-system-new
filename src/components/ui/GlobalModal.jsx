@@ -41,16 +41,16 @@ export function GlobalModal() {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
 			<div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={handleCancel} />
-			<div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-				<div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-					<h3 className="text-lg font-bold text-gray-900">{modal.title || "Notification"}</h3>
+			<div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 border border-transparent dark:border-gray-700/50">
+				<div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
+					<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{modal.title || "Notification"}</h3>
 				</div>
 
-				<div className="px-6 py-6 text-gray-600 leading-relaxed">{modal.message || ""}</div>
+				<div className="px-6 py-6 text-gray-600 dark:text-gray-300 leading-relaxed">{modal.message || ""}</div>
 
-				<div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+				<div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
 					{modal.showCancel && (
-						<button disabled={loading} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleCancel}>
+						<button disabled={loading} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 dark:focus:ring-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleCancel}>
 							{modal.cancelText || "Cancel"}
 						</button>
 					)}

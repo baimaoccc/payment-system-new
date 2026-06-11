@@ -63,19 +63,19 @@ export function StripeWarningModal({ isOpen, onClose, accountId }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-white z-10">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800 z-10">
                     <div className="flex items-center gap-3">
                         <div className="bg-orange-50 text-orange-600 p-2 rounded-lg">
                             <FontAwesomeIcon icon={faExclamationTriangle} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900">{t("st_warning_list")}</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">ID: {accountId}</p>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t("st_warning_list")}</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ID: {accountId}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900">
                         <FontAwesomeIcon icon={faTimes} className="text-xl" />
                     </button>
                 </div>
@@ -93,20 +93,20 @@ export function StripeWarningModal({ isOpen, onClose, accountId }) {
                         </div>
                     ) : (
                         <div className="p-6">
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left text-sm">
-                                        <thead className="bg-gray-50 border-b border-gray-100">
+                                        <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700/50">
                                             <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("st_fraud_type")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("st_actionable")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("st_charge")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("date")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("st_fraud_type")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("st_actionable")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("st_charge")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("date")}</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-100">
+                                        <tbody className="divide-y divide-gray-100 dark:divide-gray-700/50">
                                             {list.map((item, idx) => (
-                                                <tr key={item.id || idx} className="hover:bg-gray-50 transition-colors">
+                                                <tr key={item.id || idx} className="hover:bg-gray-50 dark:bg-gray-900 transition-colors">
                                                     <td className="px-4 py-3">
                                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                                             item.fraud_type === 'card_testing' ? 'bg-yellow-50 text-yellow-700' : 'bg-red-50 text-red-700'
@@ -125,8 +125,8 @@ export function StripeWarningModal({ isOpen, onClose, accountId }) {
                                                             </span>
                                                         )}
                                                     </td>
-                                                    <td className="px-4 py-3 font-mono text-xs text-gray-600">{item.charge}</td>
-                                                    <td className="px-4 py-3 text-gray-500">
+                                                    <td className="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{item.charge}</td>
+                                                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
                                                         {item.created ? new Date(item.created * 1000).toLocaleString() : '-'}
                                                     </td>
                                                 </tr>
@@ -142,7 +142,7 @@ export function StripeWarningModal({ isOpen, onClose, accountId }) {
                                     <button 
                                         onClick={() => loadData(true)} 
                                         disabled={loadingMore}
-                                        className="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 text-gray-600 dark:text-gray-400 rounded-lg text-sm hover:bg-gray-50 dark:bg-gray-900 transition-colors disabled:opacity-50"
                                     >
                                         {loadingMore ? (
                                             <>

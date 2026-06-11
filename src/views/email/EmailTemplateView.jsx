@@ -12,7 +12,7 @@ import { addToast, setEmailTemplatesAll, setModal } from "../../store/slices/ui.
 
 const InputRow = ({ label, children, className = "" }) => (
 	<div className={`mb-4 ${className}`}>
-		<label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
+		<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">{label}</label>
 		{children}
 	</div>
 );
@@ -114,10 +114,10 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
-			<div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-scale-in">
-				<div className="flex items-center justify-between p-6 border-b border-gray-100">
-					<h3 className="text-xl font-bold text-gray-800">{readOnly ? t("viewEmailTemplate") : initial ? t("editEmailTemplate") : t("addEmailTemplate")}</h3>
-					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all">
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-scale-in">
+				<div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700/50">
+					<h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{readOnly ? t("viewEmailTemplate") : initial ? t("editEmailTemplate") : t("addEmailTemplate")}</h3>
+					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-gray-100 dark:bg-gray-700 hover:text-gray-600 dark:text-gray-400 transition-all">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
@@ -125,7 +125,7 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 				<form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6">
 					<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 						<InputRow label={t("templateName")}>
-							<input type="text" className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm disabled:bg-gray-100 disabled:text-gray-500" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t("templateNamePlaceholder")} required disabled={readOnly} />
+							<input type="text" className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm disabled:bg-gray-100 dark:bg-gray-700 disabled:text-gray-500 dark:text-gray-400" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t("templateNamePlaceholder")} required disabled={readOnly} />
 						</InputRow>
 
 						<InputRow label={t("emailType")}>
@@ -146,27 +146,27 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 						</InputRow>
 
 						<InputRow label={t("serviceEmail")}>
-							<input type="email" className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm disabled:bg-gray-100 disabled:text-gray-500" value={form.serviceemail || ""} onChange={(e) => setForm({ ...form, serviceemail: e.target.value })} placeholder={t("serviceEmailPlaceholder")} disabled={readOnly} />
+							<input type="email" className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm disabled:bg-gray-100 dark:bg-gray-700 disabled:text-gray-500 dark:text-gray-400" value={form.serviceemail || ""} onChange={(e) => setForm({ ...form, serviceemail: e.target.value })} placeholder={t("serviceEmailPlaceholder")} disabled={readOnly} />
 						</InputRow>
 					</div>
 
 					<InputRow label={t("description")}>
-						<textarea className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[60px] disabled:bg-gray-100 disabled:text-gray-500" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder={t("descriptionPlaceholder")} disabled={readOnly} />
+						<textarea className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[60px] disabled:bg-gray-100 dark:bg-gray-700 disabled:text-gray-500 dark:text-gray-400" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder={t("descriptionPlaceholder")} disabled={readOnly} />
 					</InputRow>
 
 					<InputRow label={t("templateContent")}>
 						{/* <div className="flex justify-end mb-2">
-							<button type="button" onClick={() => setIsCodeMode(!isCodeMode)} className={`text-xs px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors ${isCodeMode ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`} title={isCodeMode ? "Switch to Visual Editor" : "Switch to Code Editor"}>
+							<button type="button" onClick={() => setIsCodeMode(!isCodeMode)} className={`text-xs px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors ${isCodeMode ? "bg-blue-100 text-blue-700" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200"}`} title={isCodeMode ? "Switch to Visual Editor" : "Switch to Code Editor"}>
 								<FontAwesomeIcon icon={isCodeMode ? faPen : faCode} />
 								{isCodeMode ? "Visual Editor" : "Code Editor"}
 							</button>
 						</div> */}
-						<textarea className="w-full h-[300px] px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm font-mono" value={form.template || ""} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="Paste your HTML code here..." disabled={readOnly} />
-						{/* {isCodeMode ? <textarea className="w-full h-[300px] px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm font-mono" value={form.template || ""} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="Paste your HTML code here..." disabled={readOnly} /> : <RichTextEditor value={form.template} onChange={(val) => setForm({ ...form, template: val })} placeholder={t("templateContentPlaceholder")} readOnly={readOnly} />} */}
+						<textarea className="w-full h-[300px] px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm font-mono" value={form.template || ""} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="Paste your HTML code here..." disabled={readOnly} />
+						{/* {isCodeMode ? <textarea className="w-full h-[300px] px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm font-mono" value={form.template || ""} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="Paste your HTML code here..." disabled={readOnly} /> : <RichTextEditor value={form.template} onChange={(val) => setForm({ ...form, template: val })} placeholder={t("templateContentPlaceholder")} readOnly={readOnly} />} */}
 					</InputRow>
 
 					<InputRow label={t("templatePreview")}>
-						<div className="bg-white border-gray-200 rounded-lg overflow-hidden">{isHtml(form.template) ? <IframePreview content={decodeHtmlStr(form.template)} /> : <div className="p-4 whitespace-pre-wrap text-sm text-gray-800">{form.template || ""}</div>}</div>
+						<div className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700/50 rounded-lg overflow-hidden">{isHtml(form.template) ? <IframePreview content={decodeHtmlStr(form.template)} /> : <div className="p-4 whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-100">{form.template || ""}</div>}</div>
 					</InputRow>
 
 					{(() => {
@@ -190,10 +190,10 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 								<div className="p-6 text-xs">
 									{orderVars.length > 0 && (
 										<div>
-											<div className="mb-2 text-gray-500">{t("orderVariable")}</div>
+											<div className="mb-2 text-gray-500 dark:text-gray-400">{t("orderVariable")}</div>
 											<div className="flex flex-wrap gap-2">
 												{orderVars.map((item, index) => (
-													<span key={`order-${index}`} className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 cursor-pointer hover:bg-gray-200" onClick={() => copyVariable(item)} title={t("clickToCopy")}>
+													<span key={`order-${index}`} className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-gray-200" onClick={() => copyVariable(item)} title={t("clickToCopy")}>
 														{item}
 													</span>
 												))}
@@ -202,10 +202,10 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 									)}
 									{logisticsVars.length > 0 && (
 										<div>
-											<div className="mb-2 text-gray-500">{t("logisticsVariable")}</div>
+											<div className="mb-2 text-gray-500 dark:text-gray-400">{t("logisticsVariable")}</div>
 											<div className="flex flex-wrap gap-2">
 												{logisticsVars.map((item, index) => (
-													<span key={`logistics-${index}`} className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 cursor-pointer hover:bg-gray-200" onClick={() => copyVariable(item)} title={t("clickToCopy")}>
+													<span key={`logistics-${index}`} className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-gray-200" onClick={() => copyVariable(item)} title={t("clickToCopy")}>
 														{item}
 													</span>
 												))}
@@ -214,10 +214,10 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 									)}
 									{clientVars.length > 0 && (
 										<div>
-											<div className="mb-2 text-gray-500">{t("clientVariable")}</div>
+											<div className="mb-2 text-gray-500 dark:text-gray-400">{t("clientVariable")}</div>
 											<div className="flex flex-wrap gap-2">
 												{clientVars.map((item, index) => (
-													<span key={`client-${index}`} className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 cursor-pointer hover:bg-gray-200" onClick={() => copyVariable(item)} title={t("clickToCopy")}>
+													<span key={`client-${index}`} className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-gray-200" onClick={() => copyVariable(item)} title={t("clickToCopy")}>
 														{item}
 													</span>
 												))}
@@ -229,8 +229,8 @@ function EmailTemplateFormModal({ open, initial, onClose, onSave, t, readOnly, e
 						);
 					})()}
 
-					<div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
-						<button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+					<div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-gray-700/50">
+						<button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors">
 							{readOnly ? t("close") : t("cancel")}
 						</button>
 						{!readOnly && (
@@ -250,23 +250,23 @@ const MobileEmailTemplateCard = ({ item, onView, onEdit, onDelete, t, getTypeNam
 	const [expanded, setExpanded] = useState(false);
 
 	return (
-		<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-all duration-200 ${expanded ? "ring-1 ring-blue-100" : ""}`}>
+		<div className={`bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700/50 transition-all duration-200 ${expanded ? "ring-1 ring-blue-100" : ""}`}>
 			<div className="flex justify-between items-start mb-3">
 				<div className="flex-1 min-w-0 mr-3">
 					<div className="flex items-center gap-2 mb-1">
-						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
-						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.name}</h3>
+						<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-1 break-all">{item.name}</h3>
 					</div>
 					<div className="flex flex-wrap gap-2 mt-2">
 						<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">{getTypeName(item.type_id)}</span>
-						{item.status == 1 ? <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-100">{t("active") || "Active"}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 text-gray-700 border border-gray-100">{t("inactive") || "Inactive"}</span>}
+						{item.status == 1 ? <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-100">{t("active") || "Active"}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-gray-700/50">{t("inactive") || "Inactive"}</span>}
 					</div>
 				</div>
 			</div>
 
 			{item.description && (
-				<div className="bg-gray-50 rounded-lg p-2.5 mb-3 text-xs text-gray-600 leading-relaxed break-words">
-					<span className="font-medium text-gray-500 mr-1">{t("description")}:</span>
+				<div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-2.5 mb-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed break-words">
+					<span className="font-medium text-gray-500 dark:text-gray-400 mr-1">{t("description")}:</span>
 					<div className={`break-words ${expanded ? "" : "line-clamp-2"}`} onClick={() => setExpanded(!expanded)}>
 						{item.description}
 					</div>
@@ -285,7 +285,7 @@ const MobileEmailTemplateCard = ({ item, onView, onEdit, onDelete, t, getTypeNam
 				</div>
 			)}
 
-			<div className="flex items-center justify-between pt-3 border-t border-gray-50">
+			<div className="flex items-center justify-between pt-3 border-t border-gray-50 dark:border-gray-700/50">
 				<div className="flex flex-col gap-0.5 text-[10px] text-gray-400">
 					{item.createtime && (
 						<span>
@@ -299,13 +299,13 @@ const MobileEmailTemplateCard = ({ item, onView, onEdit, onDelete, t, getTypeNam
 					)}
 				</div>
 				<div className="flex items-center gap-2">
-					<button onClick={() => onView(item)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors" title={t("view")}>
+					<button onClick={() => onView(item)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-500/20 dark:text-green-400 dark:hover:bg-green-500/30 transition-colors" title={t("view")}>
 						{actionLoading === `view-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faEye} size="sm" />}
 					</button>
-					<button onClick={() => onEdit(item)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
+					<button onClick={() => onEdit(item)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30 transition-colors" title={t("edit")}>
 						{actionLoading === `edit-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faPen} size="sm" />}
 					</button>
-					<button onClick={() => onDelete(item.id)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
+					<button onClick={() => onDelete(item.id)} disabled={!!actionLoading} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-500/20 dark:text-red-400 dark:hover:bg-red-500/30 transition-colors" title={t("delete")}>
 						<FontAwesomeIcon icon={faTrash} size="sm" />
 					</button>
 				</div>
@@ -448,12 +448,12 @@ export function EmailTemplateView() {
 		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
 				<div className="flex items-center gap-4">
-					<div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 hidden sm:flex">
+					<div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 hidden sm:flex">
 						<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
 					</div>
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">{t("emailTemplateManagement")}</h1>
-						<p className="text-sm text-gray-500 mt-1">{t("emailTemplateManagementDesc")}</p>
+						<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("emailTemplateManagement")}</h1>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("emailTemplateManagementDesc")}</p>
 					</div>
 				</div>
 				<button
@@ -471,12 +471,12 @@ export function EmailTemplateView() {
 			{/* Mobile/Tablet View (Cards) */}
 			<div className="lg:hidden space-y-4 mb-4">
 				{loading ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
 						{t("loading")}
 					</div>
 				) : (list || []).length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">{t("noData")}</div>
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">{t("noData")}</div>
 				) : (
 					(list || []).map((item) => <MobileEmailTemplateCard key={item.id} item={item} onView={handleView} onEdit={handleEdit} onDelete={() => handleDelete(item.id)} t={t} getTypeName={getTypeName} formatDate={formatDate} actionLoading={actionLoading} />)
 				)}
@@ -486,7 +486,7 @@ export function EmailTemplateView() {
 			</div>
 
 			{/* Desktop View (Table) */}
-			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			<div className="hidden lg:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/50 overflow-hidden">
 				{loading ? (
 					<div className="p-12 text-center text-gray-400">
 						<FontAwesomeIcon icon={faSpinner} spin className="text-3xl mb-3" />
@@ -495,40 +495,40 @@ export function EmailTemplateView() {
 				) : (
 					<div className="overflow-x-auto">
 						<table className="min-w-full text-xs">
-							<thead className="bg-gray-100">
+							<thead className="bg-gray-100 dark:bg-gray-700">
 								<tr>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-16">ID</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/5">{t("templateName")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/6">{t("emailType")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/6">{t("status")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700">{t("description")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/6">{t("timeline")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-24">{t("actions")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-16">ID</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/5">{t("templateName")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/6">{t("emailType")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/6">{t("status")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300">{t("description")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/6">{t("timeline")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-24">{t("actions")}</th>
 								</tr>
 							</thead>
 							<tbody>
 								{(list || []).map((item) => (
-									<tr key={item.id} className="border-t hover:bg-gray-50 transition-colors">
-										<td className="p-3 align-top font-mono text-gray-500">#{item.id}</td>
+									<tr key={item.id} className="border-t border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+										<td className="p-3 align-top font-mono text-gray-500 dark:text-gray-400">#{item.id}</td>
 
 										<td className="p-3 align-top">
-											<div className="font-bold text-gray-900 text-sm">{item.name}</div>
+											<div className="font-bold text-gray-900 dark:text-gray-100 text-sm">{item.name}</div>
 										</td>
 
 										<td className="p-3 align-top">
 											<div className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">{getTypeName(item.type_id)}</div>
 										</td>
 
-										<td className="p-3 align-top">{item.status == 1 ? <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-100">{t("active") || "Active"}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 text-gray-700 border border-gray-100">{t("inactive") || "Inactive"}</span>}</td>
+										<td className="p-3 align-top">{item.status == 1 ? <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-100">{t("active") || "Active"}</span> : <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-gray-700/50">{t("inactive") || "Inactive"}</span>}</td>
 
 										<td className="p-3 align-top">
-											<div className="text-gray-600 line-clamp-2 max-w-xl" title={item.description}>
+											<div className="text-gray-600 dark:text-gray-400 line-clamp-2 max-w-xl" title={item.description}>
 												{item.description}
 											</div>
 										</td>
 
 										<td className="p-3 align-top">
-											<div className="flex flex-col gap-1 text-gray-500">
+											<div className="flex flex-col gap-1 text-gray-500 dark:text-gray-400">
 												{item.createtime && (
 													<div title={`${t("created")}: ${formatDate(item.createtime)}`}>
 														<span className="text-gray-400 text-[10px] w-8 inline-block">{t("crt")}:</span>
@@ -546,13 +546,13 @@ export function EmailTemplateView() {
 
 										<td className="p-3 align-top">
 											<div className="flex items-center gap-3">
-												<button onClick={() => handleView(item)} disabled={!!actionLoading} className="text-green-600 hover:text-green-800 transition-colors disabled:opacity-50" title={t("view")}>
+												<button onClick={() => handleView(item)} disabled={!!actionLoading} className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors disabled:opacity-50" title={t("view")}>
 													{actionLoading === `view-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faEye} />}
 												</button>
-												<button onClick={() => handleEdit(item)} disabled={!!actionLoading} className="text-blue-600 hover:text-blue-800 transition-colors disabled:opacity-50" title={t("edit")}>
+												<button onClick={() => handleEdit(item)} disabled={!!actionLoading} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors disabled:opacity-50" title={t("edit")}>
 													{actionLoading === `edit-${item.id}` ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faPen} />}
 												</button>
-												<button onClick={() => handleDelete(item.id)} disabled={!!actionLoading} className="text-red-600 hover:text-red-800 transition-colors disabled:opacity-50" title={t("delete")}>
+												<button onClick={() => handleDelete(item.id)} disabled={!!actionLoading} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors disabled:opacity-50" title={t("delete")}>
 													<FontAwesomeIcon icon={faTrash} />
 												</button>
 											</div>
@@ -571,7 +571,7 @@ export function EmailTemplateView() {
 					</div>
 				)}
 
-				<div className="border-t border-gray-100 bg-gray-50/30 p-4">
+				<div className="border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/30 p-4">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
 				</div>
 			</div>

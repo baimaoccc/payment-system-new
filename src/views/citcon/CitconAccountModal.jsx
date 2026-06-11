@@ -129,7 +129,7 @@ const SectionHeader = ({ title, subtitle }) => (
 	</div>
 );
 
-export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData = null, readOnly = false }) {
+export function CitconAccountModal({ isOpen, onClose, onSuccess, initialData = null, readOnly = false }) {
 	const { t } = useI18n();
 	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
@@ -146,7 +146,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 
 	const paymentTypeOptions = getPaymentTypeOptions(t).map((opt) => ({
 		...opt,
-		label: typeof opt.label === "string" ? opt.label.replace(/Stripe/g, "Airwallex") : opt.label,
+		label: typeof opt.label === "string" ? opt.label.replace(/Stripe/g, "Citcon") : opt.label,
 	}));
 	const statusOptions = getStripeAccountStatusOptions(t).filter((opt) => {
 		if (opt.value === StripeAccountStatus.ACTIVE || opt.value === StripeAccountStatus.INACTIVE) {
@@ -162,9 +162,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 		status: 1,
 		group_id: "",
 		comment: "",
-		api_key: "",
-		api_publishable_key: "",
-		endpoint_secret: "",
+		token: "",
 		c_site_url: "",
 		max_money: "",
 		max_order: "",
@@ -174,7 +172,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 		white_list: "",
 		country_group: "",
 		level: "",
-		type: 1,
+		type: 4,
 		user_id: null,
 		paymentType: 0,
 		paymentChannel: [],
@@ -242,9 +240,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 					status: initialData.status !== undefined ? initialData.status : 1,
 					group_id: initialData.group_id || "",
 					comment: initialData.comment || "",
-					api_key: initialData.api_key || "",
-					api_publishable_key: initialData.api_publishable_key || "",
-					endpoint_secret: initialData.endpoint_secret || "",
+					token: initialData.token || "",
 					c_site_url: initialData.c_site_url || "",
 					max_money: initialData.max_money ?? "",
 					max_order: initialData.max_order ?? "",
@@ -254,7 +250,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 					white_list: "",
 					country_group: initialData.country_group ? String(initialData.country_group) : "",
 					level: initialData.level !== undefined ? initialData.level : "",
-					type: initialData.type !== undefined ? initialData.type : 1,
+					type: initialData.type !== undefined ? initialData.type : 4,
 					user_id: initialData.user_id || null,
 					paymentType: initialData.paymentType || 0,
 					paymentChannel: initialData.paymentChannel ? String(initialData.paymentChannel).replace(/\[|\]|\s|\"|'/g, "").split(",").filter(Boolean) : [],
@@ -269,9 +265,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 					status: 1,
 					group_id: "",
 					comment: "",
-					api_key: "",
-					api_publishable_key: "",
-					endpoint_secret: "",
+					token: "",
 					c_site_url: "",
 					max_money: "",
 					max_order: "",
@@ -281,7 +275,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 					white_list: "",
 					country_group: "",
 					level: "",
-					type: 1,
+					type: 4,
 					user_id: null,
 					paymentType: 0,
 					paymentChannel: [],
@@ -331,9 +325,7 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 			{ key: "c_site_url", label: t("st_c_site_url") || "Site URL" },
 			{ key: "level", label: t("st_level") || "Level" },
 			{ key: "type", label: t("st_type") || "Type" },
-			{ key: "api_publishable_key", label: t("st_pk") || "Publishable Key" },
-			{ key: "endpoint_secret", label: t("st_sk") || "Secret Key" },
-			{ key: "api_key", label: t("st_endpoint_secret") || "Endpoint Secret" },
+			{ key: "token", label: t("citconToken") || "Citcon Token" },
 			{ key: "max_money", label: t("st_max_money") || "Max Money" },
 			{ key: "max_order", label: t("st_max_order") || "Max Order" },
 			{ key: "maximum_purchase_amount", label: t("st_max_purchase") || "Max Purchase Amount" },
@@ -403,8 +395,8 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 		}
 	};
 
-	const modalTitle = readOnly ? t("details") : initialData ? t("airwallex_edit") || "Edit Airwallex Account" : t("airwallex_add") || "Add Airwallex Account";
-	const modalDesc = readOnly ? t("st_modal_desc_view") : t("airwallex_modal_desc_edit") || t("st_modal_desc_edit");
+	const modalTitle = readOnly ? t("details") : initialData ? t("citcon_edit") || "Edit Citcon Account" : t("citcon_add") || "Add Citcon Account";
+	const modalDesc = readOnly ? t("st_modal_desc_view") : t("citcon_modal_desc_edit") || t("st_modal_desc_edit");
 
 				console.log(formData);
 	return (
@@ -463,32 +455,14 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 									}}
 									options={[
 										{
-											value: "klarna",
+											value: "cc",
 											label: (
 												<div className="flex items-center gap-2">
-													<img src={klarnaIcon} alt="KLARNA" className="w-4 h-4 object-contain" />
-													<span>KLARNA</span>
+													<FontAwesomeIcon icon={faCreditCard} className="text-gray-500 dark:text-gray-400" />
+													<span>Credit Card (CC)</span>
 												</div>
 											),
-										},
-										{
-											value: "ideal",
-											label: (
-												<div className="flex items-center gap-2">
-													<img src={idealIcon} alt="IDEAL" className="w-4 h-4 object-contain" />
-													<span>IDEAL</span>
-												</div>
-											),
-										},
-										{
-											value: "bancontact",
-											label: (
-												<div className="flex items-center gap-2">
-													<img src={bancontactIcon} alt="BANCONTACT" className="w-4 h-4 object-contain" />
-													<span>BANCONTACT</span>
-												</div>
-											),
-										},
+										}
 									]}
 									placeholder={t("selectPaymentChannel") || "Select Payment Channel"}
 									isDisabled={readOnly}
@@ -505,24 +479,16 @@ export function AirwallexAccountModal({ isOpen, onClose, onSuccess, initialData 
 							</InputRow>
 
 							<InputRow icon={faShieldAlt} label={t("st_type") || "Type"} noBorder>
-								<Select menuPortalTarget={document.body} value={formData.type} onChange={(val) => setFormData((prev) => ({ ...prev, type: val }))} options={[{ value: 2, label: t("airwallexTypeNormal") || "airwallex" }, { value: 0, label: t("stTypePhishing") || "Phishing" }]} isDisabled={readOnly} className="w-full" />
+								<Select menuPortalTarget={document.body} value={formData.type} onChange={(val) => setFormData((prev) => ({ ...prev, type: val }))} options={[{ value: 4, label: t("citconTypeNormal") || "citcon" }, { value: 0, label: t("stTypePhishing") || "Phishing" }]} isDisabled={readOnly} className="w-full" />
 							</InputRow>
 						</div>
 					</div>
 
 					<div className="mb-10">
-						<SectionHeader title={t("st_api_title")} subtitle={t("airwallex_api_subtitle") || t("st_api_subtitle")} />
+						<SectionHeader title={t("st_api_title")} subtitle={t("citcon_api_subtitle") || t("st_api_subtitle")} />
 						<div className="p-6">
-							<InputRow icon={faKey} label={t("st_pk")}>
-								<input type="text" name="api_publishable_key" value={formData.api_publishable_key} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1 font-mono text-sm" placeholder="pk_test_..." disabled={readOnly} />
-							</InputRow>
-
-							<InputRow icon={faShieldAlt} label={t("st_sk")}>
-								<input type="text" name="endpoint_secret" value={formData.endpoint_secret} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1 font-mono text-sm" placeholder="sk_test_..." disabled={readOnly} />
-							</InputRow>
-
-							<InputRow icon={faKey} label={t("st_endpoint_secret")}>
-								<input type="text" name="api_key" value={formData.api_key} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1 font-mono text-sm" placeholder="whsec_..." disabled={readOnly} />
+							<InputRow icon={faKey} label={t("citconToken") || "Citcon Token"}>
+								<input type="text" name="token" value={formData.token} onChange={handleChange} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1 font-mono text-sm" placeholder="Enter token..." disabled={readOnly} />
 							</InputRow>
 						</div>
 					</div>

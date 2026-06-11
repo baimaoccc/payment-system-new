@@ -62,12 +62,12 @@ export function EmailTasksModal({ isOpen, onClose, orderNo, t, templates }) {
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-			<div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-				<div className="flex items-center justify-between p-6 border-b border-gray-100">
-					<h3 className="text-xl font-bold text-gray-800">
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+				<div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700/50">
+					<h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
 						{t("emailTaskHistory") || "Email Task History"} - {orderNo}
 					</h3>
-					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-gray-100 dark:bg-gray-700 hover:text-gray-600 dark:text-gray-400">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
@@ -83,7 +83,7 @@ export function EmailTasksModal({ isOpen, onClose, orderNo, t, templates }) {
 					)}
 				</div>
 
-				<div className="border-t border-gray-100 bg-gray-50/30 p-4 rounded-b-xl">
+				<div className="border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/30 p-4 rounded-b-xl">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={handlePageChange} onPageSizeChange={handlePageSizeChange} />
 				</div>
 			</div>

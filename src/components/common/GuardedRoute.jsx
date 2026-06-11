@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
-import { MENU_CONFIG, ROLE_MAP } from "../layout/menuConfig";
+import { MENU_CONFIG, ROLE_MAP } from "../layout/menuConfig.jsx";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 
 /**
@@ -48,7 +48,7 @@ export function GuardedRoute({ children }) {
 		if (location.pathname !== "/dashboard") {
 			return <Navigate to="/dashboard" replace />;
 		}
-		return <div className="flex items-center justify-center h-screen text-gray-500">{t("accessDenied")}</div>;
+		return <div className="flex items-center justify-center h-screen text-gray-500 dark:text-gray-400">{t("accessDenied")}</div>;
 	}
 
 	return children;

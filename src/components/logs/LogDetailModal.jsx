@@ -135,10 +135,10 @@ export function LogDetailModal({ open, logId, onClose, t }) {
 		const isJson = typeof processed === "object" && processed !== null;
 
 		if (isJson) {
-			return <pre className="text-xs font-mono text-gray-700 bg-gray-50 p-3 rounded border border-gray-100 whitespace-pre-wrap break-all">{JSON.stringify(processed, null, 2)}</pre>;
+			return <pre className="text-xs font-mono text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 p-3 rounded border border-gray-100 dark:border-gray-700/50 whitespace-pre-wrap break-all">{JSON.stringify(processed, null, 2)}</pre>;
 		}
 
-		return <div className="text-sm font-medium text-gray-700 break-all whitespace-pre-wrap bg-gray-50 p-2 rounded border border-gray-100 font-mono text-xs">{processed}</div>;
+		return <div className="text-sm font-medium text-gray-700 dark:text-gray-300 break-all whitespace-pre-wrap bg-gray-50 dark:bg-gray-900 p-2 rounded border border-gray-100 dark:border-gray-700/50 font-mono text-xs">{processed}</div>;
 	};
 
 	const handleCopy = (text) => {
@@ -157,18 +157,18 @@ export function LogDetailModal({ open, logId, onClose, t }) {
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-			<div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-scale-in flex flex-col max-h-[90vh]">
-				<div className="flex items-center justify-between p-6 border-b border-gray-100">
+			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-scale-in flex flex-col max-h-[90vh]">
+				<div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700/50">
 					<div className="flex items-center gap-3">
 						<div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
 							<FontAwesomeIcon icon={faListAlt} />
 						</div>
 						<div>
-							<h2 className="text-xl font-bold text-gray-900">{t("logDetails")}</h2>
-							<p className="text-sm text-gray-500 mt-1">ID: {logId}</p>
+							<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t("logDetails")}</h2>
+							<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">ID: {logId}</p>
 						</div>
 					</div>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100">
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:bg-gray-700">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
@@ -183,38 +183,38 @@ export function LogDetailModal({ open, logId, onClose, t }) {
 						<div className="space-y-4">
 							<div className="grid grid-cols-2 gap-4">
 								<div>
-									<label className="text-xs text-gray-500 block mb-1">{t("log_id")}</label>
-									<div className="text-sm font-medium text-gray-900">{details.id}</div>
+									<label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">{t("log_id")}</label>
+									<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{details.id}</div>
 								</div>
 								<div>
-									<label className="text-xs text-gray-500 block mb-1">{t("username")}</label>
-									<div className="text-sm font-medium text-gray-900">
+									<label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">{t("username")}</label>
+									<div className="text-sm font-medium text-gray-900 dark:text-gray-100">
 										{details.username} <span className="text-gray-400 text-xs">({details.user_id})</span>
 									</div>
 								</div>
 								<div className="col-span-2">
-									<label className="text-xs text-gray-500 block mb-1">{t("log_title")}</label>
-									<div className="text-sm font-medium text-gray-900 break-all">{details.title}</div>
+									<label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">{t("log_title")}</label>
+									<div className="text-sm font-medium text-gray-900 dark:text-gray-100 break-all">{details.title}</div>
 								</div>
 								<div className="col-span-2">
-									<label className="text-xs text-gray-500 block mb-1">{t("log_link")}</label>
+									<label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">{t("log_link")}</label>
 									<div className="text-sm font-medium text-blue-600 break-all">{details.link}</div>
 								</div>
 								<div>
-									<label className="text-xs text-gray-500 block mb-1">{t("log_ip")}</label>
-									<div className="text-sm font-medium text-gray-900">{details.ip}</div>
+									<label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">{t("log_ip")}</label>
+									<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{details.ip}</div>
 								</div>
 								<div>
-									<label className="text-xs text-gray-500 block mb-1">{t("log_createtime")}</label>
-									<div className="text-sm font-medium text-gray-900">{details.createtime}</div>
+									<label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">{t("log_createtime")}</label>
+									<div className="text-sm font-medium text-gray-900 dark:text-gray-100">{details.createtime}</div>
 								</div>
 								<div className="col-span-2">
-									<label className="text-xs text-gray-500 block mb-1">{t("log_user_agent")}</label>
-									<div className="text-sm font-medium text-gray-700 break-all bg-gray-50 p-2 rounded border border-gray-100 font-mono text-xs">{details.user_agent}</div>
+									<label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">{t("log_user_agent")}</label>
+									<div className="text-sm font-medium text-gray-700 dark:text-gray-300 break-all bg-gray-50 dark:bg-gray-900 p-2 rounded border border-gray-100 dark:border-gray-700/50 font-mono text-xs">{details.user_agent}</div>
 								</div>
 								<div className="col-span-2">
 									<div className="flex justify-between items-center mb-1">
-										<label className="text-xs text-gray-500 block">{t("log_information")}</label>
+										<label className="text-xs text-gray-500 dark:text-gray-400 block">{t("log_information")}</label>
 										<button onClick={() => handleCopy(details.information)} className="text-blue-600 hover:text-blue-700 text-xs flex items-center gap-1 cursor-pointer transition-colors p-1 rounded hover:bg-blue-50" title={t("copyOriginal") || "Copy Original"}>
 											<FontAwesomeIcon icon={faCopy} />
 											<span className="font-medium">{t("copy") || "Copy"}</span>
@@ -229,8 +229,8 @@ export function LogDetailModal({ open, logId, onClose, t }) {
 					)}
 				</div>
 
-				<div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
-					<button onClick={onClose} className="px-6 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm">
+				<div className="p-6 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end">
+					<button onClick={onClose} className="px-6 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:bg-gray-900 transition-all shadow-sm">
 						{t("close")}
 					</button>
 				</div>

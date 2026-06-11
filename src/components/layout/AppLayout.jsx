@@ -10,12 +10,12 @@ import { Outlet, useLocation } from "react-router-dom";
 export function AppLayout() {
 	const location = useLocation();
 	return (
-		<div className="h-screen bg-gray-50 overflow-hidden">
+		<div className="h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 overflow-hidden">
 			<div className="flex h-full">
 				<Sidebar />
 				<div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
 					<Header />
-					<div className="flex-1 p-0 overflow-y-auto flex flex-col">
+					<div className="flex-1 p-0 overflow-y-auto custom-scrollbar flex flex-col">
 						<div key={location.pathname} className="animate-page flex-1">
 							<Outlet />
 						</div>

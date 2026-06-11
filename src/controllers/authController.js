@@ -7,7 +7,7 @@ import { resetState as resetUsers } from "../store/slices/users.js";
 import { resetState as resetOrders } from "../store/slices/orders.js";
 import { resetState as resetUI } from "../store/slices/ui.js";
 import { resetState as resetBlacklist } from "../store/slices/blacklist.js";
-import { ROLE_MAP } from "../components/layout/menuConfig.js";
+import { ROLE_MAP } from "../components/layout/menuConfig.jsx";
 
 /**
  * 中文：获取验证码 / Get Captcha

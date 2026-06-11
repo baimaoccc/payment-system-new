@@ -57,8 +57,8 @@ const getChinaDate = () => {
 
 const InputField = ({ label, value, onChange, placeholder, type = "text" }) => (
 	<div className="flex flex-col gap-1">
-		<label className="text-[11px] font-medium text-gray-500">{label}</label>
-		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors" />
+		<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{label}</label>
+		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 dark:border-gray-700/50 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-800/50 text-gray-900 dark:text-gray-100 transition-colors" />
 	</div>
 );
 
@@ -81,13 +81,13 @@ const CalendarPicker = ({ label, value, onChange, t, lang, isEnd = false, minDat
 
 	return (
 		<div className="flex flex-col gap-1 relative" ref={containerRef}>
-			<label className="text-[11px] font-medium text-gray-500">{label}</label>
-			<button onClick={() => setIsOpen(!isOpen)} className="w-full h-8 px-3 border border-gray-200 rounded-md text-xs text-left focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 transition-colors flex items-center justify-between text-gray-700">
+			<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{label}</label>
+			<button onClick={() => setIsOpen(!isOpen)} className="w-full h-8 px-3 border border-gray-200 dark:border-gray-700/50 rounded-md text-xs text-left focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800/50 transition-colors flex items-center justify-between text-gray-700 dark:text-gray-300">
 				{dateString || t("pleaseSelect") || "Select date"}
 			</button>
 
 			{isOpen && (
-				<div className="absolute top-full left-0 z-[100] mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden p-2 min-w-[280px]">
+				<div className="absolute top-full left-0 z-[100] mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-lg shadow-xl overflow-hidden p-2 min-w-[280px]">
 					<Calendar
 						onChange={(val) => {
 							const ts = Math.floor(val.getTime() / 1000);
@@ -103,7 +103,7 @@ const CalendarPicker = ({ label, value, onChange, t, lang, isEnd = false, minDat
 						value={date}
 						minDate={minDate}
 						maxDate={maxDate}
-						className="border-none shadow-none text-xs w-full"
+						className="border-none shadow-none text-xs w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
 						locale={lang === "zh" ? "zh-CN" : "en-US"}
 					/>
 				</div>
@@ -122,6 +122,8 @@ export function OrdersFilters() {
 	const allUsers = useSelector((s) => s.users.allUsers);
 	const role = useSelector((s) => s.auth.role);
 	const token = useSelector((s) => s.auth.token);
+	const theme = useSelector((s) => s.ui?.theme || "light");
+	const isDark = theme === "dark";
 	const containerRef = useRef(null);
 	const uploadInputRef = useRef(null);
 
@@ -222,13 +224,6 @@ export function OrdersFilters() {
 						range: { start: defaults.startTime, end: defaults.endTime },
 					}),
 				);
-
-				console.log("设定值----");
-				console.log({
-					...reduxFilters,
-					...defaults,
-					// range: { start: defaults.startTime, end: defaults.endTime },
-				});
 			}
 		};
 		loadFilters();
@@ -491,34 +486,37 @@ export function OrdersFilters() {
 	};
 
 	const selectStyles = {
-		control: (base) => ({
+		control: (base, state) => ({
 			...base,
 			minHeight: 32,
 			height: 32,
 			borderRadius: 6,
-			backgroundColor: "#f9fafb",
-			borderColor: "#e5e7eb",
+			backgroundColor: isDark ? (state.isFocused ? "#374151" : "#1F2937") : (state.isFocused ? "white" : "#f9fafb"),
+			borderColor: isDark ? (state.isFocused ? "#3B82F6" : "rgba(55, 65, 81, 0.5)") : (state.isFocused ? "#3B82F6" : "#e5e7eb"),
 			borderWidth: 1,
 			boxShadow: "none",
 			paddingLeft: 2,
 			paddingRight: 2,
 			fontSize: 12,
-			"&:hover": { borderColor: "#d1d5db" },
+			"&:hover": { borderColor: isDark ? "#6B7280" : "#d1d5db" },
 		}),
 		valueContainer: (base) => ({ ...base, padding: "0 4px" }),
 		indicatorsContainer: (base) => ({ ...base, padding: 0 }),
-		dropdownIndicator: (base) => ({ ...base, color: "#6b7280", padding: 4 }),
+		dropdownIndicator: (base, state) => ({ ...base, color: state.isFocused ? (isDark ? "#60A5FA" : "#3B82F6") : (isDark ? "#9CA3AF" : "#6b7280"), padding: 4 }),
 		indicatorSeparator: () => ({ display: "none" }),
-		singleValue: (base) => ({ ...base, color: "#374151" }),
+		singleValue: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#374151" }),
+		multiValue: (base) => ({ ...base, backgroundColor: isDark ? "#374151" : "#E0E7FF", borderRadius: 4 }),
+		multiValueLabel: (base) => ({ ...base, color: isDark ? "#93C5FD" : "#1E4DB7", fontSize: 11 }),
+		multiValueRemove: (base) => ({ ...base, color: isDark ? "#93C5FD" : "#1E4DB7", ":hover": { backgroundColor: isDark ? "#4B5563" : "#1E4DB7", color: "white" } }),
 		option: (base, state) => ({
 			...base,
 			fontSize: 12,
 			padding: "6px 10px",
-			backgroundColor: state.isFocused ? "#eff6ff" : state.isSelected ? "#dbeafe" : "white",
-			color: "#374151",
+			backgroundColor: state.isFocused ? (isDark ? "#374151" : "#eff6ff") : state.isSelected ? (isDark ? "#1E3A8A" : "#dbeafe") : isDark ? "#1F2937" : "white",
+			color: isDark ? "#D1D5DB" : "#374151",
 			cursor: "pointer",
 		}),
-		menu: (base) => ({ ...base, borderRadius: 6, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", zIndex: 60 }),
+		menu: (base) => ({ ...base, borderRadius: 6, backgroundColor: isDark ? "#1F2937" : "white", border: isDark ? "1px solid #374151" : "1px solid #F3F4F6", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", zIndex: 60 }),
 	};
 
 	// Stats data from API (ordersStats from Redux) or defaults
@@ -530,7 +528,7 @@ export function OrdersFilters() {
 	};
 
 	return (
-		<div className="relative bg-white rounded-xl shadow-sm border border-gray-100 mb-4 transition-all duration-300" ref={containerRef}>
+		<div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700/50 mb-4 transition-all duration-300" ref={containerRef}>
 			<input ref={uploadInputRef} type="file" accept=".xls,.xlsx" className="hidden" onChange={handleUploadLogisticsTemplate} />
 			{/* Header / Stats & Toggle */}
 			<div className="p-4 grid gap-4 xl:grid-cols-[2fr_1fr] xl:items-center">
@@ -575,7 +573,7 @@ export function OrdersFilters() {
 					))}
 					{role !== "adv" && (
 						<>
-							<button onClick={handleDownloadLogisticsTemplate} disabled={loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+							<button onClick={handleDownloadLogisticsTemplate} disabled={loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
 								<FontAwesomeIcon icon={faDownload} />
 								{t("downloadLogisticsTemplate")}
 							</button>
@@ -584,17 +582,17 @@ export function OrdersFilters() {
 									if (uploadInputRef.current) uploadInputRef.current.click();
 								}}
 								disabled={isUploading || loading}
-								className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+								className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
 								{isUploading ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faUpload} />}
 								{t("uploadLogisticsTemplate")}
 							</button>
-							<button onClick={handleExport} disabled={isExporting || loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+							<button onClick={handleExport} disabled={isExporting || loading} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
 								{isExporting ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faDownload} />}
 								{t("exportOrders")}
 							</button>
 						</>
 					)}
-					<button onClick={() => setIsExpanded(!isExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border whitespace-nowrap ${isExpanded ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
+					<button onClick={() => setIsExpanded(!isExpanded)} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors border whitespace-nowrap ${isExpanded ? "bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-gray-700/50" : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700"}`}>
 						<FontAwesomeIcon icon={faFilter} />
 						{t("moreFilters")}
 						<FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} className="ml-1" />
@@ -604,10 +602,10 @@ export function OrdersFilters() {
 
 			{/* Collapsible Advanced Filters - Absolute Positioned */}
 			{isExpanded && (
-				<div className="absolute top-full left-0 right-0 z-50 px-4 pb-4 pt-4 bg-white shadow-xl border border-gray-100 rounded-xl -mt-[1px]">
+				<div className="absolute top-full left-0 right-0 z-50 px-4 pb-4 pt-4 bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700/50 rounded-xl -mt-[1px]">
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("username") || "Username"}</label>
+							<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("username") || "Username"}</label>
 							<Select className="hs-user-selector" isMulti options={userOptions} value={localFilters.userId ? localFilters.userId.split(",").map((id) => userOptions.find((o) => String(o.value) === String(id))).filter(Boolean) : []} onChange={(opts) => setLocalFilters({ ...localFilters, userId: opts ? opts.map((opt) => opt.value).join(",") : "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("selectUser") || "Select User"} isClearable />
 						</div>
 						<InputField label={t("orderNo")} value={localFilters.orderNo} onChange={(e) => setLocalFilters({ ...localFilters, orderNo: e.target.value })} placeholder={t("enterOrderNo") || "Enter order no"} />
@@ -615,31 +613,30 @@ export function OrdersFilters() {
 						<InputField label={t("orderLastName")} value={localFilters.lastName} onChange={(e) => setLocalFilters({ ...localFilters, lastName: e.target.value })} placeholder={t("enterOrderLastName") || "Enter order last name"} />
 						<InputField label={t("email")} value={localFilters.email} onChange={(e) => setLocalFilters({ ...localFilters, email: e.target.value })} placeholder={t("enterEmail") || "Enter email"} />
 						<InputField label={t("phone")} value={localFilters.phone} onChange={(e) => setLocalFilters({ ...localFilters, phone: e.target.value })} placeholder={t("enterPhone") || "Enter phone"} />
-						<InputField label={t("url")} value={localFilters.url} onChange={(e) => setLocalFilters({ ...localFilters, url: e.target.value })} placeholder={t("url") || "Enter URL"} />
-						<InputField label={t("paymentChannel")} value={localFilters.comment} onChange={(e) => setLocalFilters({ ...localFilters, comment: e.target.value })} placeholder={t("enterPaymentChannel") || "Enter Payment Channel"} />
+						
 
 						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("paymentType")}</label>
+							<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("paymentType")}</label>
 							<Select options={[{ value: "", label: t("all") }, ...paymentTypeOptions]} value={localFilters.paymentType === "" ? { value: "", label: t("all") } : paymentTypeOptions.find((o) => String(o.value) === String(localFilters.paymentType)) || { value: "", label: t("all") }} onChange={(opt) => setLocalFilters({ ...localFilters, paymentType: opt?.value ?? "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
 						</div>
 
 						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("accountType") || "Account Type"}</label>
+							<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("accountType") || "Account Type"}</label>
 							<Select options={typeTypeOptions} value={typeTypeOptions.find((o) => String(o.value) === String(localFilters.type_type)) || typeTypeOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, type_type: opt?.value ?? "" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
 						</div>
 
 						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("paymentStatus")}</label>
+							<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("paymentStatus")}</label>
 							<Select options={statusOptions} value={statusOptions.find((o) => String(o.value) === String(localFilters.status)) || statusOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, status: opt?.value ?? "all" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
 						</div>
 
 						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("logisticsStatus")}</label>
+							<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("logisticsStatus")}</label>
 							<Select options={shippingStatusOptions} value={shippingStatusOptions.find((o) => o.value === localFilters.shippingStatus) || shippingStatusOptions[0]} onChange={(opt) => setLocalFilters({ ...localFilters, shippingStatus: opt?.value ?? "all" })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} />
 						</div>
 
 						<div className="flex flex-col gap-1">
-							<label className="text-[11px] font-medium text-gray-500">{t("country") || "Country"}</label>
+							<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("country") || "Country"}</label>
 							<Select options={countryOptions} value={countryOptions.find((o) => o.alpha2 === localFilters.country) || null} onChange={(opt) => setLocalFilters({ ...localFilters, country: opt?.alpha2 || null })} styles={selectStyles} components={{ DropdownIndicator, IndicatorSeparator: () => null }} placeholder={t("pleaseSelect")} isClearable />
 						</div>
 
@@ -648,8 +645,8 @@ export function OrdersFilters() {
 					</div>
 
 					{/* Actions Footer inside Absolute Container */}
-					<div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-50">
-						<button onClick={handleReset} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+					<div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-50 dark:border-gray-700/50">
+						<button onClick={handleReset} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 hover:bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
 							{t("reset")}
 						</button>
 						<button onClick={handleSearch} disabled={loading} className="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">

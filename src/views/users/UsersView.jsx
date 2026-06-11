@@ -17,8 +17,8 @@ const InputRow = ({ icon, label, children, className = "", noBorder = false }) =
 		<div className="text-gray-400 w-6 pt-4 flex justify-center">
 			<FontAwesomeIcon icon={icon} className="text-lg" />
 		</div>
-		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
-			<label className="block text-xs font-medium text-gray-500 mb-0.5 uppercase tracking-wider">{label}</label>
+		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 dark:border-gray-700/50 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
+			<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5 uppercase tracking-wider">{label}</label>
 			{children}
 		</div>
 	</div>
@@ -26,8 +26,8 @@ const InputRow = ({ icon, label, children, className = "", noBorder = false }) =
 
 const SectionHeader = ({ title, subtitle }) => (
 	<div className="mb-6 mt-2">
-		<h4 className="text-base font-bold text-gray-900">{title}</h4>
-		{subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
+		<h4 className="text-base font-bold text-gray-900 dark:text-gray-100">{title}</h4>
+		{subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</p>}
 	</div>
 );
 
@@ -154,14 +154,14 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-			<div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
+			<div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
 				{/* Header */}
-				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 bg-white z-10">
+				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800 z-10">
 					<div>
-						<h3 className="text-xl font-bold text-gray-900">{readonly ? t("viewUser") || "View User" : initial?.id ? t("editUser") : t("addUser")}</h3>
-						<p className="text-sm text-gray-500 mt-1">{t("userDetailsHint")}</p>
+						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{readonly ? t("viewUser") || "View User" : initial?.id ? t("editUser") : t("addUser")}</h3>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("userDetailsHint")}</p>
 					</div>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50">
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900">
 						<FontAwesomeIcon icon={faTimes} className="text-xl" />
 					</button>
 				</div>
@@ -170,7 +170,7 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 					{/* Avatar Upload */}
 					<div className="flex flex-col items-center justify-center mb-8">
 						<div className={`relative group ${readonly || isAdvertiser ? "" : "cursor-pointer"}`}>
-							<div className="w-24 h-24 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden hover:border-blue-500 transition-colors">
+							<div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-700/50 flex items-center justify-center overflow-hidden hover:border-blue-500 transition-colors">
 								{form.avatar ? <img src={form.avatar} alt="Avatar" className="w-full h-full object-cover" /> : <FontAwesomeIcon icon={faUser} className="text-gray-300 text-3xl" />}
 								{uploading && (
 									<div className="absolute inset-0 bg-black/30 flex items-center justify-center">
@@ -234,25 +234,25 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 						</InputRow>
 
 						<InputRow icon={faUser} label={t("username")}>
-							<input value={form.username} onChange={(e) => setForm((v) => ({ ...v, username: e.target.value }))} placeholder={t("username")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly || isAdvertiser} disabled={readonly || isAdvertiser} />
+							<input value={form.username} onChange={(e) => setForm((v) => ({ ...v, username: e.target.value }))} placeholder={t("username")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" readOnly={readonly || isAdvertiser} disabled={readonly || isAdvertiser} />
 						</InputRow>
 
 						<InputRow icon={faKey} label={t("password")}>
 							<div className="flex items-center">
-								<input type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))} placeholder={t("password")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly || isAdvertiser} disabled={readonly || isAdvertiser} />
-								<button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 focus:outline-none px-2">
+								<input type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))} placeholder={t("password")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" readOnly={readonly || isAdvertiser} disabled={readonly || isAdvertiser} />
+								<button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 focus:outline-none px-2">
 									<FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
 								</button>
 							</div>
 						</InputRow>
 
 						<InputRow icon={faEnvelope} label={t("email")}>
-							<input value={form.email} onChange={(e) => setForm((v) => ({ ...v, email: e.target.value }))} placeholder={t("email")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
+							<input value={form.email} onChange={(e) => setForm((v) => ({ ...v, email: e.target.value }))} placeholder={t("email")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
 						</InputRow>
 
 						<InputRow icon={faKey} label={t("apiToken")}>
 							<div className="flex items-center gap-2 w-full">
-								<input type="text" value={form.api_token || ""} onChange={(e) => setForm((v) => ({ ...v, api_token: e.target.value }))} placeholder={canEditApiToken ? t("apiToken") : ""} className={`w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1 ${!canEditApiToken ? "cursor-not-allowed text-gray-500" : ""}`} disabled={!canEditApiToken} />
+								<input type="text" value={form.api_token || ""} onChange={(e) => setForm((v) => ({ ...v, api_token: e.target.value }))} placeholder={canEditApiToken ? t("apiToken") : ""} className={`w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1 ${!canEditApiToken ? "cursor-not-allowed text-gray-500 dark:text-gray-400" : ""}`} disabled={!canEditApiToken} />
 								<button type="button" onClick={() => copyToClipboard(form.api_token)} className="text-gray-400 hover:text-blue-600 transition-colors p-2" title={t("copy") || "Copy"}>
 									<FontAwesomeIcon icon={faCopy} />
 								</button>
@@ -264,26 +264,26 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 						<SectionHeader title={t("contactInfo")} subtitle={t("contactInfoHint")} />
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
 							<InputRow icon={faPhone} label={t("mobile")}>
-								<input value={form.mobile} onChange={(e) => setForm((v) => ({ ...v, mobile: e.target.value }))} placeholder={t("mobile")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
+								<input value={form.mobile} onChange={(e) => setForm((v) => ({ ...v, mobile: e.target.value }))} placeholder={t("mobile")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
 							</InputRow>
 
 							{!isAdvertiser && (
 								<InputRow icon={faPaperPlane} label={t("tgid")}>
-									<input value={form.tgid} onChange={(e) => setForm((v) => ({ ...v, tgid: e.target.value }))} placeholder={t("tgid")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
+									<input value={form.tgid} onChange={(e) => setForm((v) => ({ ...v, tgid: e.target.value }))} placeholder={t("tgid")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
 								</InputRow>
 							)}
 
 							{!isAdvertiser && (
 								<InputRow icon={faUsers} label={t("qunid")}>
-									<input value={form.qunid} onChange={(e) => setForm((v) => ({ ...v, qunid: e.target.value }))} placeholder={t("qunid")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
+									<input value={form.qunid} onChange={(e) => setForm((v) => ({ ...v, qunid: e.target.value }))} placeholder={t("qunid")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" readOnly={readonly} disabled={readonly} />
 								</InputRow>
 							)}
 						</div>
 					</div>
 				</div>
 
-				<div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-					<button type="button" onClick={onClose} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+				<div className="p-6 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
+					<button type="button" onClick={onClose} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:bg-gray-900 hover:text-gray-900 dark:text-gray-100 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
 						{readonly ? t("close") || "Close" : t("cancel")}
 					</button>
 					{!readonly && (
@@ -397,13 +397,13 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-			<div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-scale-in">
-				<div className="flex items-center justify-between p-6 border-b border-gray-100">
+			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-scale-in">
+				<div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700/50">
 					<div>
-						<h2 className="text-xl font-bold text-gray-900">{t("assignPaymentGroup")}</h2>
-						<p className="text-sm text-gray-500 mt-1">{t("assignGroupHint")}</p>
+						<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t("assignPaymentGroup")}</h2>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("assignGroupHint")}</p>
 					</div>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100">
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:bg-gray-700">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
@@ -416,14 +416,14 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 					</div>
 
 					<div className="space-y-2">
-						<label className="text-sm font-medium text-gray-700">{t("paymentGroup")}</label>
+						<label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("paymentGroup")}</label>
 						<Select isMulti value={payGroupIds} onChange={setPayGroupIds} options={payGroupOptions} placeholder={t("selectPaymentGroup")} className="w-full" />
 						{payGroupOptions.length === 0 && <p className="text-xs text-orange-500 mt-1">{t("noGroupsFound")}</p>}
 					</div>
 				</div>
 
-				<div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-					<button onClick={onClose} disabled={saving} className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all">
+				<div className="p-6 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
+					<button onClick={onClose} disabled={saving} className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:bg-gray-900 transition-all">
 						{t("cancel")}
 					</button>
 					<button onClick={handleSave} disabled={saving} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2">
@@ -440,27 +440,27 @@ const MobileUserCard = ({ user, onEdit, onDelete, onAssignGroup, t, canManage, i
 	const roleInfo = getRoleInfo(user.juese_id, t);
 
 	return (
-		<div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+		<div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700/50">
 			<div className="flex justify-between items-start mb-3">
 				<div className="flex items-center gap-3">
-					<div style={{ backgroundImage: `url(${user.avatar || ""})`, backgroundSize: "100%", backgroundRepeat: "no-repeat" }} className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm shrink-0 border border-gray-100">
+					<div style={{ backgroundImage: `url(${user.avatar || ""})`, backgroundSize: "100%", backgroundRepeat: "no-repeat" }} className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 dark:text-gray-400 font-bold text-sm shrink-0 border border-gray-100 dark:border-gray-700/50">
 						{user.avatar ? "" : (user.username || "?").charAt(0).toUpperCase()}
 					</div>
 					<div>
 						<div className="flex items-center gap-2">
-							<h3 className="font-bold text-gray-900">{user.username}</h3>
-							<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono">#{user.id}</span>
+							<h3 className="font-bold text-gray-900 dark:text-gray-100">{user.username}</h3>
+							<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-xs font-mono">#{user.id}</span>
 						</div>
-						<p className="text-xs text-gray-500">{user.email}</p>
+						<p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
 					</div>
 				</div>
 				<span className={`inline-block px-2 py-1 rounded text-xs font-medium ${roleInfo.className}`}>{roleInfo.label}</span>
 			</div>
 
-			<div className="grid grid-cols-2 gap-y-2 gap-x-4 text-xs text-gray-500 mb-4">
+			<div className="grid grid-cols-2 gap-y-2 gap-x-4 text-xs text-gray-500 dark:text-gray-400 mb-4">
 				<div className="flex flex-col">
 					<span className="text-gray-400 mb-0.5">{t("mobile")}</span>
-					<span className="font-medium text-gray-700">{user.mobile || "-"}</span>
+					<span className="font-medium text-gray-700 dark:text-gray-300">{user.mobile || "-"}</span>
 				</div>
 
 				{canViewReviewExempt && Number(user.juese_id) === 6 && (
@@ -474,18 +474,18 @@ const MobileUserCard = ({ user, onEdit, onDelete, onAssignGroup, t, canManage, i
 					<>
 						<div className="flex flex-col">
 							<span className="text-gray-400 mb-0.5">{t("tgid")}</span>
-							<span className="font-medium text-gray-700">{user.tgid || "-"}</span>
+							<span className="font-medium text-gray-700 dark:text-gray-300">{user.tgid || "-"}</span>
 						</div>
 						<div className="flex flex-col col-span-2">
 							<span className="text-gray-400 mb-0.5">{t("qunid")}</span>
-							<span className="font-medium text-gray-700 break-all">{user.qunid || "-"}</span>
+							<span className="font-medium text-gray-700 dark:text-gray-300 break-all">{user.qunid || "-"}</span>
 						</div>
 					</>
 				)}
 			</div>
 
 			{(canManage || isAdvertiser) && (
-				<div className="flex justify-end gap-2 pt-3 border-t border-gray-50">
+				<div className="flex justify-end gap-2 pt-3 border-t border-gray-50 dark:border-gray-700/50">
 					{canManage && [1, 4, 6].includes(Number(user.juese_id)) && (
 						<button onClick={() => onAssignGroup(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors" title={t("assignGroup")}>
 							<FontAwesomeIcon icon={faSitemap} size="sm" />
@@ -666,7 +666,7 @@ export function UsersView() {
 
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
 				<div>
-					<h1 className="text-2xl font-bold text-gray-900">{t("users")}</h1>
+					<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("users")}</h1>
 				</div>
 				{canManage && (
 					<button onClick={onAdd} className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
@@ -679,47 +679,47 @@ export function UsersView() {
 			{/* Mobile/Tablet View (Cards) */}
 			<div className="lg:hidden space-y-4">
 				{loading ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
 						{t("loading")}
 					</div>
 				) : safeList.length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">{t("noData")}</div>
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">{t("noData")}</div>
 				) : (
 					safeList.map((u) => <MobileUserCard key={u.id} user={u} onEdit={onEdit} onDelete={onDelete} onAssignGroup={onAssignGroup} t={t} canManage={canManage} isAdvertiser={isAdvertiser} canViewReviewExempt={canViewReviewExempt} />)
 				)}
 			</div>
 
 			{/* Desktop View (Table) */}
-			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			<div className="hidden lg:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/50 overflow-hidden">
 				{loading ? (
-					<div className="p-8 text-center text-gray-500">{t("loading")}</div>
+					<div className="p-8 text-center text-gray-500 dark:text-gray-400">{t("loading")}</div>
 				) : (
 					<div className="overflow-x-auto">
 						<table className="w-full">
-							<thead className="bg-gray-50/50 border-b border-gray-100 text-left">
+							<thead className="bg-gray-50/50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700/50 text-left">
 								<tr>
-									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
-									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("username")}</th>
-									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("role")}</th>
-									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("mobile")}</th>
-									{canViewReviewExempt && <th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("reviewExempt") || "Review Exempt"}</th>}
-									{!isAdvertiser && <th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("tgid")}</th>}
-									{!isAdvertiser && <th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("qunid")}</th>}
-									<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">{t("actions")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("username")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("role")}</th>
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("mobile")}</th>
+									{canViewReviewExempt && <th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("reviewExempt") || "Review Exempt"}</th>}
+									{!isAdvertiser && <th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("tgid")}</th>}
+									{!isAdvertiser && <th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("qunid")}</th>}
+									<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">{t("actions")}</th>
 								</tr>
 							</thead>
-							<tbody className="divide-y divide-gray-100 text-[12px]">
+							<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50 text-[12px]">
 								{safeList.map((u) => (
 									<tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
-										<td className="py-2 px-6 text-xs text-gray-500">{u.id}</td>
+										<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">{u.id}</td>
 										<td className="py-2 px-6">
 											<div className="flex items-center gap-2">
-												<div style={{ backgroundImage: `url(${u.avatar || ""})`, backgroundSize: "100%", backgroudRepeat: "no-repeat" }} className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs shrink-0 border border-gray-100">
+												<div style={{ backgroundImage: `url(${u.avatar || ""})`, backgroundSize: "100%", backgroudRepeat: "no-repeat" }} className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 dark:text-gray-400 font-bold text-xs shrink-0 border border-gray-100 dark:border-gray-700/50">
 													{u.avatar ? "" : (u.username || "?").charAt(0).toUpperCase()}
 												</div>
 												<div className="flex flex-col">
-													<span className="font-medium text-gray-900">{u.username}</span>
+													<span className="font-medium text-gray-900 dark:text-gray-100">{u.username}</span>
 													<span className="text-[10px] text-gray-400">{u.email}</span>
 												</div>
 											</div>
@@ -727,15 +727,15 @@ export function UsersView() {
 										<td className="py-2 px-6">
 											<span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${getRoleInfo(u.juese_id, t).className}`}>{getRoleInfo(u.juese_id, t).label}</span>
 										</td>
-										<td className="py-2 px-6 text-xs text-gray-500">{u.mobile || "-"}</td>
+										<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">{u.mobile || "-"}</td>
 										{canViewReviewExempt && (
-											<td className="py-2 px-6 text-xs text-gray-500">
+											<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">
 												{Number(u.juese_id) === 6 ? Number(u.review_exempt) === 1 ? <span className="text-green-600 font-medium">{t("exempt") || "免审"}</span> : <span className="text-gray-400">{t("reviewRequired") || "需审核"}</span> : "-"}
 											</td>
 										)}
-										{!isAdvertiser && <td className="py-2 px-6 text-xs text-gray-500">{u.tgid || "-"}</td>}
+										{!isAdvertiser && <td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">{u.tgid || "-"}</td>}
 										{!isAdvertiser && (
-											<td className="py-2 px-6 text-xs text-gray-500 max-w-xs truncate" title={u.qunid}>
+											<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400 max-w-xs truncate" title={u.qunid}>
 												{u.qunid || "-"}
 											</td>
 										)}
@@ -774,7 +774,7 @@ export function UsersView() {
 					</div>
 				)}
 
-				<div className="p-4 border-t border-gray-100">
+				<div className="p-4 border-t border-gray-100 dark:border-gray-700/50">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={onPageChange} onPageSizeChange={onPageSizeChange} />
 				</div>
 			</div>

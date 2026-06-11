@@ -112,7 +112,7 @@ export function OfficialSiteLayout() {
 	};
 
 	return (
-		<div className="min-h-screen font-sans text-slate-900 bg-white selection:bg-blue-100">
+		<div className="min-h-screen font-sans text-slate-900 bg-white dark:bg-gray-800 selection:bg-blue-100">
 			{/* Navigation */}
 			<nav className={`fixed w-full z-[10000] transition-all duration-500 ease-in-out ${scrolled || mobileMenuOpen ? "bg-slate-900/95 backdrop-blur-md shadow-lg py-4" : "bg-transparent py-6"}`}>
 				<div className="container mx-auto px-6 flex items-center justify-between">
@@ -201,7 +201,7 @@ export function OfficialSiteLayout() {
 						<p className="text-lg text-slate-600">{t("contact.subtitle")}</p>
 					</div>
 
-					<div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12">
+					<div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12">
 						<form onSubmit={handleContactSubmit} className="space-y-6">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div>

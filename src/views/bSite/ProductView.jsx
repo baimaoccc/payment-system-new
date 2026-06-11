@@ -14,14 +14,14 @@ const MobileProductCard = ({ item, onEdit, onDelete, t }) => {
 	const [expanded, setExpanded] = useState(false);
 
 	return (
-		<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-all duration-200 cursor-pointer ${expanded ? "ring-1 ring-blue-100" : "hover:shadow-md"}`} onClick={() => setExpanded(!expanded)}>
+		<div className={`bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700/50 transition-all duration-200 cursor-pointer ${expanded ? "ring-1 ring-blue-100" : "hover:shadow-md"}`} onClick={() => setExpanded(!expanded)}>
 			<div className="flex justify-between items-start mb-3">
 				<div className="flex-1 min-w-0 mr-3">
 					<div className="flex items-center gap-2 mb-1">
-						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
-						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.product_name}</h3>
+						<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-1 break-all">{item.product_name}</h3>
 					</div>
-					{item.product_name_zh && <div className="text-xs text-gray-500 mb-1">{item.product_name_zh}</div>}
+					{item.product_name_zh && <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{item.product_name_zh}</div>}
 					{item.account_type_category_name && <div className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full inline-block mb-1">{item.account_type_category_name}</div>}
 				</div>
 				<div className="flex gap-2 shrink-0">
@@ -30,7 +30,7 @@ const MobileProductCard = ({ item, onEdit, onDelete, t }) => {
 							e.stopPropagation();
 							onEdit(item);
 						}}
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30 transition-colors"
 						title={t("edit")}>
 						<FontAwesomeIcon icon={faPen} size="sm" />
 					</button>
@@ -39,14 +39,14 @@ const MobileProductCard = ({ item, onEdit, onDelete, t }) => {
 							e.stopPropagation();
 							onDelete(item.id, item.product_name);
 						}}
-						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+						className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-500/20 dark:text-red-400 dark:hover:bg-red-500/30 transition-colors"
 						title={t("delete")}>
 						<FontAwesomeIcon icon={faTrash} size="sm" />
 					</button>
 				</div>
 			</div>
 
-			<div className="pt-3 mt-3 border-t border-gray-50 flex items-center justify-between text-xs text-gray-400">
+			<div className="pt-3 mt-3 border-t border-gray-50 dark:border-gray-700/50 flex items-center justify-between text-xs text-gray-400">
 				<span>{t("update")}</span>
 				<span className="font-mono">{item.updatetime ? new Date(item.updatetime * 1000).toLocaleString() : "-"}</span>
 			</div>
@@ -57,13 +57,13 @@ const MobileProductCard = ({ item, onEdit, onDelete, t }) => {
 const DesktopProductRow = ({ item, onEdit, onDelete, t }) => {
 	return (
 		<tr className="hover:bg-gray-50/50 transition-colors">
-			<td className="py-2 px-6 text-xs text-gray-500">#{item.id}</td>
-			<td className="py-2 px-6 text-xs font-medium text-gray-900">{item.product_name}</td>
-			<td className="py-2 px-6 text-xs text-gray-500">{item.product_name_zh || "-"}</td>
-			<td className="py-2 px-6 text-xs text-gray-600">
-				<span className="bg-gray-100 px-2 py-0.5 rounded-full">{item.account_type_category_name || "-"}</span>
+			<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">#{item.id}</td>
+			<td className="py-2 px-6 text-xs font-medium text-gray-900 dark:text-gray-100">{item.product_name}</td>
+			<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">{item.product_name_zh || "-"}</td>
+			<td className="py-2 px-6 text-xs text-gray-600 dark:text-gray-400">
+				<span className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">{item.account_type_category_name || "-"}</span>
 			</td>
-			<td className="py-2 px-6 text-xs text-gray-500">{item.updatetime ? new Date(item.updatetime * 1000).toLocaleString() : "-"}</td>
+			<td className="py-2 px-6 text-xs text-gray-500 dark:text-gray-400">{item.updatetime ? new Date(item.updatetime * 1000).toLocaleString() : "-"}</td>
 			<td className="py-2 px-6 text-right">
 				<div className="flex items-center justify-end gap-2">
 					<button onClick={() => onEdit(item)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title={t("edit")}>
@@ -83,8 +83,8 @@ const InputRow = ({ icon, label, children, className = "", noBorder = false }) =
 		<div className="text-gray-400 w-6 pt-4 flex justify-center">
 			<FontAwesomeIcon icon={icon} className="text-lg" />
 		</div>
-		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
-			<label className="block text-xs font-medium text-gray-500 mb-0.5 uppercase tracking-wider">{label}</label>
+		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 dark:border-gray-700/50 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
+			<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5 uppercase tracking-wider">{label}</label>
 			{children}
 		</div>
 	</div>
@@ -145,6 +145,9 @@ function ProductFormModal({ open, initial, onClose, onSave, t }) {
 		}
 	};
 
+	const theme = useSelector((s) => s.ui?.theme || "light");
+	const isDark = theme === "dark";
+
 	const customStyles = {
 		control: (base) => ({
 			...base,
@@ -162,14 +165,33 @@ function ProductFormModal({ open, initial, onClose, onSave, t }) {
 			...base,
 			margin: 0,
 			padding: 0,
+			color: isDark ? "#D1D5DB" : "#111827",
 		}),
 		placeholder: (base) => ({
 			...base,
 			color: "#9ca3af",
 		}),
+		singleValue: (base) => ({
+			...base,
+			color: isDark ? "#D1D5DB" : "#111827",
+		}),
 		menu: (base) => ({
 			...base,
 			zIndex: 100,
+			backgroundColor: isDark ? "#1F2937" : "white",
+			border: isDark ? "1px solid #374151" : "1px solid #F3F4F6",
+		}),
+		option: (base, state) => ({
+			...base,
+			backgroundColor: state.isFocused ? (isDark ? "#374151" : "#F3F5F9") : (isDark ? "#1F2937" : "white"),
+			color: isDark ? "#D1D5DB" : "#11142D",
+			":active": {
+				backgroundColor: isDark ? "#4B5563" : "#E0E7FF",
+			},
+		}),
+		menuPortal: (base) => ({
+			...base,
+			zIndex: 9999,
 		}),
 	};
 
@@ -178,29 +200,29 @@ function ProductFormModal({ open, initial, onClose, onSave, t }) {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-			<div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
-				<div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-					<h3 className="text-lg font-bold text-gray-900">{initial ? t("editProduct") : t("addProduct")}</h3>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+			<div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-visible flex flex-col animate-in fade-in zoom-in duration-300 mx-2">
+				<div className="p-6 border-b border-gray-100 dark:border-gray-700/50 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
+					<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{initial ? t("editProduct") : t("addProduct")}</h3>
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
 
 				<div className="p-6 space-y-6">
 					<InputRow icon={faLayerGroup} label={t("productCategory")}>
-						<ReactSelect value={categories.find((c) => c.value === form.account_type_id)} onChange={(opt) => setForm((v) => ({ ...v, account_type_id: opt?.value }))} options={categories} isLoading={loadingCategories} placeholder={t("selectCategory")} styles={customStyles} className="w-full hs-product-category-selector" classNamePrefix="react-select" />
+						<ReactSelect value={categories.find((c) => c.value === form.account_type_id)} onChange={(opt) => setForm((v) => ({ ...v, account_type_id: opt?.value }))} options={categories} isLoading={loadingCategories} placeholder={t("selectCategory")} styles={customStyles} menuPortalTarget={document.body} className="w-full hs-product-category-selector" classNamePrefix="react-select" />
 					</InputRow>
 					<InputRow icon={faAlignLeft} label={t("productName")}>
-						<input type="text" value={form.product_name} onChange={(e) => setForm((v) => ({ ...v, product_name: e.target.value }))} placeholder={t("enterName")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" autoFocus />
+						<input type="text" value={form.product_name} onChange={(e) => setForm((v) => ({ ...v, product_name: e.target.value }))} placeholder={t("enterName")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" autoFocus />
 					</InputRow>
 
 					<InputRow icon={faLanguage} label={t("productNameZh")}>
-						<input type="text" value={form.product_name_zh} onChange={(e) => setForm((v) => ({ ...v, product_name_zh: e.target.value }))} placeholder={t("enterName")} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+						<input type="text" value={form.product_name_zh} onChange={(e) => setForm((v) => ({ ...v, product_name_zh: e.target.value }))} placeholder={t("enterName")} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" />
 					</InputRow>
 				</div>
 
-				<div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-					<button onClick={onClose} className="px-6 py-2 rounded-xl text-gray-600 font-medium hover:bg-gray-200 transition-colors" disabled={saving}>
+				<div className="p-6 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
+					<button onClick={onClose} className="px-6 py-2 rounded-xl text-gray-600 dark:text-gray-400 font-medium hover:bg-gray-200 transition-colors" disabled={saving}>
 						{t("cancel")}
 					</button>
 					<button onClick={handleSubmit} disabled={saving} className="px-6 py-2 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2">
@@ -346,7 +368,7 @@ export function ProductView() {
 		<div className="p-4 md:p-6 max-w-[1600px] mx-auto">
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
 				<div className="flex items-center gap-4">
-					<h1 className="text-2xl font-bold text-gray-900">{t("bSiteProduct")}</h1>
+					<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("bSiteProduct")}</h1>
 					<div className="w-48">
 						<Select
 							value={searchName}
@@ -360,7 +382,7 @@ export function ProductView() {
 				</div>
 				<div className="flex flex-wrap gap-2">
 					<input ref={uploadInputRef} type="file" accept=".xls,.xlsx" className="hidden" onChange={handleUploadTemplate} />
-					<button onClick={handleDownloadTemplate} disabled={isExporting} className="text-xs px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+					<button onClick={handleDownloadTemplate} disabled={isExporting} className="text-xs px-4 py-2 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700/50 rounded-xl font-medium hover:bg-gray-50 dark:bg-gray-900 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
 						{isExporting ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faDownload} />}
 						{t("exportTemplate")}
 					</button>
@@ -369,7 +391,7 @@ export function ProductView() {
 							if (uploadInputRef.current) uploadInputRef.current.click();
 						}}
 						disabled={isUploading}
-						className="text-xs px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+						className="text-xs px-4 py-2 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700/50 rounded-xl font-medium hover:bg-gray-50 dark:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
 						{isUploading ? <FontAwesomeIcon icon={faSpinner} spin /> : <FontAwesomeIcon icon={faUpload} />}
 						{t("importData")}
 					</button>
@@ -388,12 +410,12 @@ export function ProductView() {
 			{/* Mobile/Tablet View (Cards) */}
 			<div className="lg:hidden space-y-4">
 				{loading ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
 						{t("loading")}
 					</div>
 				) : list.length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">{t("noData")}</div>
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">{t("noData")}</div>
 				) : (
 					list.map((item) => (
 						<MobileProductCard
@@ -411,20 +433,20 @@ export function ProductView() {
 			</div>
 
 			{/* Desktop View (Table) */}
-			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			<div className="hidden lg:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/50 overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="w-full">
 						<thead>
-							<tr className="bg-gray-50/50 border-b border-gray-100 text-left">
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("id")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("productName")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("productNameZh")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("productCategory")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("update")}</th>
-								<th className="py-2 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">{t("actions")}</th>
+							<tr className="bg-gray-50/50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700/50 text-left">
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("id")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("productName")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("productNameZh")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("productCategory")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("update")}</th>
+								<th className="py-2 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">{t("actions")}</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-100 text-[12px]">
+						<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50 text-[12px]">
 							{loading ? (
 								<tr>
 									<td colSpan="5" className="py-8 text-center text-gray-400">
@@ -456,7 +478,7 @@ export function ProductView() {
 					</table>
 				</div>
 
-				<div className="p-4 border-t border-gray-100">
+				<div className="p-4 border-t border-gray-100 dark:border-gray-700/50">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
 				</div>
 			</div>

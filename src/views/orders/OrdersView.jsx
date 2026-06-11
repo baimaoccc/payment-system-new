@@ -108,8 +108,6 @@ export function OrdersView() {
 
 	// 2. Fetch orders when state changes (guarded by isInitialized)
 	useEffect(() => {
-		console.log("变化------");
-		console.log(filters);
 		if (!isInitialized) return;
 		fetchOrders({ dispatch, page, pageSize, filters });
 	}, [dispatch, page, pageSize, filters, isInitialized]);
@@ -149,18 +147,18 @@ export function OrdersView() {
 
 	return (
 		<div className="p-4">
-			<div className="bg-white rounded-2xl shadow p-3">
+			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-3 transition-colors">
 				<div className="flex items-center justify-between mb-3">
-					<h3 className="text-sm font-semibold text-gray-900">{t("orders")}</h3>
+					<h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{t("orders")}</h3>
 				</div>
 				<OrdersFilters />
 			{/* Orders Table */}
-			<div className="bg-white rounded-xl shadow-sm border border-gray-100  relative">
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700/50 relative">
 				{uploading && (
-					<div className="absolute inset-0 z-50 bg-white/50 flex items-center justify-center backdrop-blur-[1px]">
-						<div className="flex flex-col items-center gap-3 bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+					<div className="absolute inset-0 z-50 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center backdrop-blur-[1px]">
+						<div className="flex flex-col items-center gap-3 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700/50">
 							<FontAwesomeIcon icon={faSpinner} spin className="text-3xl text-indigo-600" />
-							<span className="text-sm font-medium text-gray-600">{t("uploadLogisticsTemplate") || "Uploading..."}</span>
+							<span className="text-sm font-medium text-gray-600 dark:text-gray-300">{t("uploadLogisticsTemplate") || "Uploading..."}</span>
 						</div>
 					</div>
 				)}

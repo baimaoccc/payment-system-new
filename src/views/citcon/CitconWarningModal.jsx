@@ -4,7 +4,7 @@ import { fetchStripeWarnings } from "../../controllers/stripeController.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faExclamationTriangle, faSpinner, faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-export function AirwallexWarningModal({ isOpen, onClose, accountId }) {
+export function CitconWarningModal({ isOpen, onClose, accountId }) {
 	const { t } = useI18n();
 	const [loading, setLoading] = useState(false);
 	const [list, setList] = useState([]);

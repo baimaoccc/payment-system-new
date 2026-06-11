@@ -46,7 +46,7 @@ export default function ConversationalCommerce() {
 				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-400/20 blur-[100px] rounded-full pointer-events-none"></div>
 
 				{/* Phone Container - Added floating animation */}
-				<div className="relative w-[320px] h-[640px] bg-white border-[10px] border-slate-900 rounded-[3rem] shadow-2xl overflow-hidden z-10 animate-float">
+				<div className="relative w-[320px] h-[640px] bg-white dark:bg-gray-800 border-[10px] border-slate-900 rounded-[3rem] shadow-2xl overflow-hidden z-10 animate-float">
 					{/* Notch */}
 					<div className="absolute top-[-2px] left-1/2 transform -translate-x-1/2 w-32 h-7 bg-slate-900 rounded-b-xl z-20"></div>
 
@@ -67,7 +67,7 @@ export default function ConversationalCommerce() {
 								<div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
 									<div className="w-4 h-4 bg-slate-400 rounded-full"></div>
 								</div>
-								<div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 max-w-[80%]">
+								<div className="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 max-w-[80%]">
 									<div className="flex items-center gap-2 mb-1">
 										<FontAwesomeIcon icon={faWaveSquare} className="text-blue-500 animate-pulse" />
 										<span className="text-xs font-bold text-slate-400">{t("landing.mockup.chat.voiceNote")}</span>
@@ -89,7 +89,7 @@ export default function ConversationalCommerce() {
 								</div>
 
 								{/* Product Card */}
-								<div className="bg-white p-3 rounded-2xl shadow-lg border border-slate-100 w-[220px] transform hover:scale-105 transition-transform duration-300 cursor-pointer opacity-0 animate-slide-up-fade" style={{ animationDelay: "2s", animationFillMode: "forwards" }}>
+								<div className="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-lg border border-slate-100 w-[220px] transform hover:scale-105 transition-transform duration-300 cursor-pointer opacity-0 animate-slide-up-fade" style={{ animationDelay: "2s", animationFillMode: "forwards" }}>
 									<div className="w-full h-28 bg-slate-100 rounded-lg mb-3 overflow-hidden relative group">
 										<img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Dress" className="w-full h-full object-cover" />
 										<div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-slate-900 shadow-sm">{t("landing.mockup.chat.newArrival")}</div>
@@ -105,7 +105,7 @@ export default function ConversationalCommerce() {
 						</div>
 
 						{/* Bottom Input Area */}
-						<div className="absolute bottom-6 left-4 right-4 h-14 bg-white rounded-full shadow-lg border border-slate-100 flex items-center px-5 justify-between z-20">
+						<div className="absolute bottom-6 left-4 right-4 h-14 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-slate-100 flex items-center px-5 justify-between z-20">
 							<span className="text-slate-400 text-sm">Type a message...</span>
 							<div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm shadow-md hover:scale-105 transition-transform cursor-pointer">
 								<FontAwesomeIcon icon={faArrowRight} />
@@ -117,7 +117,7 @@ export default function ConversationalCommerce() {
 
 				{/* Floating Notification - Payment Approved */}
 				<div className="absolute top-[20%] -right-12 z-20 hidden md:block opacity-0 animate-slide-in-right" style={{ animationDelay: "3s", animationFillMode: "forwards" }}>
-					<div className="bg-white p-4 rounded-xl shadow-xl flex items-center gap-3 border border-slate-100">
+					<div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl flex items-center gap-3 border border-slate-100">
 						<div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500">
 							<FontAwesomeIcon icon={faCheckCircle} className="text-xl" />
 						</div>

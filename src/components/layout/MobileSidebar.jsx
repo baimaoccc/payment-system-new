@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { useSelector } from "react-redux";
-import { ROLE_MAP } from "./menuConfig";
+import { ROLE_MAP } from "./menuConfig.jsx";
 import { useMenu } from "../../hooks/useMenu";
 import { NavMenu } from "./NavMenu";
 import { Logo } from "../common/Logo.jsx";
@@ -36,11 +36,11 @@ export function MobileSidebar({ isOpen, onClose }) {
 			<div className="fixed inset-0 bg-black/50 transition-opacity" onClick={onClose} />
 
 			{/* Drawer */}
-			<div className="relative flex flex-col w-64 h-full bg-white shadow-xl animate-page">
-				<div className="flex items-center justify-between h-16 px-4 border-b">
+			<div className="relative flex flex-col w-64 h-full bg-white dark:bg-gray-800 shadow-xl animate-page">
+				<div className="flex items-center justify-between h-16 px-4 border-b dark:border-gray-700/50">
 					<Logo size={36}/>
 					<img src={BrandTextImg} alt="text" className="w-auto h-[28px]" />
-					<button onClick={onClose} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+					<button onClick={onClose} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>

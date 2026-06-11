@@ -15,10 +15,10 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-			<div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200 mx-4">
-				<div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-					<h3 className="text-lg font-bold text-gray-900">{title}</h3>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+			<div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200 mx-4">
+				<div className="p-4 border-b border-gray-100 dark:border-gray-700/50 flex justify-between items-center bg-gray-50/50">
+					<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{title}</h3>
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
@@ -145,17 +145,17 @@ export default function CountryTransferView() {
 	return (
 		<div className="p-6 max-w-[1600px] mx-auto">
 			<div className="flex justify-between items-center mb-6">
-				<h1 className="text-2xl font-bold text-gray-900">{t("countryTransferManagement") || "Country Transfer Point"}</h1>
+				<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("countryTransferManagement") || "Country Transfer Point"}</h1>
 				<button onClick={handleCreate} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium shadow-sm shadow-blue-200">
 					<FontAwesomeIcon icon={faPlus} />
 					{t("create") || "Add New"}
 				</button>
 			</div>
 
-			<div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 overflow-hidden">
 				<div className="overflow-x-auto">
-					<table className="w-full text-left text-sm text-gray-600">
-						<thead className="bg-gray-50 border-b border-gray-100 text-xs uppercase font-semibold text-gray-500">
+					<table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
+						<thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700/50 text-xs uppercase font-semibold text-gray-500 dark:text-gray-400">
 							<tr>
 								<th className="px-6 py-4">{t("country") || "Country"}</th>
 								<th className="px-6 py-4">{t("resetTime") || "Reset Time"}</th>
@@ -163,7 +163,7 @@ export default function CountryTransferView() {
 								<th className="px-6 py-4 text-right">{t("actions") || "Actions"}</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-100">
+						<tbody className="divide-y divide-gray-100 dark:divide-gray-700/50">
 							{loading ? (
 								<tr>
 									<td colSpan="4" className="px-6 py-8 text-center text-gray-400">
@@ -185,12 +185,12 @@ export default function CountryTransferView() {
 											<td className="px-6 py-4">
 												<div className="flex items-center gap-2">
 													<span className="text-xl">{flag}</span>
-													<span className="font-medium text-gray-900">{name}</span>
-													<span className="text-xs text-gray-400 font-mono bg-gray-100 px-1.5 py-0.5 rounded">{item.country_code}</span>
+													<span className="font-medium text-gray-900 dark:text-gray-100">{name}</span>
+													<span className="text-xs text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">{item.country_code}</span>
 												</div>
 											</td>
-											<td className="px-6 py-4 font-mono text-gray-700">{item.time_country}</td>
-											<td className="px-6 py-4 text-gray-500 text-xs">{item.updatetime ? new Date(item.updatetime * 1000).toLocaleString() : "-"}</td>
+											<td className="px-6 py-4 font-mono text-gray-700 dark:text-gray-300">{item.time_country}</td>
+											<td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-xs">{item.updatetime ? new Date(item.updatetime * 1000).toLocaleString() : "-"}</td>
 											<td className="px-6 py-4 text-right">
 												<div className="flex items-center justify-end gap-2">
 													<button onClick={() => handleEdit(item)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors" title={t("edit") || "Edit"}>
@@ -210,7 +210,7 @@ export default function CountryTransferView() {
 				</div>
 
 				{pagination.total > 0 && (
-					<div className="px-6 py-4 border-t border-gray-100">
+					<div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700/50">
 						<Pagination
 							page={pagination.page}
 							pageSize={pagination.per_page}
@@ -225,7 +225,7 @@ export default function CountryTransferView() {
 			<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalMode === "create" ? t("createCountryTransfer") || "Add Transfer Point" : t("editCountryTransfer") || "Edit Transfer Point"}>
 				<form onSubmit={handleSubmit} className="space-y-4 min-h-[350px]">
 					<div>
-							<label className="block text-sm font-medium text-gray-700 mb-1">{t("country") || "Country"}</label>
+							<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("country") || "Country"}</label>
 							<Select 
 							value={formData.country_code} 
 							onChange={(val) => setFormData((prev) => ({ ...prev, country_code: val }))} 
@@ -237,13 +237,13 @@ export default function CountryTransferView() {
 						/>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-1">{t("resetTime") || "Reset Time"}</label>
-							<input type="time" step="1" value={formData.time_country} onChange={(e) => setFormData((prev) => ({ ...prev, time_country: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" required />
-							<p className="mt-1 text-xs text-gray-500">{t("resetTimeDesc") || "Format: HH:MM:SS"}</p>
+							<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("resetTime") || "Reset Time"}</label>
+							<input type="time" step="1" value={formData.time_country} onChange={(e) => setFormData((prev) => ({ ...prev, time_country: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" required />
+							<p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{t("resetTimeDesc") || "Format: HH:MM:SS"}</p>
 						</div>
 
 					<div className="pt-4 flex gap-3">
-						<button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+						<button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-2 px-4 border border-gray-300 dark:border-gray-700/50 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900 transition-colors">
 							{t("cancel") || "Cancel"}
 						</button>
 						<button type="submit" disabled={submitting} className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-70 flex items-center justify-center gap-2">

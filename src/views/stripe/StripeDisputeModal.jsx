@@ -70,19 +70,19 @@ export function StripeDisputeModal({ isOpen, onClose, accountId }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-white z-10">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800 z-10">
                     <div className="flex items-center gap-3">
                         <div className="bg-red-50 text-red-600 p-2 rounded-lg">
                             <FontAwesomeIcon icon={faGavel} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900">{t("st_dispute_list")}</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">ID: {accountId}</p>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t("st_dispute_list")}</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ID: {accountId}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900">
                         <FontAwesomeIcon icon={faTimes} className="text-xl" />
                     </button>
                 </div>
@@ -100,23 +100,23 @@ export function StripeDisputeModal({ isOpen, onClose, accountId }) {
                         </div>
                     ) : (
                         <div className="p-6">
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left text-sm">
-                                        <thead className="bg-gray-50 border-b border-gray-100">
+                                        <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700/50">
                                             <tr>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("amount")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("status")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("st_reason")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("st_charge")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("st_evidence_due_by")}</th>
-                                                <th className="px-4 py-3 font-medium text-gray-500">{t("date")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("amount")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("status")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("st_reason")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("st_charge")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("st_evidence_due_by")}</th>
+                                                <th className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">{t("date")}</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-100">
+                                        <tbody className="divide-y divide-gray-100 dark:divide-gray-700/50">
                                             {list.map((item, idx) => (
-                                                <tr key={item.id || idx} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-4 py-3 font-medium text-gray-900">
+                                                <tr key={item.id || idx} className="hover:bg-gray-50 dark:bg-gray-900 transition-colors">
+                                                    <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
                                                         {formatCurrency(item.amount, item.currency)}
                                                     </td>
                                                     <td className="px-4 py-3">
@@ -127,18 +127,18 @@ export function StripeDisputeModal({ isOpen, onClose, accountId }) {
                                                             {t(`dispute_status_${item.status}`) || item.status}
                                                         </span>
                                                     </td>
-                                                    <td className="px-4 py-3 text-gray-600 capitalize">
+                                                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 capitalize">
                                                         {item.reason ? (t(`dispute_reason_${item.reason}`) || item.reason.replace(/_/g, ' ')) : '-'}
                                                     </td>
-                                                    <td className="px-4 py-3 font-mono text-xs text-gray-500">
+                                                    <td className="px-4 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">
                                                         {typeof item.charge === 'string' ? item.charge : item.charge?.id || '-'}
                                                     </td>
-                                                    <td className="px-4 py-3 text-gray-500">
+                                                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
                                                         {item.evidence_details?.due_by 
                                                             ? new Date(item.evidence_details.due_by * 1000).toLocaleDateString() 
                                                             : '-'}
                                                     </td>
-                                                    <td className="px-4 py-3 text-gray-500">
+                                                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
                                                         {item.created ? new Date(item.created * 1000).toLocaleString() : '-'}
                                                     </td>
                                                 </tr>
@@ -154,7 +154,7 @@ export function StripeDisputeModal({ isOpen, onClose, accountId }) {
                                     <button 
                                         onClick={() => loadData(true)} 
                                         disabled={loadingMore}
-                                        className="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 text-gray-600 dark:text-gray-400 rounded-lg text-sm hover:bg-gray-50 dark:bg-gray-900 transition-colors disabled:opacity-50"
                                     >
                                         {loadingMore ? (
                                             <>

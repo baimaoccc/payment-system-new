@@ -7,6 +7,7 @@ import { StripeLogsView } from "../views/stripe/StripeLogsView.jsx";
 import StripeWhitelistGroupsView from "../views/stripe/StripeWhitelistGroupsView.jsx";
 import StripeGroupsView from "../views/stripe/StripeGroupsView.jsx";
 import { AirwallexAccountsView } from "../views/airwallex/AirwallexAccountsView.jsx";
+import { CitconAccountsView } from "../views/citcon/CitconAccountsView.jsx";
 import { ZelleAccountsView } from "../views/zelle/ZelleAccountsView.jsx";
 import { AirwallexLogsView } from "../views/airwallex/AirwallexLogsView.jsx";
 import AirwallexGroupsView from "../views/airwallex/AirwallexGroupsView.jsx";
@@ -82,6 +83,7 @@ export function AppRouter() {
             element={<AirwallexWhitelistGroupsView />}
           />
           <Route path="airwallex-groups" element={<AirwallexGroupsView />} />
+          <Route path="citcon-accounts" element={<CitconAccountsView />} />
           <Route path="zelle-accounts" element={<ZelleAccountsView />} />
           <Route path="users" element={<UsersView />} />
           <Route path="roles" element={<RolesView />} />
@@ -143,6 +145,7 @@ export function AppRouter() {
             element={<AirwallexWhitelistGroupsView />}
           />
           <Route path="airwallex-groups" element={<AirwallexGroupsView />} />
+          <Route path="citcon-accounts" element={<CitconAccountsView />} />
           <Route path="zelle-accounts" element={<ZelleAccountsView />} />
           <Route path="users" element={<UsersView />} />
           <Route path="roles" element={<RolesView />} />

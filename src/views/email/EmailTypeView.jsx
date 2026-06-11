@@ -6,12 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faPlus, faEnvelope, faTimes, faSpinner, faEye } from "@fortawesome/free-solid-svg-icons";
 import { fetchEmailTypes, createEmailType, deleteEmailType, fetchEmailType } from "../../controllers/emailController.js";
 import { useDispatch, useSelector } from "react-redux";
-import { addToast } from "../../store/slices/ui.js";
-import { isSuperAdmin } from "../../components/layout/menuConfig.js";
+import { addToast, setModal } from "../../store/slices/ui.js";
+import { isSuperAdmin } from "../../components/layout/menuConfig.jsx";
 
 const InputRow = ({ label, children, className = "" }) => (
 	<div className={`mb-4 ${className}`}>
-		<label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
+		<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">{label}</label>
 		{children}
 	</div>
 );
@@ -41,10 +41,10 @@ function EmailTypeFormModal({ open, initial, onClose, onSave, t, readOnly }) {
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
-			<div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-scale-in">
-				<div className="flex items-center justify-between p-6 border-b border-gray-100">
-					<h3 className="text-xl font-bold text-gray-800">{readOnly ? t("viewEmailType") : initial ? t("editEmailType") : t("addEmailType")}</h3>
-					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all">
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-scale-in">
+				<div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700/50">
+					<h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{readOnly ? t("viewEmailType") : initial ? t("editEmailType") : t("addEmailType")}</h3>
+					<button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-gray-100 dark:bg-gray-700 hover:text-gray-600 dark:text-gray-400 transition-all">
 						<FontAwesomeIcon icon={faTimes} />
 					</button>
 				</div>
@@ -52,7 +52,7 @@ function EmailTypeFormModal({ open, initial, onClose, onSave, t, readOnly }) {
 				<form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6">
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						<InputRow label={t("emailTypeName")}>
-							<input type="text" className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm disabled:bg-gray-100 disabled:text-gray-500" value={form.type_name} onChange={(e) => setForm({ ...form, type_name: e.target.value })} placeholder={t("emailTypeNamePlaceholder")} required disabled={readOnly} />
+							<input type="text" className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm disabled:bg-gray-100 dark:bg-gray-700 disabled:text-gray-500 dark:text-gray-400" value={form.type_name} onChange={(e) => setForm({ ...form, type_name: e.target.value })} placeholder={t("emailTypeNamePlaceholder")} required disabled={readOnly} />
 						</InputRow>
 
 						<InputRow label={t("status")}>
@@ -69,19 +69,19 @@ function EmailTypeFormModal({ open, initial, onClose, onSave, t, readOnly }) {
 					</div>
 
 					<InputRow label={t("orderVariable")}>
-						<textarea className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[120px] disabled:bg-gray-100 disabled:text-gray-500" value={form.order_variable} onChange={(e) => setForm({ ...form, order_variable: e.target.value })} placeholder={t("orderVariablePlaceholder")} disabled={readOnly} />
+						<textarea className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[120px] disabled:bg-gray-100 dark:bg-gray-700 disabled:text-gray-500 dark:text-gray-400" value={form.order_variable} onChange={(e) => setForm({ ...form, order_variable: e.target.value })} placeholder={t("orderVariablePlaceholder")} disabled={readOnly} />
 					</InputRow>
 
 					<InputRow label={t("logisticsVariable")}>
-						<textarea className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[120px] disabled:bg-gray-100 disabled:text-gray-500" value={form.logistics_variable} onChange={(e) => setForm({ ...form, logistics_variable: e.target.value })} placeholder={t("logisticsVariablePlaceholder")} disabled={readOnly} />
+						<textarea className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[120px] disabled:bg-gray-100 dark:bg-gray-700 disabled:text-gray-500 dark:text-gray-400" value={form.logistics_variable} onChange={(e) => setForm({ ...form, logistics_variable: e.target.value })} placeholder={t("logisticsVariablePlaceholder")} disabled={readOnly} />
 					</InputRow>
 
 					<InputRow label={t("clientVariable")}>
-						<textarea className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[120px] disabled:bg-gray-100 disabled:text-gray-500" value={form.client_variable} onChange={(e) => setForm({ ...form, client_variable: e.target.value })} placeholder={t("clientVariablePlaceholder")} disabled={readOnly} />
+						<textarea className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/50 rounded-lg focus:bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-sm min-h-[120px] disabled:bg-gray-100 dark:bg-gray-700 disabled:text-gray-500 dark:text-gray-400" value={form.client_variable} onChange={(e) => setForm({ ...form, client_variable: e.target.value })} placeholder={t("clientVariablePlaceholder")} disabled={readOnly} />
 					</InputRow>
 
-					<div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
-						<button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+					<div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-gray-700/50">
+						<button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors">
 							{readOnly ? t("close") : t("cancel")}
 						</button>
 						{!readOnly && (
@@ -101,15 +101,15 @@ const MobileEmailTypeCard = ({ item, onView, onEdit, onDelete, onCopy, t, format
 	const [expanded, setExpanded] = useState(false);
 
 	return (
-		<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 transition-all duration-200 ${expanded ? "ring-1 ring-blue-100" : ""}`}>
+		<div className={`bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700/50 transition-all duration-200 ${expanded ? "ring-1 ring-blue-100" : ""}`}>
 			<div className="flex justify-between items-start mb-3">
 				<div className="flex-1 min-w-0 mr-3">
 					<div className="flex items-center gap-2 mb-1">
-						<span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
-						<h3 className="font-bold text-gray-900 line-clamp-1 break-all">{item.type_name}</h3>
+						<span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded text-xs font-mono shrink-0">#{item.id}</span>
+						<h3 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-1 break-all">{item.type_name}</h3>
 					</div>
 					<div className="mt-1">
-						<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.status === 1 ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+						<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.status === 1 ? "bg-green-100 text-green-800" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100"}`}>
 							{item.status === 1 ? t("active") : t("inactive")}
 						</span>
 					</div>
@@ -130,23 +130,23 @@ const MobileEmailTypeCard = ({ item, onView, onEdit, onDelete, onCopy, t, format
 
 			<div className="space-y-2 mb-3">
 				{item.order_variable && (
-					<div className="bg-gray-50 rounded p-2 text-[10px]" onClick={() => onCopy(item.order_variable)}>
+					<div className="bg-gray-50 dark:bg-gray-900 rounded p-2 text-[10px]" onClick={() => onCopy(item.order_variable)}>
 						<div className="text-gray-400 uppercase tracking-wider mb-0.5">{t("orderVariable")}</div>
-						<div className="font-mono text-gray-600 break-all">{item.order_variable}</div>
+						<div className="font-mono text-gray-600 dark:text-gray-400 break-all">{item.order_variable}</div>
 					</div>
 				)}
 				{expanded && (
 					<>
 						{item.logistics_variable && (
-							<div className="bg-gray-50 rounded p-2 text-[10px]" onClick={() => onCopy(item.logistics_variable)}>
+							<div className="bg-gray-50 dark:bg-gray-900 rounded p-2 text-[10px]" onClick={() => onCopy(item.logistics_variable)}>
 								<div className="text-gray-400 uppercase tracking-wider mb-0.5">{t("logisticsVariable")}</div>
-								<div className="font-mono text-gray-600 break-all">{item.logistics_variable}</div>
+								<div className="font-mono text-gray-600 dark:text-gray-400 break-all">{item.logistics_variable}</div>
 							</div>
 						)}
 						{item.client_variable && (
-							<div className="bg-gray-50 rounded p-2 text-[10px]" onClick={() => onCopy(item.client_variable)}>
+							<div className="bg-gray-50 dark:bg-gray-900 rounded p-2 text-[10px]" onClick={() => onCopy(item.client_variable)}>
 								<div className="text-gray-400 uppercase tracking-wider mb-0.5">{t("clientVariable")}</div>
-								<div className="font-mono text-gray-600 break-all">{item.client_variable}</div>
+								<div className="font-mono text-gray-600 dark:text-gray-400 break-all">{item.client_variable}</div>
 							</div>
 						)}
 					</>
@@ -160,7 +160,7 @@ const MobileEmailTypeCard = ({ item, onView, onEdit, onDelete, onCopy, t, format
 				)}
 			</div>
 
-			<div className="flex items-center justify-between pt-3 border-t border-gray-50 text-[10px] text-gray-400">
+			<div className="flex items-center justify-between pt-3 border-t border-gray-50 dark:border-gray-700/50 text-[10px] text-gray-400">
 				<div className="flex flex-col gap-0.5">
 					{item.createtime && <span>{t("crt")}: {formatDate(item.createtime).split(" ")[0]}</span>}
 					{item.updatetime && <span>{t("upd")}: {formatDate(item.updatetime).split(" ")[0]}</span>}
@@ -274,8 +274,8 @@ export function EmailTypeView() {
 						<FontAwesomeIcon icon={faEnvelope} className="text-xl" />
 					</div>
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">{t("emailTypeManagement")}</h1>
-						<p className="text-sm text-gray-500 mt-1">{t("emailTypeManagementDesc")}</p>
+						<h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("emailTypeManagement")}</h1>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("emailTypeManagementDesc")}</p>
 					</div>
 				</div>
 				<button
@@ -293,12 +293,12 @@ export function EmailTypeView() {
 			{/* Mobile/Tablet View (Cards) */}
 			<div className="lg:hidden space-y-4 mb-4">
 				{loading ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						<FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
 						{t("loading")}
 					</div>
 				) : (list || []).length === 0 ? (
-					<div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
+					<div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100 dark:border-gray-700/50">
 						{t("noData")}
 					</div>
 				) : (
@@ -321,7 +321,7 @@ export function EmailTypeView() {
 			</div>
 
 			{/* Desktop View (Table) */}
-			<div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+			<div className="hidden lg:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/50 overflow-hidden">
 				{loading ? (
 					<div className="p-12 text-center text-gray-400">
 						<FontAwesomeIcon icon={faSpinner} spin className="text-3xl mb-3" />
@@ -330,26 +330,26 @@ export function EmailTypeView() {
 				) : (
 					<div className="overflow-x-auto">
 						<table className="min-w-full text-xs">
-							<thead className="bg-gray-100">
+							<thead className="bg-gray-100 dark:bg-gray-700">
 								<tr>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-16">ID</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/5">{t("emailTypeName")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700">{t("variables")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-1/6">{t("timeline")}</th>
-									<th className="px-3 py-3 text-left font-medium text-gray-700 w-24">{t("actions")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-16">ID</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/5">{t("emailTypeName")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300">{t("variables")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-1/6">{t("timeline")}</th>
+									<th className="px-3 py-3 text-left font-medium text-gray-700 dark:text-gray-300 w-24">{t("actions")}</th>
 								</tr>
 							</thead>
 							<tbody>
 								{(list || []).map((item) => (
-									<tr key={item.id} className="border-t hover:bg-gray-50 transition-colors">
-										<td className="p-3 align-top font-mono text-gray-500">#{item.id}</td>
+									<tr key={item.id} className="border-t border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+										<td className="p-3 align-top font-mono text-gray-500 dark:text-gray-400">#{item.id}</td>
 
 										{/* Type Info */}
 										<td className="p-3 align-top">
 											<div className="flex flex-col gap-1">
-												<div className="font-bold text-gray-900 text-sm">{item.type_name}</div>
+												<div className="font-bold text-gray-900 dark:text-gray-100 text-sm">{item.type_name}</div>
 												<div className="mt-1">
-													<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.status === 1 ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>{item.status === 1 ? t("active") : t("inactive")}</span>
+													<span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${item.status === 1 ? "bg-green-100 text-green-800" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100"}`}>{item.status === 1 ? t("active") : t("inactive")}</span>
 												</div>
 											</div>
 										</td>
@@ -365,19 +365,19 @@ export function EmailTypeView() {
 																<FontAwesomeIcon icon={faPen} className="text-[8px]" />
 															</span>
 														</div>
-														<div className="text-gray-600 truncate max-w-xl font-mono text-[10px]">{item.order_variable}</div>
+														<div className="text-gray-600 dark:text-gray-400 truncate max-w-xl font-mono text-[10px]">{item.order_variable}</div>
 													</div>
 												)}
 												{item.logistics_variable && (
 													<div className="group relative cursor-pointer hover:bg-blue-50/50 p-1 rounded transition-colors -ml-1" onClick={() => handleCopy(item.logistics_variable)} title={t("clickToCopy")}>
 														<div className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">{t("logisticsVariable")}</div>
-														<div className="text-gray-600 truncate max-w-xl font-mono text-[10px]">{item.logistics_variable}</div>
+														<div className="text-gray-600 dark:text-gray-400 truncate max-w-xl font-mono text-[10px]">{item.logistics_variable}</div>
 													</div>
 												)}
 												{item.client_variable && (
 													<div className="group relative cursor-pointer hover:bg-blue-50/50 p-1 rounded transition-colors -ml-1" onClick={() => handleCopy(item.client_variable)} title={t("clickToCopy")}>
 														<div className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">{t("clientVariable")}</div>
-														<div className="text-gray-600 truncate max-w-xl font-mono text-[10px]">{item.client_variable}</div>
+														<div className="text-gray-600 dark:text-gray-400 truncate max-w-xl font-mono text-[10px]">{item.client_variable}</div>
 													</div>
 												)}
 											</div>
@@ -385,7 +385,7 @@ export function EmailTypeView() {
 
 										{/* Timeline */}
 										<td className="p-3 align-top">
-											<div className="flex flex-col gap-1 text-gray-500">
+											<div className="flex flex-col gap-1 text-gray-500 dark:text-gray-400">
 												{item.createtime && (
 													<div title={`${t("created")}: ${formatDate(item.createtime)}`}>
 														<span className="text-gray-400 text-[10px] w-8 inline-block">{t("crt")}:</span>
@@ -433,7 +433,7 @@ export function EmailTypeView() {
 					</div>
 				)}
 
-				<div className="border-t border-gray-100 bg-gray-50/30 p-4">
+				<div className="border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/30 p-4">
 					<Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
 				</div>
 			</div>

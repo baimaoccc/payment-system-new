@@ -3,7 +3,7 @@ import { useI18n } from "../../plugins/i18n/index.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setSidebarCollapsed } from "../../store/slices/ui.js";
 import { Logo } from "../common/Logo.jsx";
-import { ROLE_MAP } from "./menuConfig";
+import { ROLE_MAP } from "./menuConfig.jsx";
 import { useMenu } from "../../hooks/useMenu";
 import { NavMenu } from "./NavMenu";
 import BrandText from "../../assets/brand-text.png";
@@ -34,8 +34,8 @@ export function Sidebar() {
 	}, [collapsed, dispatch]);
 
 	return (
-		<div className={`hidden md:flex flex-col h-full bg-white border-r transition-all duration-300 ease-in-out ${collapsed ? "w-20" : "w-64"}`}>
-			<div className="h-16 flex items-center justify-center border-b">
+		<div className={`hidden md:flex flex-col h-full bg-white dark:bg-gray-800 border-r dark:border-gray-700/50 transition-all duration-300 ease-in-out ${collapsed ? "w-20" : "w-64"}`}>
+			<div className="h-16 flex items-center justify-center border-b dark:border-gray-700/50">
 				<Logo collapsed={collapsed} />
 				{!collapsed && <img src={BrandText} alt="brand-text" className="ml-2 h-8" />}
 			</div>

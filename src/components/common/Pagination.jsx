@@ -66,12 +66,12 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
             </div>
 
             {/* Right: Jumper and Total */}
-            <div className="flex items-center gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-2">
                     <span>{t('goTo') || 'Go to'}</span>
                     <input
                         type="number"
-                        className="w-12 h-9 px-2 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                        className="w-12 h-9 px-2 border border-gray-200 dark:border-gray-700/50 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500/40"
                         onKeyDown={handleJump}
                         placeholder={page}
                     />
@@ -97,18 +97,38 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
                     min-width: 32px;
                     height: 32px;
                     line-height: 30px;
-                    border: 1px solid #e5e7eb;
-                    background-color: #fff;
+                    border: 1px solid var(--border-color, #e5e7eb);
+                    background-color: var(--bg-color, #fff);
                     border-radius: 4px;
                     cursor: pointer;
                     margin-right: 0;
                     text-align: center;
                     font-size: 14px;
-                    color: #374151;
+                    color: var(--text-color, #374151);
                     transition: all 0.2s;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                }
+                :global(.dark) .custom-pagination .rc-pagination-item,
+                :global(.dark) .custom-pagination .rc-pagination-prev,
+                :global(.dark) .custom-pagination .rc-pagination-next {
+                    --border-color: rgba(55, 65, 81, 0.5);
+                    --bg-color: #1F2937;
+                    --text-color: #D1D5DB;
+                }
+                html.dark .custom-pagination .rc-pagination-item,
+                html.dark .custom-pagination .rc-pagination-prev,
+                html.dark .custom-pagination .rc-pagination-next {
+                    border: 1px solid rgba(55, 65, 81, 0.5);
+                    background-color: #1F2937;
+                    color: #D1D5DB;
+                }
+                .custom-pagination .rc-pagination-item a,
+                .custom-pagination .rc-pagination-jump-prev a,
+                .custom-pagination .rc-pagination-jump-next a {
+                    color: inherit;
+                    text-decoration: none;
                 }
                 .custom-pagination .rc-pagination-item:hover,
                 .custom-pagination .rc-pagination-prev:hover,
@@ -119,7 +139,15 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
                 .custom-pagination .rc-pagination-item-active {
                     background-color: #3b82f6;
                     border-color: #3b82f6;
-                    color: #fff;
+                    color: #fff !important;
+                }
+                html.dark .custom-pagination .rc-pagination-item-active {
+                    background-color: #3b82f6 !important;
+                    border-color: #3b82f6 !important;
+                    color: #fff !important;
+                }
+                html.dark .custom-pagination .rc-pagination-item-active a {
+                    color: #fff !important;
                 }
                 .custom-pagination .rc-pagination-item-active a {
                     color: #fff;
@@ -132,9 +160,16 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
                     cursor: not-allowed;
                     background-color: #f9fafb;
                 }
+                html.dark .custom-pagination .rc-pagination-disabled {
+                    background-color: #374151;
+                    border-color: #4B5563;
+                }
                 .custom-pagination .rc-pagination-disabled:hover {
-                    border-color: #e5e7eb;
+                    border-color: var(--border-color, #e5e7eb);
                     color: #9ca3af;
+                }
+                html.dark .custom-pagination .rc-pagination-disabled:hover {
+                    border-color: #4B5563;
                 }
                 .custom-pagination .rc-pagination-jump-prev,
                 .custom-pagination .rc-pagination-jump-next {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { MENU_CONFIG, DEV_MENU_ITEM } from "../components/layout/menuConfig";
+import { MENU_CONFIG, DEV_MENU_ITEM } from "../components/layout/menuConfig.jsx";
 import { db } from "../utils/indexedDB.js";
 
 export function useMenu() {

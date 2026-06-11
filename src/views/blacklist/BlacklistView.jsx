@@ -13,8 +13,8 @@ const InputRow = ({ icon, label, children, className = "", noBorder = false }) =
 		<div className="text-gray-400 w-6 pt-4 flex justify-center">
 			<FontAwesomeIcon icon={icon} className="text-lg" />
 		</div>
-		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
-			<label className="block text-xs font-medium text-gray-500 mb-0.5 uppercase tracking-wider">{label}</label>
+		<div className={`flex-1 ${noBorder ? "" : "border-b border-gray-200 dark:border-gray-700/50 focus-within:border-blue-600"} transition-colors pb-2 pt-1 relative`}>
+			<label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5 uppercase tracking-wider">{label}</label>
 			{children}
 		</div>
 	</div>
@@ -22,8 +22,8 @@ const InputRow = ({ icon, label, children, className = "", noBorder = false }) =
 
 const SectionHeader = ({ title, subtitle }) => (
 	<div className="mb-6 mt-2">
-		<h4 className="text-base font-bold text-gray-900">{title}</h4>
-		{subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
+		<h4 className="text-base font-bold text-gray-900 dark:text-gray-100">{title}</h4>
+		{subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</p>}
 	</div>
 );
 
@@ -40,13 +40,13 @@ function BlacklistFormModal({ open, initial, onClose, onSave, t, saving }) {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
-			<div className="mx-4 relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
+			<div className="mx-4 relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
 				{/* Header */}
-				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 bg-white z-10">
+				<div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-800 z-10">
 					<div>
-						<h3 className="text-xl font-bold text-gray-900">{initial?.id ? t("editBlacklist") || "Edit Blacklist" : t("addBlacklist") || "Add Blacklist"}</h3>
+						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{initial?.id ? t("editBlacklist") || "Edit Blacklist" : t("addBlacklist") || "Add Blacklist"}</h3>
 					</div>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50">
+					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900">
 						<FontAwesomeIcon icon={faTimes} className="text-xl" />
 					</button>
 				</div>
@@ -55,25 +55,25 @@ function BlacklistFormModal({ open, initial, onClose, onSave, t, saving }) {
 					<SectionHeader title={t("basicInfo") || "Basic Information"} />
 					<div className="p-6">
 						<InputRow icon={faUser} label={t("name") || "Name"}>
-							<input value={form.name} onChange={(e) => setForm((v) => ({ ...v, name: e.target.value }))} placeholder={t("enterName") || "Enter Name"} className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+							<input value={form.name} onChange={(e) => setForm((v) => ({ ...v, name: e.target.value }))} placeholder={t("enterName") || "Enter Name"} className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" />
 						</InputRow>
 
 						<InputRow icon={faGlobe} label={t("ipAddress") || "IP Address"}>
-							<input value={form.ip} onChange={(e) => setForm((v) => ({ ...v, ip: e.target.value }))} placeholder="e.g. 1.0.0.1" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+							<input value={form.ip} onChange={(e) => setForm((v) => ({ ...v, ip: e.target.value }))} placeholder="e.g. 1.0.0.1" className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" />
 						</InputRow>
 
 						<InputRow icon={faEnvelope} label={t("email") || "Email"}>
-							<input value={form.email} onChange={(e) => setForm((v) => ({ ...v, email: e.target.value }))} placeholder="example@domain.com" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+							<input value={form.email} onChange={(e) => setForm((v) => ({ ...v, email: e.target.value }))} placeholder="example@domain.com" className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" />
 						</InputRow>
 
 						<InputRow icon={faPhone} label={t("phone") || "Phone"}>
-							<input value={form.phone} onChange={(e) => setForm((v) => ({ ...v, phone: e.target.value }))} placeholder="e.g. 13800138000" className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-300 py-1" />
+							<input value={form.phone} onChange={(e) => setForm((v) => ({ ...v, phone: e.target.value }))} placeholder="e.g. 13800138000" className="w-full outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-300 py-1" />
 						</InputRow>
 					</div>
 				</div>
 
-				<div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-					<button type="button" onClick={onClose} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+				<div className="p-6 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
+					<button type="button" onClick={onClose} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-lg hover:bg-gray-50 dark:bg-gray-900 hover:text-gray-900 dark:text-gray-100 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
 						{t("cancel") || "Cancel"}
 					</button>
 					<button onClick={save} disabled={saving} className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -180,11 +180,11 @@ export function BlacklistView() {
 		<div className="p-6">
 			<BlacklistFormModal open={modalOpen} initial={form} onClose={() => setModalOpen(false)} onSave={onSave} t={t} saving={saving} />
 
-			<div className="bg-white rounded-2xl shadow p-4">
+			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
 				<div className="flex items-center justify-between mb-3">
 					<div className="flex items-center gap-2">
 						<FontAwesomeIcon icon={faBan} className="text-gray-400" />
-						<h3 className="text-sm font-semibold text-gray-900">{t("blacklist") || "Blacklist"}</h3>
+						<h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{t("blacklist") || "Blacklist"}</h3>
 					</div>
 					<button onClick={onAdd} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-medium hover:bg-blue-700 transition-colors">
 						<FontAwesomeIcon icon={faPlus} />
@@ -193,28 +193,28 @@ export function BlacklistView() {
 				</div>
 
 				{loading ? (
-					<div className="p-8 text-center text-gray-500">{t("loading") || "Loading..."}</div>
+					<div className="p-8 text-center text-gray-500 dark:text-gray-400">{t("loading") || "Loading..."}</div>
 				) : (
 					<div className="overflow-x-auto mt-3">
 						<table className="min-w-full text-xs">
-							<thead className="bg-gray-100">
+							<thead className="bg-gray-100 dark:bg-gray-700">
 								<tr>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">ID</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("name") || "Name"}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("ipAddress") || "IP Address"}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("email") || "Email"}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("phone") || "Phone"}</th>
-									<th className="px-2 py-3 text-left font-medium text-gray-700">{t("actions") || "Actions"}</th>
+									<th className="px-2 py-3 text-left font-medium text-gray-700 dark:text-gray-300">ID</th>
+									<th className="px-2 py-3 text-left font-medium text-gray-700 dark:text-gray-300">{t("name") || "Name"}</th>
+									<th className="px-2 py-3 text-left font-medium text-gray-700 dark:text-gray-300">{t("ipAddress") || "IP Address"}</th>
+									<th className="px-2 py-3 text-left font-medium text-gray-700 dark:text-gray-300">{t("email") || "Email"}</th>
+									<th className="px-2 py-3 text-left font-medium text-gray-700 dark:text-gray-300">{t("phone") || "Phone"}</th>
+									<th className="px-2 py-3 text-left font-medium text-gray-700 dark:text-gray-300">{t("actions") || "Actions"}</th>
 								</tr>
 							</thead>
 							<tbody>
 								{safeList.map((item) => (
-									<tr key={item.id} className="border-t hover:bg-gray-50 transition-colors">
-										<td className="p-2 text-gray-600">{item.id}</td>
-										<td className="p-2 font-medium text-gray-900">{item.name}</td>
-										<td className="p-2 text-gray-500">{item.ip || "-"}</td>
-										<td className="p-2 text-gray-500">{item.email || "-"}</td>
-										<td className="p-2 text-gray-500">{item.phone || "-"}</td>
+									<tr key={item.id} className="border-t border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+										<td className="p-2 text-gray-600 dark:text-gray-400">{item.id}</td>
+										<td className="p-2 font-medium text-gray-900 dark:text-gray-100">{item.name}</td>
+										<td className="p-2 text-gray-500 dark:text-gray-400">{item.ip || "-"}</td>
+										<td className="p-2 text-gray-500 dark:text-gray-400">{item.email || "-"}</td>
+										<td className="p-2 text-gray-500 dark:text-gray-400">{item.phone || "-"}</td>
 										<td className="p-2">
 											<div className="flex items-center gap-3 text-gray-400">
 												<button onClick={() => onEdit(item)} className="hover:text-blue-600 transition-colors" title={t("edit")}>

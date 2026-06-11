@@ -71,13 +71,13 @@ export function ActionDropdown({ actions }) {
 
 	return (
 		<>
-			<button ref={buttonRef} onClick={toggleOpen} className="flex items-center justify-center text-gray-500 transition-colors text-xs h-6 w-6 rounded-full hover:bg-gray-100">
+			<button ref={buttonRef} onClick={toggleOpen} className="flex items-center justify-center text-gray-500 dark:text-gray-400 transition-colors text-xs h-6 w-6 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
 				<FontAwesomeIcon icon={faEllipsisV} />
 			</button>
 
 			{isOpen &&
 				createPortal(
-					<div ref={dropdownRef} className="fixed bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-[9999] focus:outline-none py-1 w-32" style={{ top: position.top, left: position.left }}>
+					<div ref={dropdownRef} className="fixed bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-100 dark:border-gray-700/50 z-[9999] focus:outline-none py-1 w-32" style={{ top: position.top, left: position.left }}>
 						{actions.map((action, index) => (
 							<button
 								key={index}
@@ -86,7 +86,7 @@ export function ActionDropdown({ actions }) {
 									setIsOpen(false);
 									action.onClick();
 								}}
-								className={`w-full flex items-center text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${action.className || ""}`}>
+								className={`w-full flex items-center text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${action.className || ""}`}>
 								{action.icon && <span className="mr-2">{action.icon}</span>}
 								{action.label}
 							</button>
