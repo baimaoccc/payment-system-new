@@ -70,7 +70,7 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled, t }) => 
 				{selectedValues.map((code) => {
 					const country = options.find((o) => String(o.code) === code);
 					return (
-						<span key={code} className="bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+						<span key={code} className="bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50 px-2 py-0.5 rounded text-xs flex items-center gap-1">
 							<span className="font-medium">{code}</span>
 							{country && <span className="text-blue-400 w-auto truncate hidden sm:inline">{country.name}</span>}
 							{!disabled && (
@@ -88,7 +88,7 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled, t }) => 
 					<div className="p-2 border-b border-gray-100 dark:border-gray-700/50 bg-gray-50/50">
 						<div className="relative">
 							<FontAwesomeIcon icon={faSearch} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
-							<input type="text" value={search} onClick={(e) => e.stopPropagation()} onChange={(e) => setSearch(e.target.value)} placeholder={t("searchCountries")} className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" autoFocus />
+							<input type="text" value={search} onClick={(e) => e.stopPropagation()} onChange={(e) => setSearch(e.target.value)} placeholder={t("searchCountries")} className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700/50 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" autoFocus />
 						</div>
 					</div>
 					<div className="overflow-y-auto flex-1 p-1">
@@ -98,7 +98,7 @@ const MultiSelect = ({ options, value, onChange, placeholder, disabled, t }) => 
 							filteredOptions.map((opt) => {
 								const isSelected = selectedValues.includes(String(opt.code));
 								return (
-									<div key={opt.code} onClick={() => handleSelect(opt.code)} className={`px-3 py-2 text-xs rounded-md cursor-pointer flex items-center justify-between transition-colors ${isSelected ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900"}`}>
+									<div key={opt.code} onClick={() => handleSelect(opt.code)} className={`px-3 py-2 text-xs rounded-md cursor-pointer flex items-center justify-between transition-colors ${isSelected ? "bg-blue-50 text-blue-700 font-medium dark:bg-blue-900/30 dark:text-blue-400" : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900"}`}>
 										<div className="flex items-center gap-2">
 											<span className="w-8 font-mono text-gray-500 dark:text-gray-400 text-[20px]">{opt.flag}</span>
 											<span>{opt.name}</span>
@@ -156,7 +156,7 @@ const MobileWhitelistGroupCard = ({ group, onEdit, onDelete, t, lang }) => {
 					<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[60px] overflow-hidden"}`}>
 						{group.fz_json && Array.isArray(group.fz_json) && group.fz_json.length > 0 ? (
 							group.fz_json.map((country) => (
-								<span key={country.id} className="inline-flex items-center px-2 py-1 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100" title={lang === "zh" ? country.name_cn : country.name_en}>
+								<span key={country.id} className="inline-flex items-center px-2 py-1 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50" title={lang === "zh" ? country.name_cn : country.name_en}>
 									<span className="mr-1">{country.flag}</span>
 									{country.alpha2}
 								</span>
@@ -364,7 +364,7 @@ export default function AirwallexWhitelistGroupsView() {
 				</div>
 				<div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
 					<form onSubmit={handleSearch} className="relative flex-1 sm:flex-initial sm:w-64">
-						<input type="text" value={searchName} onChange={(e) => setSearchName(e.target.value)} placeholder={t("searchGroupPlaceholder")} className="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 dark:border-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+						<input type="text" value={searchName} onChange={(e) => setSearchName(e.target.value)} placeholder={t("searchGroupPlaceholder")} className="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 dark:border-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100" />
 						<button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 p-1.5 transition-colors">
 							<FontAwesomeIcon icon={faSearch} />
 						</button>
@@ -423,7 +423,7 @@ export default function AirwallexWhitelistGroupsView() {
 											<div className="line-clamp-3 leading-6">
 												{group.fz_json && Array.isArray(group.fz_json) && group.fz_json.length > 0 ? (
 													group.fz_json.map((country) => (
-														<span key={country.id} className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded text-xs mr-1.5 mb-1" title={lang === "zh" ? country.name_cn : country.name_en}>
+														<span key={country.id} className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50 px-1.5 py-0.5 rounded text-xs mr-1.5 mb-1" title={lang === "zh" ? country.name_cn : country.name_en}>
 															<span>{country.flag}</span>
 															<span className="font-medium">{country.alpha2}</span>
 														</span>
@@ -483,7 +483,7 @@ export default function AirwallexWhitelistGroupsView() {
 										<div className="flex flex-wrap gap-1.5 mt-2">
 											{viewData.fz_json && Array.isArray(viewData.fz_json) && viewData.fz_json.length > 0 ? (
 												viewData.fz_json.map((country) => (
-													<span key={country.id} className="bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded text-xs font-medium flex items-center gap-1">
+													<span key={country.id} className="bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50 px-2 py-0.5 rounded text-xs font-medium flex items-center gap-1">
 														<span>{country.flag}</span>
 														<span>{country.alpha2}</span>
 														<span className="text-blue-400 border-l border-blue-200 pl-1 ml-0.5">{lang === "zh" ? country.name_cn : country.name_en}</span>
@@ -491,7 +491,7 @@ export default function AirwallexWhitelistGroupsView() {
 												))
 											) : viewData.country_codes && viewData.country_codes.length > 0 ? (
 												viewData.country_codes.map((code) => (
-													<span key={code} className="bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded text-xs font-medium">
+													<span key={code} className="bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50 px-2 py-0.5 rounded text-xs font-medium">
 														{code}
 													</span>
 												))
@@ -527,11 +527,11 @@ export default function AirwallexWhitelistGroupsView() {
 							<div className="flex justify-between items-start">
 								<div>
 									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{editingId ? t("editGroup") : t("createGroup")}</h3>
-									<div className="mt-2 p-4 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-700 flex gap-3 items-start">
+									<div className="mt-2 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-100 dark:border-blue-800/50 text-sm text-blue-700 dark:text-blue-300 flex gap-3 items-start">
 										<FontAwesomeIcon icon={faLayerGroup} className="mt-0.5" />
 										<div>
-											<p className="font-medium">About Whitelist Groups</p>
-											<p className="opacity-90 mt-1">Whitelist groups allow you to define sets of countries that are approved for transactions. These groups can be assigned to multiple Airwallex accounts to manage risk effectively.</p>
+											<p className="font-medium text-blue-900 dark:text-blue-100">{t("aboutWhitelistGroups") || "关于白名单分组"}</p>
+											<p className="text-blue-800/90 dark:text-blue-200/90 mt-1">{t("aboutWhitelistGroupsDesc") || "白名单分组允许您定义允许进行交易的国家/地区集合。这些分组可以分配给多个 Airwallex 账户，以有效管理风险。"}</p>
 										</div>
 									</div>
 								</div>

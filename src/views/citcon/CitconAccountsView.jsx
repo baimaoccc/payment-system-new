@@ -28,7 +28,7 @@ const DropdownIndicator = (props) => (
 const InputField = ({ label, value, onChange, placeholder, type = "text" }) => (
 	<div className="flex flex-col gap-1">
 		<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{label}</label>
-		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 dark:border-gray-700/50 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-900 transition-colors" />
+		<input type={type} value={value} onChange={onChange} placeholder={placeholder} className="w-full h-8 px-3 border border-gray-200 dark:border-gray-700/50 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors" />
 	</div>
 );
 
@@ -43,7 +43,7 @@ const MobileWhitelist = ({ list }) => {
 			className="cursor-pointer">
 			<div className={`flex gap-1 flex-wrap transition-all ${expanded ? "" : "max-h-[60px] overflow-hidden"}`}>
 				{list.map((w, idx) => (
-					<span key={idx} className="bg-yellow-50 text-yellow-700 border border-yellow-200 px-1 rounded text-[10px] uppercase">
+					<span key={idx} className="bg-yellow-50 text-yellow-700 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800/50 px-1 rounded text-[10px] uppercase">
 						{w.country_code}
 					</span>
 				))}
@@ -57,6 +57,8 @@ export function CitconAccountsView() {
 	const { t } = useI18n();
 	const dispatch = useDispatch();
 	const { isMobile, isTablet } = useResponsive();
+	const theme = useSelector((s) => s.ui?.theme || "light");
+	const isDark = theme === "dark";
 	const allUsers = useSelector((s) => s.users.allUsers);
 	const [list, setList] = useState([]);
 	const [total, setTotal] = useState(0);
@@ -205,34 +207,36 @@ export function CitconAccountsView() {
 	};
 
 	const selectStyles = {
-		control: (base) => ({
+		control: (base, state) => ({
 			...base,
 			minHeight: 32,
 			height: 32,
 			borderRadius: 6,
-			backgroundColor: "#f9fafb",
-			borderColor: "#e5e7eb",
+			backgroundColor: isDark ? (state.isFocused ? "#374151" : "#1F2937") : (state.isFocused ? "white" : "#f9fafb"),
+			borderColor: isDark ? (state.isFocused ? "#3B82F6" : "rgba(55, 65, 81, 0.5)") : (state.isFocused ? "#3B82F6" : "#e5e7eb"),
 			borderWidth: 1,
 			boxShadow: "none",
 			paddingLeft: 2,
 			paddingRight: 2,
 			fontSize: 12,
-			"&:hover": { borderColor: "#d1d5db" },
+			"&:hover": { borderColor: isDark ? "#6B7280" : "#d1d5db" },
 		}),
 		valueContainer: (base) => ({ ...base, padding: "0 4px" }),
 		indicatorsContainer: (base) => ({ ...base, padding: 0 }),
-		dropdownIndicator: (base) => ({ ...base, color: "#6b7280", padding: 4 }),
+		dropdownIndicator: (base, state) => ({ ...base, color: state.isFocused ? (isDark ? "#60A5FA" : "#3B82F6") : (isDark ? "#9CA3AF" : "#6b7280"), padding: 4 }),
 		indicatorSeparator: () => ({ display: "none" }),
-		singleValue: (base) => ({ ...base, color: "#374151" }),
+		singleValue: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#374151" }),
+		input: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#374151" }),
 		option: (base, state) => ({
 			...base,
 			fontSize: 12,
 			padding: "6px 10px",
-			backgroundColor: state.isFocused ? "#eff6ff" : state.isSelected ? "#dbeafe" : "white",
-			color: "#374151",
+			backgroundColor: state.isFocused ? (isDark ? "#374151" : "#eff6ff") : state.isSelected ? (isDark ? "#1E3A8A" : "#dbeafe") : isDark ? "#1F2937" : "white",
+			color: isDark ? "#D1D5DB" : "#374151",
 			cursor: "pointer",
 		}),
-		menu: (base) => ({ ...base, borderRadius: 6, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", zIndex: 60 }),
+		menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+		menu: (base) => ({ ...base, borderRadius: 6, backgroundColor: isDark ? "#1F2937" : "white", border: isDark ? "1px solid #374151" : "1px solid #F3F4F6", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", zIndex: 60 }),
 	};
 
 	const handleCreate = () => {
@@ -396,7 +400,7 @@ export function CitconAccountsView() {
 					<div className="flex items-center justify-between">
 						<div className="flex flex-wrap items-center justify-end gap-2">
 							{activeFiltersList.map((filter) => (
-								<div key={filter.key} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md border border-blue-100 animate-fade-in">
+								<div key={filter.key} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50 text-xs rounded-md animate-fade-in">
 									<span className="font-medium">{filter.label}:</span>
 									<span className="max-w-[100px] truncate" title={filter.value}>
 										{filter.value}
@@ -739,7 +743,7 @@ export function CitconAccountsView() {
 																<>
 																	<div className="flex gap-1 flex-wrap ">
 																		{item.white_list.slice(0, 3).map((w, idx) => (
-																			<span key={idx} className="bg-yellow-50 text-yellow-700 border border-yellow-200 px-1 rounded text-[10px] uppercase">
+																			<span key={idx} className="bg-yellow-50 text-yellow-700 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800/50 px-1 rounded text-[10px] uppercase">
 																				{w.country_code}
 																			</span>
 																		))}

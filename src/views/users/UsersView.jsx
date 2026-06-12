@@ -409,7 +409,7 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 				</div>
 
 				<div className="p-6 space-y-4">
-					<div className="flex items-center gap-3 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm">
+					<div className="flex items-center gap-3 p-3 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg text-sm">
 						<FontAwesomeIcon icon={faUser} />
 						<span className="font-medium">{user?.username}</span>
 						<span className="opacity-75">({getRoleInfo(user?.juese_id, t).label})</span>
@@ -487,17 +487,17 @@ const MobileUserCard = ({ user, onEdit, onDelete, onAssignGroup, t, canManage, i
 			{(canManage || isAdvertiser) && (
 				<div className="flex justify-end gap-2 pt-3 border-t border-gray-50 dark:border-gray-700/50">
 					{canManage && [1, 4, 6].includes(Number(user.juese_id)) && (
-						<button onClick={() => onAssignGroup(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors" title={t("assignGroup")}>
+						<button onClick={() => onAssignGroup(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 hover:bg-purple-100 transition-colors" title={t("assignGroup")}>
 							<FontAwesomeIcon icon={faSitemap} size="sm" />
 						</button>
 					)}
 					{(canManage || isAdvertiser) && (
-						<button onClick={() => onEdit(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={t("edit")}>
+						<button onClick={() => onEdit(user)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-100 transition-colors" title={t("edit")}>
 							<FontAwesomeIcon icon={faPen} size="sm" />
 						</button>
 					)}
 					{canManage && (
-						<button onClick={() => onDelete(user.id)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title={t("delete")}>
+						<button onClick={() => onDelete(user.id)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-100 transition-colors" title={t("delete")}>
 							<FontAwesomeIcon icon={faTrash} size="sm" />
 						</button>
 					)}

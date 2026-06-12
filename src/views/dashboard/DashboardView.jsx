@@ -243,24 +243,24 @@ export function DashboardView() {
 					start_date: startTs,
 					end_date: endTs,
 					status: 1,
-					user_id: currentFilters.user || null,
+					user_id: (currentFilters.user && currentFilters.user.value) || null,
 					frequency: "month",
 				}),
 				fetchOrderGraphData({
 					start_date: startTs,
 					end_date: endTs,
 					status: 6,
-					user_id: currentFilters.user || null,
+					user_id: (currentFilters.user && currentFilters.user.value) || null,
 					frequency: "month",
 				}),
 				fetchOrderData({
 					start_date: startTs,
 					end_date: endTs,
-					user_id: currentFilters.user || null,
+					user_id: (currentFilters.user && currentFilters.user.value) || null,
 				}),
 				fetchRecentOrders({
 					limit: 8,
-					user_id: currentFilters.user || null,
+					user_id: (currentFilters.user && currentFilters.user.value) || null,
 				}),
 			]);
 

@@ -61,7 +61,7 @@ const MobileGroupCard = ({ item, onEdit, onDelete, t }) => {
 					<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[92px] overflow-hidden"}`}>
 						{item.stripe_list && item.stripe_list.length > 0 ? (
 							item.stripe_list.map((s, idx) => (
-								<span key={idx} className="inline-flex items-center px-2 py-1 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+								<span key={idx} className="inline-flex items-center px-2 py-1 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50">
 									<FontAwesomeIcon icon={faCreditCard} className="mr-1.5 opacity-60 text-[10px]" />
 									{s.name || s.id}
 								</span>
@@ -103,7 +103,7 @@ const DesktopGroupRow = ({ item, onEdit, onDelete, t }) => {
 				<div className={`flex flex-wrap gap-1.5 transition-all duration-300 ease-in-out ${expanded ? "" : "max-h-[76px] overflow-hidden"}`} title={!expanded ? item.stripe_list?.map((s) => s.name || s.id).join(", ") : ""}>
 					{item.stripe_list && item.stripe_list.length > 0
 						? item.stripe_list.map((s, idx) => (
-								<span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+								<span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50">
 									{s.name || s.id}
 								</span>
 						  ))
@@ -139,6 +139,8 @@ const InputRow = ({ icon, label, children, className = "", noBorder = false }) =
 
 function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, currentUser, adminUsers }) {
 	const dispatch = useDispatch();
+	const theme = useSelector((s) => s.ui.theme);
+	const isDark = theme === "dark";
 	const [form, setForm] = useState({ name: "", remark: "", stripe_list: [], user_id: "" });
 	const [saving, setSaving] = useState(false);
 	const [currentStripeOptions, setCurrentStripeOptions] = useState([]);
@@ -229,6 +231,7 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 						{currentUser && Number(currentUser.juese_id) === 1 && (
 							<InputRow icon={faUser} label={t("belongTo")} noBorder>
 								<Select
+									menuPortalTarget={document.body}
 									value={userOptions.find((o) => o.value === form.user_id)}
 									onChange={(val) => setForm((v) => ({ ...v, user_id: val ? val.value : "" }))}
 									options={userOptions}
@@ -240,11 +243,20 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 											...base,
 											minHeight: 36,
 											borderRadius: 8,
-											borderColor: state.isFocused ? "#1E4DB7" : "#ECF0F2",
+											backgroundColor: "transparent",
+											borderColor: state.isFocused ? "#1E4DB7" : isDark ? "#374151" : "#ECF0F2",
 											boxShadow: state.isFocused ? "0 0 0 2px #1E4DB74D" : "none",
 											"&:hover": { borderColor: "#1E4DB7" },
 										}),
-										menu: (base) => ({ ...base, borderRadius: 8, overflow: "hidden", zIndex: 9999 }),
+										menu: (base) => ({ ...base, borderRadius: 8, overflow: "hidden", zIndex: 9999, backgroundColor: isDark ? "#1F2937" : "#fff" }),
+										option: (base, state) => ({
+											...base,
+											backgroundColor: state.isFocused ? (isDark ? "#374151" : "#F3F5F9") : "transparent",
+											color: isDark ? "#F3F4F6" : "#11142D",
+										}),
+										singleValue: (base) => ({ ...base, color: isDark ? "#F3F4F6" : "#11142D" }),
+										input: (base) => ({ ...base, color: isDark ? "#F3F4F6" : "#11142D" }),
+										menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 									}}
 								/>
 							</InputRow>
@@ -256,6 +268,7 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 
 						<InputRow icon={faCreditCard} label={t("accounts")} noBorder>
 							<Select
+								menuPortalTarget={document.body}
 								isMulti
 								value={form.stripe_list}
 								onChange={(val) => setForm((v) => ({ ...v, stripe_list: val }))}
@@ -267,23 +280,27 @@ function GroupFormModal({ open, initial, onClose, onSave, t, stripeOptions, curr
 										...base,
 										minHeight: 36,
 										borderRadius: 8,
-										borderColor: state.isFocused ? "#1E4DB7" : "#ECF0F2",
+										backgroundColor: "transparent",
+										borderColor: state.isFocused ? "#1E4DB7" : isDark ? "#374151" : "#ECF0F2",
 										boxShadow: state.isFocused ? "0 0 0 2px #1E4DB74D" : "none",
 										"&:hover": { borderColor: "#1E4DB7" },
 									}),
-									menu: (base) => ({ ...base, borderRadius: 8, overflow: "hidden", zIndex: 9999 }),
+									menu: (base) => ({ ...base, borderRadius: 8, overflow: "hidden", zIndex: 9999, backgroundColor: isDark ? "#1F2937" : "#fff" }),
 									option: (base, state) => ({
 										...base,
 										fontSize: 13,
-										backgroundColor: state.isFocused ? "#F3F5F9" : "#fff",
-										color: "#11142D",
+										backgroundColor: state.isFocused ? (isDark ? "#374151" : "#F3F5F9") : "transparent",
+										color: isDark ? "#F3F4F6" : "#11142D",
 									}),
-									multiValue: (base) => ({ ...base, backgroundColor: "#EFF6FF", borderRadius: 4 }),
-									multiValueLabel: (base) => ({ ...base, color: "#1E4DB7", fontSize: 12 }),
-									multiValueRemove: (base) => ({ ...base, color: "#1E4DB7", ":hover": { backgroundColor: "#DBEAFE", color: "#1E3A8A" } }),
-									placeholder: (base) => ({ ...base, color: "#949DB2" }),
-									dropdownIndicator: (base, state) => ({ ...base, color: state.isFocused ? "#1E4DB7" : "#949DB2" }),
+									singleValue: (base) => ({ ...base, color: isDark ? "#F3F4F6" : "#11142D" }),
+									input: (base) => ({ ...base, color: isDark ? "#F3F4F6" : "#11142D" }),
+									multiValue: (base) => ({ ...base, backgroundColor: isDark ? "#374151" : "#EFF6FF", borderRadius: 4 }),
+									multiValueLabel: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#1E4DB7", fontSize: 12 }),
+									multiValueRemove: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#1E4DB7", ":hover": { backgroundColor: isDark ? "#4B5563" : "#DBEAFE", color: isDark ? "#F3F4F6" : "#1E3A8A" } }),
+									placeholder: (base) => ({ ...base, color: isDark ? "#6B7280" : "#949DB2" }),
+									dropdownIndicator: (base, state) => ({ ...base, color: state.isFocused ? "#1E4DB7" : isDark ? "#6B7280" : "#949DB2" }),
 									indicatorSeparator: (base) => ({ ...base, display: "none" }),
+									menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 								}}
 							/>
 						</InputRow>

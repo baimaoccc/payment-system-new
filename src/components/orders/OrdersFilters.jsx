@@ -505,6 +505,7 @@ export function OrdersFilters() {
 		dropdownIndicator: (base, state) => ({ ...base, color: state.isFocused ? (isDark ? "#60A5FA" : "#3B82F6") : (isDark ? "#9CA3AF" : "#6b7280"), padding: 4 }),
 		indicatorSeparator: () => ({ display: "none" }),
 		singleValue: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#374151" }),
+		input: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#374151" }),
 		multiValue: (base) => ({ ...base, backgroundColor: isDark ? "#374151" : "#E0E7FF", borderRadius: 4 }),
 		multiValueLabel: (base) => ({ ...base, color: isDark ? "#93C5FD" : "#1E4DB7", fontSize: 11 }),
 		multiValueRemove: (base) => ({ ...base, color: isDark ? "#93C5FD" : "#1E4DB7", ":hover": { backgroundColor: isDark ? "#4B5563" : "#1E4DB7", color: "white" } }),
@@ -516,6 +517,7 @@ export function OrdersFilters() {
 			color: isDark ? "#D1D5DB" : "#374151",
 			cursor: "pointer",
 		}),
+		menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 		menu: (base) => ({ ...base, borderRadius: 6, backgroundColor: isDark ? "#1F2937" : "white", border: isDark ? "1px solid #374151" : "1px solid #F3F4F6", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", zIndex: 60 }),
 	};
 
@@ -561,7 +563,7 @@ export function OrdersFilters() {
 				{/* Filter Toggle */}
 				<div className="flex flex-wrap justify-end items-center gap-2 shrink-0">
 					{activeFiltersList.map((filter) => (
-						<div key={filter.key} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md border border-blue-100 animate-fade-in">
+						<div key={filter.key} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50 text-xs rounded-md animate-fade-in">
 							<span className="font-medium">{filter.label}:</span>
 							<span className="max-w-[100px] truncate" title={filter.value}>
 								{filter.value}
@@ -613,7 +615,8 @@ export function OrdersFilters() {
 						<InputField label={t("orderLastName")} value={localFilters.lastName} onChange={(e) => setLocalFilters({ ...localFilters, lastName: e.target.value })} placeholder={t("enterOrderLastName") || "Enter order last name"} />
 						<InputField label={t("email")} value={localFilters.email} onChange={(e) => setLocalFilters({ ...localFilters, email: e.target.value })} placeholder={t("enterEmail") || "Enter email"} />
 						<InputField label={t("phone")} value={localFilters.phone} onChange={(e) => setLocalFilters({ ...localFilters, phone: e.target.value })} placeholder={t("enterPhone") || "Enter phone"} />
-						
+						<InputField label={t("url")} value={localFilters.url} onChange={(e) => setLocalFilters({ ...localFilters, url: e.target.value })} placeholder={t("url") || "Enter URL"} />
+						<InputField label={t("paymentChannel")} value={localFilters.comment} onChange={(e) => setLocalFilters({ ...localFilters, comment: e.target.value })} placeholder={t("enterPaymentChannel") || "Enter Payment Channel"} />
 
 						<div className="flex flex-col gap-1">
 							<label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">{t("paymentType")}</label>

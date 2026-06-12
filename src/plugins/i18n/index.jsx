@@ -180,6 +180,8 @@ const messages = {
 		illustrationPlaceholder: "插画占位",
 		missingCaptcha: "缺少验证码",
 		// New additions
+		aboutWhitelistGroups: "关于白名单分组",
+		aboutWhitelistGroupsDesc: "白名单分组允许您定义允许进行交易的国家/地区集合。这些分组可以分配给多个账户，以有效管理风险。",
 		clickToEdit: "点击编辑",
 		clickToExpand: "点击展开",
 		remark: "备注",
@@ -1177,7 +1179,10 @@ const messages = {
 		illustrationPlaceholder: "Illustration Placeholder",
 		missingCaptcha: "Missing captcha",
 		clickToEdit: "Click to Edit",
+		
 		// New additions
+		aboutWhitelistGroups: "About Whitelist Groups",
+		aboutWhitelistGroupsDesc: "Whitelist groups allow you to define sets of countries that are approved for transactions. These groups can be assigned to multiple accounts to manage risk effectively.",
 		clickToExpand: "Click to expand",
 		loading: "Loading...",
 		orderDetailsAndChannel: "Details & Channel",
