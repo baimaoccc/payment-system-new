@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlaneDeparture, faCheckSquare, faEnvelope, faSpinner, faUndoAlt, faHourglass } from "@fortawesome/free-solid-svg-icons";
+import { faPlaneDeparture, faCheckSquare, faEnvelope, faSpinner, faUndoAlt, faHourglass, faMoneyBillWave, faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import { renderOrderStatus } from "../../utils/orderStatusRender.jsx";
 import { RiskAnalysisModal } from "./RiskAnalysisModal.jsx";
 import { EmailTasksModal } from "../email/EmailTasksModal.jsx";
-import { fetchOrders, updateOrderLogistics, sendOrderEmailByTemplate, fetchOrderRiskLevel, fetchEmailTemplatesForOrders, createOrUpdateEmailTask } from "../../controllers/ordersController.js";
+import { fetchOrders, updateOrderLogistics, sendOrderEmailByTemplate, fetchOrderRiskLevel, fetchEmailTemplatesForOrders, createOrUpdateEmailTask, refundOrderYh } from "../../controllers/ordersController.js";
 import { fetchEmailTypesN } from "../../controllers/emailController.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
 import { ActionDropdown } from "../ui/ActionDropdown.jsx";
@@ -346,6 +346,29 @@ export function OrdersTable({ rows = [] }) {
 		setEmailTasksModalOpen(true);
 	};
 
+	const handleOrderYhRefund = (order) => {
+		dispatch({
+			type: "ui/setModal",
+			payload: {
+				title: t("refund") || "退款",
+				message: t("confirmYhRefund") || "确定要对此订单进行退款操作吗？",
+				showCancel: true,
+				confirmText: t("confirm") || "确认",
+				cancelText: t("cancel") || "取消",
+				onConfirm: async () => {
+					setRefundMenuOpenId(null);
+					const res = await refundOrderYh(order.orderNo);
+					if (res.ok) {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "success", message: t("refundSuccess") || "退款成功" } });
+						fetchOrders({ dispatch, page, pageSize, filters });
+					} else {
+						dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("refundFailed") || "退款失败" } });
+					}
+				},
+			},
+		});
+	};
+
 	const getActions = (o) => {
 		const allActions = {
 			details: {
@@ -419,9 +442,15 @@ export function OrdersTable({ rows = [] }) {
 			},
 			refund9: {
 				label: t("refunded"),
-				icon: <FontAwesomeIcon icon={faUndoAlt} />,
+				icon: <FontAwesomeIcon icon={faBookmark} />,
 				onClick: () => handleOrderRefunded(o),
 				className: "text-purple-600",
+			},
+			yhRefund: {
+				label: t("refund") || "退款",
+				icon: <FontAwesomeIcon icon={faMoneyBillWave} />,
+				onClick: () => handleOrderYhRefund(o),
+				className: "text-red-600",
 			},
 		};
 
@@ -448,6 +477,14 @@ export function OrdersTable({ rows = [] }) {
 		// 5. Callback: Super Admin, Admin
 		if (isAdmin(authRole)) {
 			actions.push(allActions.callback);
+		}
+		
+		// 6. YH Refund: Only when order status is Paid (1)
+		// Assuming status 1 is Paid, we allow Refund action. Also allow if shipping status is "notShipped" etc if needed
+		if (isSuperAdmin(authRole)) {
+			if (o.status === 1 || o.status === "1" || o.status === "paid") {
+				actions.push(allActions.yhRefund);
+			}
 		}
 
 		// Refund status menu/button
@@ -759,7 +796,7 @@ export function OrdersTable({ rows = [] }) {
 										{refundMenuOpenId === o.id && !isMobile && (
 											<div
 												onClick={(e) => e.stopPropagation()}
-												className="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-md shadow-lg z-50">
+												className="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/50 rounded-md shadow-lg z-50">
 												<button
 													onClick={() => {
 														setRefundMenuOpenId(null);

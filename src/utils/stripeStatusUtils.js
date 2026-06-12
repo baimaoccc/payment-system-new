@@ -26,6 +26,15 @@ export const getStripeAccountStatusOptions = (t) => [
  * @param {Function} t - i18n translation function
  * @returns {Object} Status info object
  */
+// 零小数货币列表
+export const ZERO_DECIMAL_CURRENCIES = ["bif", "clp", "djf", "gnf", "jpy", "kmf", "krw", "mga", "pyg", "rwf", "ugx", "vnd", "vuv", "xaf", "xof", "xpf"];
+
+// 判断是否是零小数货币
+export const isZeroDecimalCurrency = (currency) => {
+	if (!currency) return false;
+	return ZERO_DECIMAL_CURRENCIES.includes(currency.toLowerCase());
+};
+
 export const getStripeAccountStatusInfo = (value, t) => {
 	const options = getStripeAccountStatusOptions(t);
 	return options.find((opt) => opt.value === Number(value)) || { value, label: "Unknown", color: "gray" };

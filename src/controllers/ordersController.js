@@ -1,5 +1,5 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import { API_ORDER_LIST, API_ORDER_GET, API_ORDER_CHARGES_LIST, API_ORDER_UPDATE_LOGISTICS, API_ORDER_RISK_LEVEL, API_EMAIL_TEMPLATE_LIST, API_EMAIL_TEMPLATE_LIST_N, API_EMAIL_SET_TASK, API_ORDER_EXPORT, API_BASE_URL, API_ORDER_UPLOAD_EXCEL } from "../constants/api.js";
+import { API_ORDER_LIST, API_ORDER_GET, API_ORDER_CHARGES_LIST, API_ORDER_UPDATE_LOGISTICS, API_ORDER_RISK_LEVEL, API_EMAIL_TEMPLATE_LIST, API_EMAIL_TEMPLATE_LIST_N, API_EMAIL_SET_TASK, API_ORDER_EXPORT, API_BASE_URL, API_ORDER_UPLOAD_EXCEL, API_ORDER_YHTUIKUAN } from "../constants/api.js";
 import { setLoading, setError, setList, setTotal, setStats } from "../store/slices/orders.js";
 import { store } from "../store/index.js";
 
@@ -242,4 +242,28 @@ export async function uploadOrderExcel({ filename, filetype, filedata }) {
 			Token: token,
 		},
 	});
+}
+
+/**
+ * 订单退款 (YHTUIKUAN)
+ * @param {string|number} id - Order ID
+ */
+export async function refundOrderYh(orderNo) {
+	const res = await apiRequest({
+		url: API_ORDER_YHTUIKUAN,
+		method: "POST",
+		data: { orderNo }
+	});
+
+	if (!res.ok) return res;
+
+	const data = res.data || {};
+	// 如果 code 是 1 或 200，说明成功
+	if (data.code === 1 || data.code === 200) {
+		// 二次校验，如果后端返回了具体的 stripe 对象，看 status 是否是 "succeeded" 或者 "pending" 都是正常的退款处理状态
+		// 不过这里只要 code 为 1 就认定接口成功，可以放心 return ok: true
+		return { ok: true, data: data.data || data.msg };
+	} else {
+		return { ok: false, error: { code: data.code, message: data.msg || "Refund failed" } };
+	}
 }

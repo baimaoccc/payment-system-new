@@ -25,11 +25,14 @@ export const API_ORDER_UPLOAD_EXCEL = "/index.php/api/Order/uploadExcel";
 export const API_ORDER_UPDATE_LOGISTICS = "/index.php/Api/Order/UpOder";
 export const API_ORDER_RISK_LEVEL = "/index.php/Api/Order/getRisklevel";
 export const API_ORDER_SEARCH_PUBLIC = "/index.php/Api/Dindan/SearchForOrdersQ";
+export const API_ORDER_YHTUIKUAN = "/index.php/Api/Order/yhtuikuan";
 export const API_STRIPE_LIST = "/index.php/Api/Stripe/getStripeList";
 export const API_STRIPE_LIST_ALL = "/index.php/Api/Stripe/getStripeListN";
 export const API_STRIPE_GET = "/index.php/Api/Stripe/getStripe";
 export const API_STRIPE_CREATE = "/index.php/Api/Stripe/setStripe";
 export const API_STRIPE_DELETE = "/index.php/Api/Stripe/delStripe";
+export const API_STRIPE_RETRIEVE_BALANCE = "/index.php/api/Stripe/get_retrieve_balance";
+export const API_STRIPE_PAYOUTS_LIST = "/index.php/api/Stripe/get_list_all_payouts";
 
 // Zelle Payment Actions
 export const API_ZELLE_PAYMENT_CONFIRM = "/index.php/Api/Zelle/confirmPayment";

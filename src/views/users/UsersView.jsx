@@ -299,6 +299,8 @@ function UserFormModal({ open, initial, onClose, onSave, t, roles = [], currentU
 }
 
 function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
+	const theme = useSelector((s) => s.ui?.theme || "light");
+	const isDark = theme === "dark";
 	const [payGroupIds, setPayGroupIds] = useState([]);
 	const [payGroupOptions, setPayGroupOptions] = useState([]);
 	const [saving, setSaving] = useState(false);
@@ -417,7 +419,51 @@ function AssignGroupModal({ open, user, currentUser, onClose, onSave, t }) {
 
 					<div className="space-y-2">
 						<label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("paymentGroup")}</label>
-						<Select isMulti value={payGroupIds} onChange={setPayGroupIds} options={payGroupOptions} placeholder={t("selectPaymentGroup")} className="w-full" />
+						<Select 
+							isMulti 
+							value={payGroupIds} 
+							onChange={setPayGroupIds} 
+							options={payGroupOptions} 
+							placeholder={t("selectPaymentGroup")} 
+							className="w-full hs-custom-select" 
+							menuPortalTarget={document.body} 
+							styles={{ 
+								menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+								control: (base, state) => ({
+									...base,
+									backgroundColor: isDark ? (state.isFocused ? "#374151" : "#1F2937") : (state.isFocused ? "white" : "#f9fafb"),
+									borderColor: isDark ? (state.isFocused ? "#3B82F6" : "rgba(55, 65, 81, 0.5)") : (state.isFocused ? "#3B82F6" : "#e5e7eb"),
+								}),
+								menu: (base) => ({
+									...base,
+									backgroundColor: isDark ? "#1F2937" : "white",
+									border: isDark ? "1px solid #374151" : "1px solid #F3F4F6",
+								}),
+								option: (base, state) => ({
+									...base,
+									backgroundColor: state.isFocused ? (isDark ? "#374151" : "#eff6ff") : state.isSelected ? (isDark ? "#1E3A8A" : "#dbeafe") : isDark ? "#1F2937" : "white",
+									color: isDark ? "#D1D5DB" : "#374151",
+								}),
+								singleValue: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#374151" }),
+								input: (base) => ({ ...base, color: isDark ? "#D1D5DB" : "#374151" }),
+								multiValue: (base) => ({
+									...base,
+									backgroundColor: isDark ? "#374151" : "#eff6ff",
+								}),
+								multiValueLabel: (base) => ({
+									...base,
+									color: isDark ? "#D1D5DB" : "#1E3A8A",
+								}),
+								multiValueRemove: (base) => ({
+									...base,
+									color: isDark ? "#9CA3AF" : "#3B82F6",
+									':hover': {
+										backgroundColor: isDark ? "#4B5563" : "#dbeafe",
+										color: isDark ? "#EF4444" : "#1D4ED8",
+									},
+								}),
+							}} 
+						/>
 						{payGroupOptions.length === 0 && <p className="text-xs text-orange-500 mt-1">{t("noGroupsFound")}</p>}
 					</div>
 				</div>

@@ -419,7 +419,7 @@ export function StripeAccountModal({ isOpen, onClose, onSuccess, initialData = n
 						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{readOnly ? t("details") : initialData ? t("st_edit") : t("st_add")}</h3>
 						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{readOnly ? t("st_modal_desc_view") : t("st_modal_desc_edit")}</p>
 					</div>
-					<button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900">
+					<button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors p-2 rounded-full hover:bg-gray-50 dark:bg-gray-900">
 						<FontAwesomeIcon icon={faTimes} className="text-xl" />
 					</button>
 				</div>

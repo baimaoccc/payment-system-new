@@ -1,5 +1,5 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import { API_STRIPE_LIST, API_STRIPE_LIST_ALL, API_STRIPE_CREATE, API_STRIPE_DELETE, API_STRIPE_LOG_LIST, API_STRIPE_WARNING_LIST, API_STRIPE_DISPUTE_LIST } from "../constants/api.js";
+import { API_STRIPE_LIST, API_STRIPE_LIST_ALL, API_STRIPE_CREATE, API_STRIPE_DELETE, API_STRIPE_RETRIEVE_BALANCE, API_STRIPE_LOG_LIST, API_STRIPE_WARNING_LIST, API_STRIPE_DISPUTE_LIST, API_STRIPE_PAYOUTS_LIST } from "../constants/api.js";
 
 /**
  * Fetch Stripe accounts list
@@ -102,6 +102,27 @@ export async function deleteStripeAccount(id) {
 }
 
 /**
+ * Retrieve Stripe account balance
+ * @param {string|number} id - Account ID
+ */
+export async function retrieveStripeBalance(id) {
+    const res = await apiRequest({
+        url: API_STRIPE_RETRIEVE_BALANCE,
+        method: "POST",
+        data: { id }
+    });
+
+    if (!res.ok) return res;
+
+    const data = res.data || {};
+    if (data.code !== undefined && data.code != 1 && data.code != 200) {
+        return { ok: false, error: { code: data.code, message: data.msg || "Error retrieving balance" } };
+    }
+
+    return { ok: true, data: data.data || data.msg };
+}
+
+/**
  * Fetch Stripe logs list
  * @param {Object} params - { page, per_page, stripe_id }
  */
@@ -183,6 +204,36 @@ export async function fetchStripeDisputes({ id, limit = 20, starting_after, endi
 
     // Path: data.data.data.data (list)
     const stripeData = data.data?.data || {};
+    const list = stripeData.data || [];
+    const hasMore = stripeData.has_more || false;
+
+    return { ok: true, data: { list, hasMore, lastId: list.length > 0 ? list[list.length - 1].id : null, firstId: list.length > 0 ? list[0].id : null } };
+}
+
+/**
+ * Fetch Stripe Payouts
+ * @param {Object} params - { id, limit, starting_after, ending_before }
+ */
+export async function fetchStripePayouts({ id, limit = 20, starting_after, ending_before }) {
+    const payload = { id, limit };
+    if (starting_after) payload.starting_after = starting_after;
+    if (ending_before) payload.ending_before = ending_before;
+
+    const res = await apiRequest({
+        url: API_STRIPE_PAYOUTS_LIST,
+        method: "POST",
+        data: payload
+    });
+
+    if (!res.ok) return res;
+
+    const data = res.data || {};
+    if (data.code !== undefined && data.code != 0 && data.code != 1 && data.code != 200) {
+        return { ok: false, error: { code: data.code, message: data.msg || "Error fetching payouts" } };
+    }
+
+    // Usually stripe returns data.data as the object containing data array
+    const stripeData = data.data?.data || data.data || {};
     const list = stripeData.data || [];
     const hasMore = stripeData.has_more || false;
 

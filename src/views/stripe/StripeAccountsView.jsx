@@ -2,19 +2,21 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setModal } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
-import { fetchStripeAccounts, deleteStripeAccount, updateStripeAccount } from "../../controllers/stripeController.js";
+import { fetchStripeAccounts, deleteStripeAccount, updateStripeAccount, retrieveStripeBalance } from "../../controllers/stripeController.js";
+import { isSuperAdmin as checkIsSuperAdmin } from "../../components/layout/menuConfig.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { StripeAccountModal } from "./StripeAccountModal.jsx";
 import { StripeWarningModal } from "./StripeWarningModal.jsx";
 import { StripeDisputeModal } from "./StripeDisputeModal.jsx";
+import { StripePayoutsModal } from "./StripePayoutsModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCopy, faPen, faTrash, faEye, faExclamationTriangle, faGavel, faFilter, faChevronUp, faChevronDown, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCopy, faPen, faTrash, faEye, faExclamationTriangle, faGavel, faFilter, faChevronUp, faChevronDown, faTimes, faSpinner, faMoneyBillWave, faMoneyCheckAlt } from "@fortawesome/free-solid-svg-icons";
 import Select, { components } from "react-select";
 import { fetchUserListN } from "../../controllers/usersController.js";
 import { setAllUsers } from "../../store/slices/users.js";
 import { db } from "../../utils/indexedDB.js";
 import { getPaymentTypeOptions } from "../../utils/paymentUtils.js";
-import { getStripeAccountStatusOptions, getStripeAccountStatusInfo } from "../../utils/stripeStatusUtils.js";
+import { getStripeAccountStatusOptions, getStripeAccountStatusInfo, isZeroDecimalCurrency } from "../../utils/stripeStatusUtils.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
 
 const DropdownIndicator = (props) => (
@@ -51,10 +53,86 @@ const MobileWhitelist = ({ list }) => {
 	);
 };
 
+const BalanceDisplay = ({ balanceData, t }) => {
+	if (!balanceData || typeof balanceData !== "object") {
+		return <div className="text-left mt-2 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre font-mono max-h-[60vh] custom-scrollbar">{String(balanceData)}</div>;
+	}
+
+	// 提取真实的余额对象结构，处理后端可能多包装一层的 data
+	let actualData = balanceData;
+	if (actualData.data && actualData.data.object === "balance") {
+		actualData = actualData.data;
+	} else if (actualData.data && Array.isArray(actualData.data.available)) {
+		actualData = actualData.data;
+	}
+
+	const formatAmount = (amount, currency) => {
+		if (!currency) return amount;
+		const isZeroDecimal = isZeroDecimalCurrency(currency);
+		const value = isZeroDecimal ? amount : amount / 100;
+		try {
+			return new Intl.NumberFormat(undefined, {
+				style: "currency",
+				currency: currency.toUpperCase(),
+			}).format(value);
+		} catch (e) {
+			return `${value} ${currency.toUpperCase()}`;
+		}
+	};
+
+	const renderBalanceList = (items, title) => {
+		if (!items || items.length === 0) return null;
+		return (
+			<div className="mb-4 last:mb-0">
+				<h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2 pb-1 border-b border-gray-200 dark:border-gray-700">{title}</h4>
+				<div className="space-y-2">
+					{items.map((item, index) => (
+						<div key={index} className="flex justify-between items-center bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+							<div className="flex items-center gap-3">
+								<div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xs uppercase">
+									{item.currency}
+								</div>
+							</div>
+							<div className="text-lg font-bold text-gray-900 dark:text-gray-100">
+								{formatAmount(item.amount, item.currency)}
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		);
+	};
+
+	return (
+		<div className="mt-2 text-left bg-gray-50 dark:bg-gray-900 p-4 rounded-lg max-h-[60vh] overflow-y-auto custom-scrollbar">
+			{renderBalanceList(actualData.available, t("availableBalance"))}
+			{renderBalanceList(actualData.pending, t("pendingBalance"))}
+			{renderBalanceList(actualData.instant_available, t("instantAvailableBalance"))}
+			{renderBalanceList(actualData.connect_reserved, t("connectReservedBalance"))}
+			
+			{/* Refund and Dispute Prefunding */}
+			{actualData.refund_and_dispute_prefunding && (
+				<>
+					{renderBalanceList(actualData.refund_and_dispute_prefunding.available, t("refundAndDisputePrefundingAvailable"))}
+					{renderBalanceList(actualData.refund_and_dispute_prefunding.pending, t("refundAndDisputePrefundingPending"))}
+				</>
+			)}
+			
+			{(!actualData.available?.length && !actualData.pending?.length && !actualData.refund_and_dispute_prefunding) && (
+				<div className="text-center text-gray-500 py-4">
+					{t("noBalanceData")}
+				</div>
+			)}
+		</div>
+	);
+};
+
 export function StripeAccountsView() {
 	const { t } = useI18n();
 	const dispatch = useDispatch();
 	const { isMobile, isTablet } = useResponsive();
+	const { user: currentUser, role: authRole } = useSelector((s) => s.auth);
+	const isSuperAdmin = checkIsSuperAdmin(authRole);
 	const theme = useSelector((s) => s.ui?.theme || "light");
 	const isDark = theme === "dark";
 	const allUsers = useSelector((s) => s.users.allUsers);
@@ -69,6 +147,27 @@ export function StripeAccountsView() {
 	const [isReadOnly, setIsReadOnly] = useState(false);
 	const [warningModalOpen, setWarningModalOpen] = useState(false);
 	const [disputeModalOpen, setDisputeModalOpen] = useState(false);
+	const [payoutsModalOpen, setPayoutsModalOpen] = useState(false);
+	const [loadingBalanceId, setLoadingBalanceId] = useState(null);
+
+	const handleGetBalance = async (accountId) => {
+		setLoadingBalanceId(accountId);
+		const res = await retrieveStripeBalance(accountId);
+		setLoadingBalanceId(null);
+		
+		if (res.ok) {
+			dispatch(
+				setModal({
+					title: t("accountBalance") || "账户余额",
+					message: <BalanceDisplay balanceData={res.data} t={t} />,
+					variant: "info",
+					confirmText: t("confirm") || "确定",
+				})
+			);
+		} else {
+			dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("getBalanceFailed") || "获取余额失败" } });
+		}
+	};
 	const [selectedAccountId, setSelectedAccountId] = useState(null);
 	const [userOptions, setUserOptions] = useState([]);
 	const [expandedMobileRow, setExpandedMobileRow] = useState(null);
@@ -625,6 +724,30 @@ export function StripeAccountsView() {
 
 														{/* Extra Actions */}
 														<div className="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+															{isSuperAdmin && (
+																<button
+																	onClick={(e) => {
+																		e.stopPropagation();
+																		handleGetBalance(item.id);
+																	}}
+																	disabled={loadingBalanceId === item.id}
+																	className="px-2 py-1 text-xs bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors disabled:opacity-50">
+																	<FontAwesomeIcon icon={loadingBalanceId === item.id ? faSpinner : faMoneyBillWave} spin={loadingBalanceId === item.id} className="mr-1" />
+																	{t("accountBalance") || "账户余额"}
+																</button>
+															)}
+															{isSuperAdmin && (
+																<button
+																	onClick={(e) => {
+																		e.stopPropagation();
+																		setPayoutsModalOpen(true);
+																		setSelectedAccountId(item.id);
+																	}}
+																	className="px-2 py-1 text-xs bg-green-50 text-green-600 rounded hover:bg-green-100">
+																	<FontAwesomeIcon icon={faMoneyCheckAlt} className="mr-1" />
+																	{t("st_payouts") || "提现记录"}
+																</button>
+															)}
 															<button
 																onClick={(e) => {
 																	e.stopPropagation();
@@ -869,6 +992,11 @@ export function StripeAccountsView() {
 													<td className="p-3">
 														<div className="flex flex-col gap-2">
 															<div className="flex flex-wrap gap-1">
+																{isSuperAdmin && (
+																	<button onClick={() => handleGetBalance(item.id)} disabled={loadingBalanceId === item.id} className="p-1 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded transition-colors disabled:opacity-50" title={t("accountBalance") || "账户余额"}>
+																		<FontAwesomeIcon icon={loadingBalanceId === item.id ? faSpinner : faMoneyBillWave} spin={loadingBalanceId === item.id} />
+																	</button>
+																)}
 																<button onClick={() => handleEdit(item)} className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors" title={t("edit")}>
 																	<FontAwesomeIcon icon={faPen} />
 																</button>
@@ -897,6 +1025,17 @@ export function StripeAccountsView() {
 																	title={t("dispute")}>
 																	<FontAwesomeIcon icon={faGavel} />
 																</button>
+																{isSuperAdmin && (
+																	<button
+																		onClick={() => {
+																			setPayoutsModalOpen(true);
+																			setSelectedAccountId(item.id);
+																		}}
+																		className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors"
+																		title={t("st_payouts") || "提现记录"}>
+																		<FontAwesomeIcon icon={faMoneyCheckAlt} />
+																	</button>
+																)}
 															</div>
 															{/* <div className="flex gap-1">
 																
@@ -921,6 +1060,7 @@ export function StripeAccountsView() {
 			<StripeAccountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={loadData} initialData={editingItem} readOnly={isReadOnly} />
 			<StripeWarningModal isOpen={warningModalOpen} onClose={() => setWarningModalOpen(false)} accountId={selectedAccountId} />
 			<StripeDisputeModal isOpen={disputeModalOpen} onClose={() => setDisputeModalOpen(false)} accountId={selectedAccountId} />
+			<StripePayoutsModal isOpen={payoutsModalOpen} onClose={() => setPayoutsModalOpen(false)} accountId={selectedAccountId} />
 		</div>
 	);
 }
