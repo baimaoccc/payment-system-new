@@ -2,13 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setModal } from "../../store/slices/ui.js";
 import { useI18n } from "../../plugins/i18n/index.jsx";
-import { fetchStripeAccounts, deleteStripeAccount, updateStripeAccount, retrieveStripeBalance } from "../../controllers/stripeController.js";
+import { fetchStripeAccounts, deleteStripeAccount, updateStripeAccount, retrieveStripeBalance, fetchStripePayouts } from "../../controllers/stripeController.js";
 import { isSuperAdmin as checkIsSuperAdmin } from "../../components/layout/menuConfig.jsx";
 import { Pagination } from "../../components/common/Pagination.jsx";
 import { StripeAccountModal } from "./StripeAccountModal.jsx";
 import { StripeWarningModal } from "./StripeWarningModal.jsx";
 import { StripeDisputeModal } from "./StripeDisputeModal.jsx";
 import { StripePayoutsModal } from "./StripePayoutsModal.jsx";
+import { StripeCreatePayoutModal } from "./StripeCreatePayoutModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCopy, faPen, faTrash, faEye, faExclamationTriangle, faGavel, faFilter, faChevronUp, faChevronDown, faTimes, faSpinner, faMoneyBillWave, faMoneyCheckAlt } from "@fortawesome/free-solid-svg-icons";
 import Select, { components } from "react-select";
@@ -53,7 +54,7 @@ const MobileWhitelist = ({ list }) => {
 	);
 };
 
-const BalanceDisplay = ({ balanceData, t }) => {
+const BalanceDisplay = ({ balanceData, t, onPayoutClick }) => {
 	if (!balanceData || typeof balanceData !== "object") {
 		return <div className="text-left mt-2 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre font-mono max-h-[60vh] custom-scrollbar">{String(balanceData)}</div>;
 	}
@@ -80,7 +81,7 @@ const BalanceDisplay = ({ balanceData, t }) => {
 		}
 	};
 
-	const renderBalanceList = (items, title) => {
+	const renderBalanceList = (items, title, isAvailable = false) => {
 		if (!items || items.length === 0) return null;
 		return (
 			<div className="mb-4 last:mb-0">
@@ -93,8 +94,18 @@ const BalanceDisplay = ({ balanceData, t }) => {
 									{item.currency}
 								</div>
 							</div>
-							<div className="text-lg font-bold text-gray-900 dark:text-gray-100">
-								{formatAmount(item.amount, item.currency)}
+							<div className="flex items-center gap-4">
+								<div className="text-lg font-bold text-gray-900 dark:text-gray-100">
+									{formatAmount(item.amount, item.currency)}
+								</div>
+								{isAvailable && item.amount > 0 && (
+									<button 
+										onClick={() => onPayoutClick(item)}
+										className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+									>
+										{t("payout") || "Payout"}
+									</button>
+								)}
 							</div>
 						</div>
 					))}
@@ -107,7 +118,7 @@ const BalanceDisplay = ({ balanceData, t }) => {
 		<div className="mt-2 text-left bg-gray-50 dark:bg-gray-900 p-4 rounded-lg max-h-[60vh] overflow-y-auto custom-scrollbar">
 			{renderBalanceList(actualData.available, t("availableBalance"))}
 			{renderBalanceList(actualData.pending, t("pendingBalance"))}
-			{renderBalanceList(actualData.instant_available, t("instantAvailableBalance"))}
+			{renderBalanceList(actualData.instant_available, t("instantAvailableBalance"), true)}
 			{renderBalanceList(actualData.connect_reserved, t("connectReservedBalance"))}
 			
 			{/* Refund and Dispute Prefunding */}
@@ -148,7 +159,40 @@ export function StripeAccountsView() {
 	const [warningModalOpen, setWarningModalOpen] = useState(false);
 	const [disputeModalOpen, setDisputeModalOpen] = useState(false);
 	const [payoutsModalOpen, setPayoutsModalOpen] = useState(false);
+	const [createPayoutModalOpen, setCreatePayoutModalOpen] = useState(false);
+	const [payoutCurrency, setPayoutCurrency] = useState("");
+	const [payoutMaxAmount, setPayoutMaxAmount] = useState(0);
 	const [loadingBalanceId, setLoadingBalanceId] = useState(null);
+	const [loadingPayoutsId, setLoadingPayoutsId] = useState(null);
+	const [payoutsModalData, setPayoutsModalData] = useState(null);
+
+	const handleOpenPayouts = async (accountId) => {
+		setLoadingPayoutsId(accountId);
+		const res = await fetchStripePayouts({ id: accountId, limit: 100 });
+		setLoadingPayoutsId(null);
+		
+		if (res.ok) {
+			setPayoutsModalData({
+				list: res.data.list,
+				hasMore: res.data.hasMore,
+				lastId: res.data.lastId
+			});
+			setSelectedAccountId(accountId);
+			setPayoutsModalOpen(true);
+		} else {
+			dispatch({ type: "ui/addToast", payload: { id: Date.now(), type: "error", message: res.error?.message || t("fetchFailed") || "获取失败" } });
+		}
+	};
+
+	const handlePayoutClick = (item, accountId) => {
+		// item contains amount and currency
+		setSelectedAccountId(accountId);
+		setPayoutCurrency(item.currency);
+		setPayoutMaxAmount(item.amount);
+		setCreatePayoutModalOpen(true);
+		// Optionally close the balance modal
+		dispatch(setModal(null));
+	};
 
 	const handleGetBalance = async (accountId) => {
 		setLoadingBalanceId(accountId);
@@ -159,7 +203,7 @@ export function StripeAccountsView() {
 			dispatch(
 				setModal({
 					title: t("accountBalance") || "账户余额",
-					message: <BalanceDisplay balanceData={res.data} t={t} />,
+					message: <BalanceDisplay balanceData={res.data} t={t} onPayoutClick={(item) => handlePayoutClick(item, accountId)} />,
 					variant: "info",
 					confirmText: t("confirm") || "确定",
 				})
@@ -740,11 +784,11 @@ export function StripeAccountsView() {
 																<button
 																	onClick={(e) => {
 																		e.stopPropagation();
-																		setPayoutsModalOpen(true);
-																		setSelectedAccountId(item.id);
+																		handleOpenPayouts(item.id);
 																	}}
-																	className="px-2 py-1 text-xs bg-green-50 text-green-600 rounded hover:bg-green-100">
-																	<FontAwesomeIcon icon={faMoneyCheckAlt} className="mr-1" />
+																	disabled={loadingPayoutsId === item.id}
+																	className="px-2 py-1 text-xs bg-green-50 text-green-600 rounded hover:bg-green-100 disabled:opacity-50">
+																	<FontAwesomeIcon icon={loadingPayoutsId === item.id ? faSpinner : faMoneyCheckAlt} spin={loadingPayoutsId === item.id} className="mr-1" />
 																	{t("st_payouts") || "提现记录"}
 																</button>
 															)}
@@ -1028,12 +1072,12 @@ export function StripeAccountsView() {
 																{isSuperAdmin && (
 																	<button
 																		onClick={() => {
-																			setPayoutsModalOpen(true);
-																			setSelectedAccountId(item.id);
+																			handleOpenPayouts(item.id);
 																		}}
-																		className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors"
+																		disabled={loadingPayoutsId === item.id}
+																		className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors disabled:opacity-50"
 																		title={t("st_payouts") || "提现记录"}>
-																		<FontAwesomeIcon icon={faMoneyCheckAlt} />
+																		<FontAwesomeIcon icon={loadingPayoutsId === item.id ? faSpinner : faMoneyCheckAlt} spin={loadingPayoutsId === item.id} />
 																	</button>
 																)}
 															</div>
@@ -1060,7 +1104,17 @@ export function StripeAccountsView() {
 			<StripeAccountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={loadData} initialData={editingItem} readOnly={isReadOnly} />
 			<StripeWarningModal isOpen={warningModalOpen} onClose={() => setWarningModalOpen(false)} accountId={selectedAccountId} />
 			<StripeDisputeModal isOpen={disputeModalOpen} onClose={() => setDisputeModalOpen(false)} accountId={selectedAccountId} />
-			<StripePayoutsModal isOpen={payoutsModalOpen} onClose={() => setPayoutsModalOpen(false)} accountId={selectedAccountId} />
+			<StripePayoutsModal isOpen={payoutsModalOpen} onClose={() => setPayoutsModalOpen(false)} accountId={selectedAccountId} initialData={payoutsModalData} />
+			<StripeCreatePayoutModal 
+				isOpen={createPayoutModalOpen} 
+				onClose={() => setCreatePayoutModalOpen(false)} 
+				accountId={selectedAccountId} 
+				currency={payoutCurrency} 
+				maxAmount={payoutMaxAmount} 
+				onSuccess={() => {
+					// refresh balance if needed, but since it closed, user will reopen balance modal and see updated balance
+				}} 
+			/>
 		</div>
 	);
 }

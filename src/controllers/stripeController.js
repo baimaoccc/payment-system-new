@@ -1,5 +1,5 @@
 import { request as apiRequest } from "../plugins/http/baseAPI.js";
-import { API_STRIPE_LIST, API_STRIPE_LIST_ALL, API_STRIPE_CREATE, API_STRIPE_DELETE, API_STRIPE_RETRIEVE_BALANCE, API_STRIPE_LOG_LIST, API_STRIPE_WARNING_LIST, API_STRIPE_DISPUTE_LIST, API_STRIPE_PAYOUTS_LIST } from "../constants/api.js";
+import { API_STRIPE_LIST, API_STRIPE_CREATE, API_STRIPE_DELETE, API_STRIPE_LOG_LIST, API_STRIPE_WARNING_LIST, API_STRIPE_DISPUTE_LIST, API_STRIPE_LIST_ALL, API_STRIPE_RETRIEVE_BALANCE, API_STRIPE_PAYOUTS_LIST, API_STRIPE_CREATE_PAYOUT } from "../constants/api.js";
 
 /**
  * Fetch Stripe accounts list
@@ -238,4 +238,25 @@ export async function fetchStripePayouts({ id, limit = 20, starting_after, endin
     const hasMore = stripeData.has_more || false;
 
     return { ok: true, data: { list, hasMore, lastId: list.length > 0 ? list[list.length - 1].id : null, firstId: list.length > 0 ? list[0].id : null } };
+}
+
+/**
+ * Create Stripe payout
+ * @param {Object} params - { id, amount, currency }
+ */
+export async function createStripePayout(params) {
+    const res = await apiRequest({
+        url: API_STRIPE_CREATE_PAYOUT,
+        method: "POST",
+        data: params
+    });
+
+    if (!res.ok) return res;
+
+    const data = res.data || {};
+    if (data.code !== undefined && data.code != 1 && data.code != 200) {
+        return { ok: false, error: { code: data.code, message: data.msg || "Error creating stripe payout" } };
+    }
+
+    return { ok: true, data: data.data };
 }

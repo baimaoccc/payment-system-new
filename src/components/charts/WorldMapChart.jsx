@@ -1,8 +1,10 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useRef } from "react";
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 import { useI18n } from "../../plugins/i18n/index.jsx";
 import worldMapData from "../../assets/map/world.json";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
 // Map ISO-2 codes to Echarts world map names
 const iso2ToEcharts = {
@@ -61,6 +63,9 @@ const iso2ToEcharts = {
 export function WorldMapChart({ data = [], isDark = false }) {
 	const { t } = useI18n();
 	const [mapRegistered, setMapRegistered] = useState(false);
+	const chartRef = useRef(null);
+	const zoomRef = useRef(2);
+	const centerRef = useRef([10, 30]);
 
 	useEffect(() => {
 		if (!echarts.getMap("world")) {
@@ -68,6 +73,38 @@ export function WorldMapChart({ data = [], isDark = false }) {
 		}
 		setMapRegistered(true);
 	}, []);
+
+	const handleZoom = (isZoomIn) => {
+		const chartInstance = chartRef.current?.getEchartsInstance();
+		if (chartInstance) {
+			const currentSeries = chartInstance.getOption().series[0];
+			const currentZoom = currentSeries.zoom || 2;
+			const currentCenter = currentSeries.center || [10, 30];
+			
+			const newZoom = Math.min(Math.max(currentZoom * (isZoomIn ? 1.5 : 0.67), 1), 5);
+			
+			zoomRef.current = newZoom;
+			centerRef.current = currentCenter;
+			
+			chartInstance.setOption({
+				series: [{
+					zoom: newZoom,
+					center: currentCenter
+				}]
+			});
+		}
+	};
+
+	const onEvents = useMemo(() => ({
+		roam: () => {
+			const chartInstance = chartRef.current?.getEchartsInstance();
+			if (chartInstance) {
+				const currentSeries = chartInstance.getOption().series[0];
+				if (currentSeries.zoom) zoomRef.current = currentSeries.zoom;
+				if (currentSeries.center) centerRef.current = currentSeries.center;
+			}
+		}
+	}), []);
 
 	const chartData = useMemo(() => {
 		// Use Intl API for mapping codes if not in dictionary
@@ -133,9 +170,9 @@ export function WorldMapChart({ data = [], isDark = false }) {
 					name: t("orderNum") || "Orders",
 					type: "map",
 					map: "world",
-					roam: true, // Allow zoom/pan
-					zoom: 2, // Initial zoom level (1 is default, >1 is zoomed in)
-					center: [10, 30], // Center map roughly between US and Europe to show the most relevant data clearly
+					roam: "move", // Allow pan only, disable scroll wheel zoom
+					zoom: zoomRef.current,
+					center: centerRef.current,
 					scaleLimit: {
 						min: 1,
 						max: 5,
@@ -161,5 +198,17 @@ export function WorldMapChart({ data = [], isDark = false }) {
 
 	if (!mapRegistered) return null;
 
-	return <ReactECharts option={option} style={{ height: "100%", minHeight: "350px", width: "100%" }} className="w-full h-full min-h-[350px] md:min-h-[400px]" />;
+	return (
+		<div className="relative w-full h-full">
+			<ReactECharts ref={chartRef} option={option} onEvents={onEvents} style={{ height: "100%", minHeight: "350px", width: "100%" }} className="w-full h-full min-h-[350px] md:min-h-[400px]" />
+			<div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+				<button onClick={() => handleZoom(true)} className="w-8 h-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors" title="Zoom In">
+					<FontAwesomeIcon icon={faPlus} />
+				</button>
+				<button onClick={() => handleZoom(false)} className="w-8 h-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors" title="Zoom Out">
+					<FontAwesomeIcon icon={faMinus} />
+				</button>
+			</div>
+		</div>
+	);
 }

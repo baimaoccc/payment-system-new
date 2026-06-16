@@ -6,7 +6,7 @@ import { faSpinner, faTimes, faMoneyCheckAlt } from "@fortawesome/free-solid-svg
 import { isZeroDecimalCurrency } from "../../utils/stripeStatusUtils.js";
 import { useResponsive } from "../../hooks/useResponsive.js";
 
-export function StripePayoutsModal({ isOpen, onClose, accountId }) {
+export function StripePayoutsModal({ isOpen, onClose, accountId, initialData }) {
 	const { t } = useI18n();
 	const { isMobile, isTablet } = useResponsive();
 	const [list, setList] = useState([]);
@@ -16,13 +16,19 @@ export function StripePayoutsModal({ isOpen, onClose, accountId }) {
 
 	useEffect(() => {
 		if (isOpen && accountId) {
-			loadInitialData();
+			if (initialData) {
+				setList(initialData.list || []);
+				setHasMore(initialData.hasMore || false);
+				setLastId(initialData.lastId || null);
+			} else {
+				loadInitialData();
+			}
 		} else {
 			setList([]);
 			setHasMore(false);
 			setLastId(null);
 		}
-	}, [isOpen, accountId]);
+	}, [isOpen, accountId, initialData]);
 
 	const loadInitialData = async () => {
 		setLoading(true);

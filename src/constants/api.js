@@ -33,6 +33,7 @@ export const API_STRIPE_CREATE = "/index.php/Api/Stripe/setStripe";
 export const API_STRIPE_DELETE = "/index.php/Api/Stripe/delStripe";
 export const API_STRIPE_RETRIEVE_BALANCE = "/index.php/api/Stripe/get_retrieve_balance";
 export const API_STRIPE_PAYOUTS_LIST = "/index.php/api/Stripe/get_list_all_payouts";
+export const API_STRIPE_CREATE_PAYOUT = "/index.php/api/Stripe/create_a_payout";
 
 // Zelle Payment Actions
 export const API_ZELLE_PAYMENT_CONFIRM = "/index.php/Api/Zelle/confirmPayment";
